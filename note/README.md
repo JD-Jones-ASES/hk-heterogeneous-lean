@@ -82,10 +82,11 @@ Lemma 1 allows; any transient rows; every real algebraic lambda; exact Fourier-M
 
 Two recorded search results (their scripts are not shipped here):
 - No rational SBI alternating system in the class: BOUNDED-NEGATIVE-SEARCH, fully resolved for
-  mirror-symmetric n = 5, 6 (span <= 40), 7 (<= 30), 8 (<= 16) and any order n = 4 (<= 30), 5 (<= 12),
-  6 (<= 7). Not covered: symmetric n = 8 spans 17-24, any order n = 5 spans 13-20, n = 6 spans 8-12,
-  non-symmetric n = 7, 8; irrational leaves were not sign-checked. A two-step extension (symmetric
-  n = 7, span <= 22) found nothing, with 3,508 leaves checked only heuristically: UNKNOWN residue.
+  mirror-symmetric n = 5, 6 (span <= 40), 7 (<= 30), 8 (<= 16) and any order n = 4 (<= 30),
+  5 (<= 12), 6 (<= 7). Not covered: symmetric n = 8 spans 17-24, any order n = 5 spans 13-20 and
+  n = 6 spans 8-12, non-symmetric n = 7, 8; irrational leaves were not sign-checked. A two-step
+  extension (symmetric n = 7, span <= 22) found nothing, but 3,508 multi-dimensional leaves were
+  checked only heuristically: UNKNOWN residue.
 - No digraph of period 3 (x(3m + k) = L + mu^m w(k), rational mu in (0, 1)): BOUNDED-NEGATIVE-SEARCH
   for SBC and SBI, symmetric n = 5 (span <= 16), n = 6 (SBC <= 16, SBI <= 14), any order n = 4
   (<= 12, fully resolved). UNKNOWN: irrational-mu leaves (SBC 276 at n = 5 and 1,122 at n = 6; SBI
