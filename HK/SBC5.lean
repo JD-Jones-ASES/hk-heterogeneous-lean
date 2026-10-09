@@ -19,32 +19,137 @@ namespace HK
 
 open Filter Topology
 
-theorem sbc5_r_pos : ∀ i, 0 < sbc5_r i := sorry
+theorem sbc5_r_pos : ∀ i, 0 < sbc5_r i := by
+  intro i
+  fin_cases i <;> simp [sbc5_r]
 
-theorem sbc5Rate_neg : sbc5Rate < 0 := sorry
+theorem sbc_sqrt_two_sq : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
 
-theorem abs_sbc5Rate_lt_one : |sbc5Rate| < 1 := sorry
+theorem sbc_sqrt_two_bounds : 1.4 < Real.sqrt 2 ∧ Real.sqrt 2 < 1.5 := by
+  constructor
+  · exact (Real.lt_sqrt (by norm_num)).2 (by norm_num)
+  · exact (Real.sqrt_lt' (by norm_num)).2 (by norm_num)
+
+theorem sbc5Rate_neg : sbc5Rate < 0 := by
+  obtain ⟨h1, -⟩ := sbc_sqrt_two_bounds
+  unfold sbc5Rate
+  linarith
+
+theorem abs_sbc5Rate_lt_one : |sbc5Rate| < 1 := by
+  obtain ⟨h1, h2⟩ := sbc_sqrt_two_bounds
+  unfold sbc5Rate
+  rw [abs_lt]
+  constructor <;> linarith
+
+theorem sbc_rate_gt : -1 / 6 < sbc5Rate := by
+  obtain ⟨-, h2⟩ := sbc_sqrt_two_bounds
+  unfold sbc5Rate
+  linarith
+
+/-- `λ ≤ λᵗ ≤ 1` for every `t`. -/
+theorem sbc_pow_bounds (t : ℕ) : sbc5Rate ≤ sbc5Rate ^ t ∧ sbc5Rate ^ t ≤ 1 := by
+  obtain ⟨h1, h2⟩ := sbc_sqrt_two_bounds
+  have h : sbc5Rate = -((Real.sqrt 2 - 1) / 3) := by unfold sbc5Rate; ring
+  rw [h]
+  have hc0 : 0 < (Real.sqrt 2 - 1) / 3 := by linarith
+  have hc1 : (Real.sqrt 2 - 1) / 3 ≤ 1 := by linarith
+  rcases Nat.even_or_odd t with ht | ht
+  · rw [ht.neg_pow]
+    have h0 : 0 < ((Real.sqrt 2 - 1) / 3) ^ t := pow_pos hc0 t
+    have h1 : ((Real.sqrt 2 - 1) / 3) ^ t ≤ 1 := pow_le_one₀ hc0.le hc1
+    constructor <;> linarith
+  · rw [ht.neg_pow]
+    have h0 : 0 < ((Real.sqrt 2 - 1) / 3) ^ t := pow_pos hc0 t
+    have h1 : ((Real.sqrt 2 - 1) / 3) ^ t ≤ (Real.sqrt 2 - 1) / 3 :=
+      pow_le_of_le_one hc0.le hc1 (by rintro rfl; simp at ht)
+    constructor <;> linarith
+
+/-- The five-agent table for every offset `λ ≤ u ≤ 1`. -/
+theorem sbc_table (u : ℝ) (hu0 : sbc5Rate ≤ u) (hu1 : u ≤ 1) :
+    neighbors .sbc sbc5_r (fun i => sbc5_lim i + u * sbc5_v i) =
+      ![{0}, {0, 1, 2}, {1, 2, 3}, {2, 3, 4}, {4}] := by
+  obtain ⟨hs1, hs2⟩ := sbc_sqrt_two_bounds
+  have hr := sbc_rate_gt
+  have hs0 : 0 ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
+  have hp0 : -1 / 2 ≤ u * Real.sqrt 2 := by nlinarith
+  have hp1 : u * Real.sqrt 2 ≤ 3 / 2 := by nlinarith
+  funext i
+  ext j
+  fin_cases i <;> fin_cases j <;>
+    simp [neighbors, Model.bound, sbc5_r, sbc5_lim, sbc5_v, abs_le] <;>
+    (try constructor) <;> (try intro) <;> linarith
+
+theorem sbc_step (u : ℝ) (hu0 : sbc5Rate ≤ u) (hu1 : u ≤ 1) :
+    step .sbc sbc5_r (fun i => sbc5_lim i + u * sbc5_v i) =
+      fun i => sbc5_lim i + (sbc5Rate * u) * sbc5_v i := by
+  have h2 := sbc_sqrt_two_sq
+  funext i
+  rw [step_apply, sbc_table u hu0 hu1]
+  fin_cases i
+  · simp [sbc5_lim, sbc5_v]
+  · simp [Finset.sum_insert, sbc5_lim, sbc5_v, sbc5Rate]; ring
+  · simp [Finset.sum_insert, sbc5_lim, sbc5_v, sbc5Rate]; linear_combination (-u / 3) * h2
+  · simp [Finset.sum_insert, sbc5_lim, sbc5_v, sbc5Rate]; ring
+  · simp [sbc5_lim, sbc5_v]
 
 theorem sbc5_closed_form_internal (t : ℕ) :
-    traj .sbc sbc5_r sbc5_x0 t = fun i => sbc5_lim i + sbc5Rate ^ t * sbc5_v i := sorry
+    traj .sbc sbc5_r sbc5_x0 t = fun i => sbc5_lim i + sbc5Rate ^ t * sbc5_v i := by
+  induction t with
+  | zero =>
+    funext i
+    fin_cases i <;> simp [traj, sbc5_x0, sbc5_lim, sbc5_v] <;> ring
+  | succ t ih =>
+    have h : traj .sbc sbc5_r sbc5_x0 (t + 1) = step .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) := by
+      simp only [traj]
+      exact Function.iterate_succ_apply' _ _ _
+    obtain ⟨h0, h1⟩ := sbc_pow_bounds t
+    rw [h, ih, sbc_step _ h0 h1]
+    funext i; rw [pow_succ]; ring
 
 theorem sbc5_neighbors_internal (t : ℕ) :
     neighbors .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) =
-      ![{0}, {0, 1, 2}, {1, 2, 3}, {2, 3, 4}, {4}] := sorry
+      ![{0}, {0, 1, 2}, {1, 2, 3}, {2, 3, 4}, {4}] := by
+  obtain ⟨h0, h1⟩ := sbc_pow_bounds t
+  rw [sbc5_closed_form_internal, sbc_table _ h0 h1]
 
-theorem sbc5_tendsto : Tendsto (traj .sbc sbc5_r sbc5_x0) atTop (𝓝 sbc5_lim) := sorry
+theorem sbc_closed_form' (t : ℕ) :
+    traj .sbc sbc5_r sbc5_x0 t = fun i => sbc5_lim i + sbc5Rate ^ t * 1 * sbc5_v i := by
+  rw [sbc5_closed_form_internal]; funext i; ring
+
+theorem sbc_rate_tendsto : Tendsto (fun t : ℕ => sbc5Rate ^ t * 1) atTop (𝓝 0) := by
+  simpa using tendsto_pow_atTop_nhds_zero_of_abs_lt_one abs_sbc5Rate_lt_one
+
+theorem sbc5_tendsto : Tendsto (traj .sbc sbc5_r sbc5_x0) atTop (𝓝 sbc5_lim) :=
+  tendsto_of_closed_form _ _ sbc5_v _ sbc_rate_tendsto sbc_closed_form'
 
 theorem sbc5_digraph_constant (t : ℕ) :
     proximityDigraph .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) =
-      proximityDigraph .sbc sbc5_r sbc5_x0 := sorry
+      proximityDigraph .sbc sbc5_r sbc5_x0 := by
+  have h0 : traj .sbc sbc5_r sbc5_x0 0 = sbc5_x0 := rfl
+  have := sbc5_neighbors_internal 0
+  rw [h0] at this
+  simp only [proximityDigraph, sbc5_neighbors_internal, this]
 
-theorem sbc5_not_fixedFrom (τ : ℕ) : ¬ FixedFrom (traj .sbc sbc5_r sbc5_x0) τ := sorry
+theorem sbc5_not_fixedFrom (τ : ℕ) : ¬ FixedFrom (traj .sbc sbc5_r sbc5_x0) τ :=
+  not_fixedFrom_of_closed_form _ _ sbc5_v _ sbc_closed_form'
+    (alternating _ _ sbc5Rate_neg one_ne_zero) 1 (by simp [sbc5_v]) τ
 
 theorem sbc5_not_pseudoStableAfter (xinf : Fin 5 → ℝ) (τ : ℕ) :
-    ¬ PseudoStableAfter (traj .sbc sbc5_r sbc5_x0) xinf τ := sorry
+    ¬ PseudoStableAfter (traj .sbc sbc5_r sbc5_x0) xinf τ :=
+  not_pseudoStable_of_closed_form _ _ sbc5_v _ sbc_rate_tendsto sbc_closed_form'
+    (alternating _ _ sbc5Rate_neg one_ne_zero) xinf τ
 
-theorem not_conjecture23_sbc_five_internal : ¬ Conjecture23ForAgents .sbc 5 := sorry
+theorem not_conjecture23_sbc_five_internal : ¬ Conjecture23ForAgents .sbc 5 := by
+  intro h
+  obtain ⟨τ, hf | ⟨xinf, hps⟩⟩ := h sbc5_r sbc5_x0 sbc5_r_pos
+  · exact sbc5_not_fixedFrom τ hf
+  · exact sbc5_not_pseudoStableAfter xinf τ hps
 
-theorem not_theorem64iv_sbc_five_internal : ¬ Theorem64ivForAgents .sbc 5 := sorry
+theorem not_theorem64iv_sbc_five_internal : ¬ Theorem64ivForAgents .sbc 5 := by
+  intro h
+  obtain ⟨t₂, -, hf | ⟨xinf, hps⟩⟩ := h sbc5_r sbc5_x0 sbc5_r_pos 0
+    (fun t _ => by simp only [proximityDigraph, sbc5_neighbors_internal])
+  · exact sbc5_not_fixedFrom t₂ hf
+  · exact sbc5_not_pseudoStableAfter xinf t₂ hps
 
 end HK
