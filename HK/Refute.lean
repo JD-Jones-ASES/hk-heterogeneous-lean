@@ -11,9 +11,9 @@ public import HK.Generic
 /-!
 # The refutations, assembled; the conjunctions; the sharpness of Lemma 4.8's condition
 
-Conjecture 2.2 fails in each model by the two alternating systems; Conjecture 2.3 and Theorem
-6.4(iv) fail in each model by the constant-digraph systems (Conjecture 2.3 also by the alternating
-ones). The literal reading of Theorem 6.4(iv) implies the reading admitting fixed states, so it fails
+Conjecture 2.2 and Conjecture 2.3 fail in each model by the two alternating systems; Theorem 6.4(iv)
+fails in each model by the two constant-digraph systems of the source (and Conjecture 2.3 and Theorem
+6.4(iv) at five SBC and six SBI agents by the smaller systems, in `SBC5.lean` and `SBI6.lean`). The literal reading of Theorem 6.4(iv) implies the reading admitting fixed states, so it fails
 too. The equi-topology distance of the limit vanishes at the alternating agents of the two alternating
 systems and is positive at every agent of the two constant-digraph systems of the source.
 -/
@@ -80,12 +80,22 @@ theorem not_conjecture23_internal : ¬ Conjecture23 := fun h => not_conjecture23
 
 theorem not_theorem64iv_internal : ¬ Theorem64iv := fun h => not_theorem64iv_sbc_internal (h .sbc)
 
-theorem not_theorem64iv_literal_internal : ¬ Theorem64ivLiteral := by
+theorem not_theorem64iv_literal_sbc_internal : ¬ Theorem64ivLiteralFor .sbc := by
   intro h
   apply not_theorem64iv_sbc_internal
   intro n r x₀ hr τ hτ
-  obtain ⟨t₂, ht₂, hps⟩ := h .sbc n r x₀ hr τ hτ
+  obtain ⟨t₂, ht₂, hps⟩ := h n r x₀ hr τ hτ
   exact ⟨t₂, ht₂, Or.inr hps⟩
+
+theorem not_theorem64iv_literal_sbi_internal : ¬ Theorem64ivLiteralFor .sbi := by
+  intro h
+  apply not_theorem64iv_sbi_internal
+  intro n r x₀ hr τ hτ
+  obtain ⟨t₂, ht₂, hps⟩ := h n r x₀ hr τ hτ
+  exact ⟨t₂, ht₂, Or.inr hps⟩
+
+theorem not_theorem64iv_literal_internal : ¬ Theorem64ivLiteral :=
+  fun h => not_theorem64iv_literal_sbc_internal (h .sbc)
 
 theorem tendsto_limits_internal :
     Tendsto (traj .sbc sbc7_r sbc7_x0) atTop (𝓝 sbc7_lim) ∧

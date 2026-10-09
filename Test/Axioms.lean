@@ -42,6 +42,7 @@ run_cmd do
       `HK.not_conjecture22_sbc, `HK.not_conjecture22_sbi, `HK.not_conjecture22,
       `HK.not_conjecture23_sbc, `HK.not_conjecture23_sbi, `HK.not_conjecture23,
       `HK.not_theorem64iv_sbc, `HK.not_theorem64iv_sbi, `HK.not_theorem64iv,
+      `HK.not_theorem64iv_literal_sbc, `HK.not_theorem64iv_literal_sbi,
       `HK.not_theorem64iv_literal, `HK.sbc5_closed_form, `HK.sbc5_neighbors,
       `HK.sbi6_closed_form, `HK.sbi6_neighbors, `HK.small_tendsto, `HK.small_digraph_constant,
       `HK.small_not_fixedFrom, `HK.small_not_pseudoStableAfter, `HK.not_conjecture22_sbc_seven,

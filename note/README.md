@@ -19,10 +19,10 @@ pinned in Lean, and so are the two spectator systems (their closed forms, tables
 - (f) SBI-8: x(0) = (0,60,71,100-phi,110,120+phi,149,220), r = (85,1,35,35,75,35,35,85); the
   spectator x_1 = 60 + phi^-1 (4^-t - lambda^t); the other agents follow (d).
 
-All six match their closed forms and per-parity tables at every t < 200, with no boundary tie. For
+All six match their closed forms and per-parity tables at every t < 60 (t < 200 with `--T=200`), with no boundary tie. For
 every t, by induction: positions are affine in u = rate^t (and w = 5^-t or 4^-t); each membership
 keeps a strict sign on the parity box; the row means are exact; u -> rate * u swaps the boxes.
-- Widest u-intervals of each table: (a) even (0, 3), odd [-6/5, 0]; (b) even [0, sqrt5 - 1], odd
+- Widest u-intervals of each table: (a) even (0, 3), odd [-6/5, 0]; (b) even (0, sqrt5 - 1], odd
   [sqrt5 - 3, 0), so the odd step needs u >= sqrt5 - 3, not just u >= -1; (c) one table on
   (-5, 5/3]; (d) one table on [-15/2 + 5sqrt5/2, 15(sqrt5 - 1)/4]; (e), (f) one table on the
   closed box |u| <= 1, 0 <= w <= 1.

@@ -36,7 +36,7 @@ systems (the agents are indexed `0, …, n − 1` here, agent `i` of the paper b
 * no trajectory of the four is ever frozen, and none is pseudo-stable after any `τ` towards any
   vector, since four agents alternate sides of their limits;
 * hence Conjecture 2.2 and Conjecture 2.3 fail in each model, and Theorem 6.4(iv) fails in each
-  model under both readings;
+  model in the reading admitting fixed states and hence in its literal reading;
 * two smaller constant-digraph systems found in this development: five SBC agents with rate
   `(1 − √2)/3` and six SBI agents with rate `(13 − √249)/40`, each converging with a constant digraph
   and oscillating agents, so Conjecture 2.3 and Theorem 6.4(iv) fail already with five SBC agents and
@@ -62,8 +62,9 @@ systems (the agents are indexed `0, …, n − 1` here, agent `i` of the paper b
   limit, with the limit its final value at constant topology and an equilibrium; the two
   constant-digraph systems satisfy that hypothesis (every equi-topology distance of their limits is
   positive); and the sharpness of the hypothesis for the digraph conclusion: in the two alternating
-  systems the limit has equi-topology distance `0` at the middle agent and at the agents on whose
-  bound it sits (indices `2, 3, 4` in the SBC system, `1, 3, 5` in the SBI system).
+  systems the limit has equi-topology distance `0` at the middle agent and at the two agents at
+  distance exactly a bound from it (indices `2, 3, 4` in the SBC system, where the bound is the middle
+  agent's; `1, 3, 5` in the SBI system, where it is theirs).
 
 Conjecture 2.1 of the same paper (every trajectory converges) is open and nothing here bears on it.
 
@@ -403,7 +404,15 @@ theorem not_theorem64iv_sbi : ¬ Theorem64ivFor .sbi := sorry
 /-- Theorem 6.4(iv) fails in the reading that admits fixed states. -/
 theorem not_theorem64iv : ¬ Theorem64iv := sorry
 
-/-- Theorem 6.4(iv) fails in its literal reading (which the reading admitting fixed states implies). -/
+/-- Theorem 6.4(iv) fails for the SBC model in its literal reading (which implies the reading admitting
+fixed states, so this follows from `not_theorem64iv_sbc`). -/
+theorem not_theorem64iv_literal_sbc : ¬ Theorem64ivLiteralFor .sbc := sorry
+
+/-- Theorem 6.4(iv) fails for the SBI model in its literal reading. -/
+theorem not_theorem64iv_literal_sbi : ¬ Theorem64ivLiteralFor .sbi := sorry
+
+/-- Theorem 6.4(iv) fails in its literal reading (which implies the reading admitting fixed states, so
+this follows from `not_theorem64iv`; it also fails trivially for a single frozen agent). -/
 theorem not_theorem64iv_literal : ¬ Theorem64ivLiteral := sorry
 
 /-! ### Smaller systems: Theorem 6.4(iv) and Conjecture 2.3 fail with five SBC agents and six SBI agents -/
@@ -501,7 +510,8 @@ theorem sbc9_neighbors (t : ℕ) :
   sorry
 
 /-- §4 with the spectator and the beacons: the spectator is strictly left of `210` for every
-`t ≥ 1`, while its leader component's agents alternate sides of their limits. -/
+`t ≥ 1` (`210` is its limit by `sbc9_closed_form`; agents `1`–`4`, the paper's leader component,
+alternate sides of theirs by the same closed form). -/
 theorem sbc9_spectator_lt (t : ℕ) (ht : 1 ≤ t) : traj .sbc sbc9_r sbc9_x0 t 6 < 210 := sorry
 
 /-- §5 with the spectator: for every `t`, the other agents evolve as in §5 and the spectator (index
@@ -519,7 +529,8 @@ theorem sbi8_neighbors (t : ℕ) :
       ![{0}, {0, 1, 2, 4}, {0, 2, 3, 4}, {2, 3, 4, 5}, {3, 4, 5}, {3, 4, 5, 6}, {4, 5, 6, 7}, {7}] :=
   sorry
 
-/-- §5 with the spectator: the spectator is strictly right of `60` for every `t ≥ 1`. -/
+/-- §5 with the spectator: the spectator is strictly right of `60` for every `t ≥ 1` (`60` is its
+limit by `sbi8_closed_form`). -/
 theorem sbi8_spectator_gt (t : ℕ) (ht : 1 ≤ t) : 60 < traj .sbi sbi8_r sbi8_x0 t 1 := sorry
 
 /-! ### The final value at constant topology and the per-step convergence factor -/
@@ -589,8 +600,9 @@ theorem equiTopologyDistance_pos :
 
 /-- Sharpness of that hypothesis for the digraph conclusion (Hegarty–Ognissanti–Wedin §6): the
 limits of the two alternating systems violate it. In the 7-agent SBC system the middle agent (index
-`3`) and the two agents it sits on the bound of (indices `2`, `4`) have equi-topology distance `0`;
-in the 7-agent SBI system the middle agent and the agents `1` and `5` (the paper's `2` and `6`) do. -/
+`3`) and the two agents on its bound (indices `2`, `4`: `|84 − 72| = |96 − 84| = 12 = r₃`) have
+equi-topology distance `0`; in the 7-agent SBI system the middle agent and the agents `1` and `5`
+(the paper's `2` and `6`, on whose bound `4` it sits) do. -/
 theorem equiTopologyDistance_eq_zero :
     (∀ i ∈ ({2, 3, 4} : Finset (Fin 7)), equiTopologyDistance sbc7_r sbc7_lim i = 0) ∧
     (∀ i ∈ ({1, 3, 5} : Finset (Fin 7)), equiTopologyDistance sbi7_r sbi7_lim i = 0) := sorry

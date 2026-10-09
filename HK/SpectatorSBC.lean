@@ -10,7 +10,6 @@ The six agents of §4 with a spectator at `210` (`r = 100`) and two beacons at `
 satisfies `x₆(t) = 210 + (12/11) ((−1/6)ᵗ − (1/5)ᵗ)`, so it is strictly left of `210` for every
 `t ≥ 1`; the neighbourhood table is the same at every `t`. Two atoms: `u = (−1/6)ᵗ ∈ [−1/6, 1]` and
 `w = (1/5)ᵗ ∈ (0, 1]`; the table holds on the closed box `|u| ≤ 1`, `0 ≤ w ≤ 1` with no parity split.
-If these close, the desk lifts the data and the theorems into the Challenge.
 -/
 
 @[expose] public section

@@ -31,9 +31,12 @@ project:
     4.8 (a convergent trajectory whose limit has every equi-topology distance positive eventually has
     the digraph of its limit, the limit as its final value at constant topology, and an equilibrium
     limit) are proved for arbitrary bounds; the limits of the two constant-digraph systems satisfy that
-    hypothesis, and those of the two alternating systems violate it. Not claimed: Theorem 6.4(iii) in
-    full, Conjecture 2.1 (convergence of every trajectory), or that any system is the smallest of its
-    kind.
+    hypothesis, and those of the two alternating systems violate it. For the source's two spectator
+    systems (nine SBC agents with a spectator and two beacons; eight SBI agents with a spectator) the
+    closed forms, the constant tables and the spectator's side are proved, and along the two smaller
+    systems too the final value at constant topology is the limit and the per-step factor is the rate.
+    Not claimed: Theorem 6.4(iii) in full, Conjecture 2.1 (convergence of every trajectory), or that any
+    system is the smallest of its kind.
   authors: ["JD Jones"]
   responsible_maintainers: ["JD Jones"]
   license: "MIT"
@@ -47,14 +50,14 @@ sources:
     authors: ["Peter Hegarty", "Damiano Ognissanti", "Edvin Wedin"]
     id: "https://arxiv.org/abs/2610.03229"
     type: "paper"
-    location: "arXiv:2610.03229v1 (2026-10-02; math.DS, math.CO; MSC 39A60, 93A14, 91D10, 91D30; 10 pages): Section 1 (the SBC and SBI models; Conjectures 2.2 and 2.3 and Theorem 6.4(iv) of Mirtabatabaei-Bullo as restated, with footnote 1 on the literal reading of 6.4(iv)); Section 2 (SBC, seven agents); Section 3 (SBI, seven agents); Section 4 (SBC, six agents, the first system of the section); Section 5 (SBI, seven agents, the first system of the section); Section 6 (equi-topology distance zero at the limits of Sections 2 and 3); Section 7 (the AI statement)"
+    location: "arXiv:2610.03229v1 (2026-10-02; math.DS, math.CO; MSC 39A60, 93A14, 91D10, 91D30; 10 pages): Section 1 (the SBC and SBI models; Conjectures 2.2 and 2.3 and Theorem 6.4(iv) of Mirtabatabaei-Bullo as restated, with footnote 1 on the literal reading of 6.4(iv)); Section 2 (SBC, seven agents); Section 3 (SBI, seven agents); Section 4 (SBC, six agents, and the nine-agent spectator system with two beacons, Claims 1-3); Section 5 (SBI, seven agents, and the eight-agent spectator system, Claims 1-3); Section 6 (equi-topology distance zero at the limits of Sections 2 and 3); Section 7 (the AI statement)"
     relationship: "formalizes"
     author_endorsement: "not-contacted"
     note: >-
       The counterexamples formalized. The four systems (Section 2: SBC, n = 7, rate -1/6; Section 3: SBI,
       n = 7, rate (1 - sqrt 5)/8; Section 4: SBC, n = 6; Section 5: SBI, n = 7) are restated with the
       paper's initial opinions and bounds, and what the paper proves about each is proved here as it is
-      stated there: the closed form x(t) = x_inf + lambda^t v for every t (the paper's induction on t),
+      stated there: the closed form x(t) = x_inf + c lambda^t v for every t (c = 1/2 in Section 3) (the paper's induction on t),
       the neighbourhood of every agent at every t (alternating with the parity of t at the middle agent
       in Sections 2 and 3, the same at every t in Sections 4 and 5), convergence, and the failure of
       Conjectures 2.2 and 2.3 and of Theorem 6.4(iv), the last in both the literal reading and the reading
@@ -66,8 +69,7 @@ sources:
       converges to no non-negative number; the strongly connected components, leader components and
       spectral radii of Definition 6.3 are not formalized. Section 6's observation that the limits of
       Sections 2 and 3 have equi-topology distance zero at the alternating agents is proved
-      (equiTopologyDistance_eq_zero). The spectator systems of Sections 4 and 5 (Claims 1-3: closed forms, tables, the spectator strictly on one side of its limit) are formalized too; the statement of Theorem 6.4(iii)(b) about leader components is not.4(iii)(b), and Section 6's
-      genericity discussion. By Section 7 the examples were found by Claude Opus 5.5 at the authors'
+      (equiTopologyDistance_eq_zero). The spectator systems of Sections 4 and 5 (Claims 1-3: closed forms, tables, the spectator strictly on one side of its limit) are formalized too. Not formalized: the statement of Theorem 6.4(iii)(b) about leader components, and Section 6's genericity discussion. By Section 7 the examples were found by Claude Opus 5.5 at the authors'
       prompting and checked by hand by the authors; the text of the paper is the authors'.
   - title: "Opinion Dynamics in Heterogeneous Networks: Convergence Conjectures and Theorems"
     authors: ["Anahita Mirtabatabaei", "Francesco Bullo"]
@@ -160,7 +162,7 @@ sources:
 
 status:
   scope: >-
-    Fifty-one compared theorems over the definitions of Challenge.lean, none of them a hole. For the
+    Sixty-three compared theorems over the definitions of Challenge.lean, none of them a hole. For the
     four systems of Hegarty, Ognissanti and Wedin (SBC with seven and with six agents, SBI with seven
     agents twice): the closed form of the trajectory for every t, the neighbourhood table at every t,
     convergence to the stated limit, a proximity digraph that is never eventually constant (the two
@@ -168,23 +170,28 @@ status:
     pseudo-stability after any time towards any vector; hence the negations of Mirtabatabaei and Bullo's
     Conjecture 2.2 and Conjecture 2.3, each for the SBC model and for the SBI model, and of their
     Theorem 6.4(iv) in each model, in the reading admitting fixed states and in the literal reading (the
-    latter already fails for a single frozen agent). For two smaller constant-digraph systems of this
-    development (five SBC agents, rate (1 - sqrt 2)/3; six SBI agents, rate (13 - sqrt 249)/40): the
-    same facts, so Conjecture 2.3 and Theorem 6.4(iv) fail with five SBC agents and with six SBI agents,
-    and Conjecture 2.2 with seven agents in each model. The final value at constant topology of every
-    x(t) is the limit along all four source systems; the per-step convergence factor of the agents with
-    nonzero offset in the six-agent SBC system (indices 1 to 4) and the second seven-agent SBI system
-    (indices 1, 2, 4, 5) is identically the negative rate, so it converges to no non-negative number.
-    Mirtabatabaei and Bullo's Lemma 4.2 and Lemma 4.8 (both parts, with the equilibrium) are proved for
-    arbitrary bounds; every equi-topology distance of the limits of the two constant-digraph systems is
-    positive, and the limits of the two alternating systems have equi-topology distance 0 at indices 2,
-    3, 4 (SBC) and 1, 3, 5 (SBI). Not claimed: Theorem 6.4(iii) in full (the strongly connected
-    components, leader components and spectral radii of Definition 6.3 are not formalized; only the
-    per-step factors above are); Conjecture 2.1 (every trajectory converges), on which nothing here
-    bears; minimality of any system (computations outside Lean that bear on the least number of agents
-    are confined to trajectories of the form x_inf + lambda^t v with a fixed neighbourhood pattern for
-    each sign of lambda^t, and are not part of the formalization). The intentional placeholders of
-    Challenge.lean are excluded from proof counts; Solution.lean does not import Challenge.lean.
+    latter is implied by the former, and also fails trivially for one frozen agent, a remark not used in
+    the proof). For two smaller constant-digraph systems of this development (five SBC agents, rate (1 -
+    sqrt 2)/3; six SBI agents, rate (13 - sqrt 249)/40): the same facts, so Conjecture 2.3 and Theorem
+    6.4(iv) fail with five SBC agents and with six SBI agents, and Conjecture 2.2 with seven agents in
+    each model. For the source's two spectator systems (Section 4: nine SBC agents with a spectator and
+    two beacons; Section 5: eight SBI agents with a spectator) the closed forms with two geometric
+    terms, the constant neighbourhood tables and the spectator strictly on one side of its limit for
+    every t >= 1 are proved. The final value at constant topology of every x(t) is the limit along the
+    four counterexample systems and the two smaller ones; the per-step convergence factor of the agents
+    with nonzero offset in the six-agent SBC system (indices 1 to 4) and the second seven-agent SBI
+    system (indices 1, 2, 4, 5) is identically the negative rate, so it converges to no non-negative
+    number, and along the two smaller systems it is identically the rate as well. Mirtabatabaei and
+    Bullo's Lemma 4.2 and Lemma 4.8 (both parts, with the equilibrium) are proved for arbitrary bounds;
+    every equi-topology distance of the limits of the two constant-digraph systems is positive, and the
+    limits of the two alternating systems have equi-topology distance 0 at indices 2, 3, 4 (SBC) and 1,
+    3, 5 (SBI). Not claimed: Theorem 6.4(iii) in full (the strongly connected components, leader
+    components and spectral radii of Definition 6.3 are not formalized; only the per-step factors above
+    are); Conjecture 2.1 (every trajectory converges), on which nothing here bears; minimality of any
+    system (computations outside Lean that bear on the least number of agents are confined to
+    trajectories of the form x_inf + lambda^t v with a fixed neighbourhood pattern for each sign of
+    lambda^t, and are not part of the formalization). The intentional placeholders of Challenge.lean are
+    excluded from proof counts; Solution.lean does not import Challenge.lean.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: ["propext", "Classical.choice", "Quot.sound"]
@@ -305,6 +312,16 @@ status:
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "comparator.json"
     - declaration: "HK.not_theorem64iv"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_theorem64iv_literal_sbc"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_theorem64iv_literal_sbi"
       file: "Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
@@ -501,16 +518,18 @@ automation:
       models: ["Claude Opus 5.5 (Anthropic)", "Claude Fable 5.1 (Anthropic)"]
       framework: "Claude Code with parallel subagents"
       tool_setup: >-
-        The project was directed by its author. Claude (Anthropic) in Claude Code was used throughout:
-        the statements and their fidelity checks against both papers, the Lean proofs, the
-        exact-arithmetic replays and searches outside Lean (which found the five- and six-agent
-        systems), the literature and prior-art searches, and the repository text. Lean v4.35.0-rc2 and
-        Mathlib v4.35.0-rc2 (commit 065356127b1dc0016f66b7283ce0ce2c4055aa55) are pinned by the
-        committed manifest and lake update is never run; there are no GitHub Actions workflows. There is
-        no native_decide. The proofs are linear arithmetic over the offset atom lambda^t with fin_cases
-        neighbourhood tables, linear_combination with the quadratic identities of sqrt 5, sqrt 2 and
-        sqrt 249, inductions on t for the closed forms, and the limit lemmas of Mathlib (among them
-        limUnder of a convergent sequence); decide is used only for inequalities between Fin indices.
+        The project was directed by its author. Claude Fable 5.1 pinned the statements, split and merged
+        the proof files and edited the documents; Claude Opus 5.5 subagents wrote the proofs, the
+        checkers and the drafts. Claude (Anthropic) in Claude Code was used throughout: the statements
+        and their fidelity checks against both papers, the Lean proofs, the exact-arithmetic replays and
+        searches outside Lean (which found the five- and six-agent systems), the literature and
+        prior-art searches, and the repository text. Lean v4.35.0-rc2 and Mathlib v4.35.0-rc2 (commit
+        065356127b1dc0016f66b7283ce0ce2c4055aa55) are pinned by the committed manifest and lake update
+        is never run; there are no GitHub Actions workflows. There is no native_decide. The proofs are
+        linear arithmetic over the offset atom lambda^t with fin_cases neighbourhood tables,
+        linear_combination with the quadratic identities of sqrt 5, sqrt 2 and sqrt 249, inductions on t
+        for the closed forms, and the limit lemmas of Mathlib (among them limUnder of a convergent
+        sequence); decide is used only for inequalities between Fin indices.
       spend_usd: "not tracked"
 
 fidelity:
@@ -535,10 +554,13 @@ fidelity:
     its literal reading, which is refuted trivially (both classes of (2.2) must be non-empty, so a
     single frozen agent with a constant digraph violates it, as footnote 1 of Hegarty, Ognissanti and
     Wedin observes), and in the reading that admits a fixed state, whose refutation needs the
-    constant-digraph systems. For Theorem 6.4(iii) only the per-step factors of the two constant-digraph
-    source systems are formalized. The data (initial opinions, bounds, limits, offset directions and
-    rates) are as in the source, with the factor 1/2 of the Section 3 closed form x(t) = x_inf +
-    (lambda^t / 2) v kept; the Section 5 closed form has no such factor.
+    constant-digraph systems. For Theorem 6.4(iii) its statement is not formalized; what is formalized
+    is the per-step factor along the four constant-digraph systems (identically the negative rate; for
+    the two source systems also that it converges to no non-negative number) and the two spectator
+    configurations of Hegarty, Ognissanti and Wedin (closed forms, tables, the spectator's side). The
+    data (initial opinions, bounds, limits, offset directions and rates) are as in the source, with the
+    factor 1/2 of the Section 3 closed form x(t) = x_inf + (lambda^t / 2) v kept; the Section 5 closed
+    form has no such factor.
 
 review:
   status: "self-assessed"
@@ -672,11 +694,21 @@ alignment:
       module: "Solution"
       status: "proved"
       note: "Theorem 6.4(iv) fails in the reading that admits fixed states."
+    - source: "Mirtabatabaei–Bullo 2012, Theorem 6.4(iv); Hegarty–Ognissanti–Wedin 2026, §4"
+      lean: "HK.not_theorem64iv_literal_sbc"
+      module: "Solution"
+      status: "proved"
+      note: "Theorem 6.4(iv) fails for the SBC model in its literal reading (implied by its failure in the reading admitting fixed states)."
+    - source: "Mirtabatabaei–Bullo 2012, Theorem 6.4(iv); Hegarty–Ognissanti–Wedin 2026, §5"
+      lean: "HK.not_theorem64iv_literal_sbi"
+      module: "Solution"
+      status: "proved"
+      note: "Theorem 6.4(iv) fails for the SBI model in its literal reading (implied by its failure in the reading admitting fixed states)."
     - source: "Mirtabatabaei–Bullo 2012, Theorem 6.4(iv); Hegarty–Ognissanti–Wedin 2026, §1, footnote 1"
       lean: "HK.not_theorem64iv_literal"
       module: "Solution"
       status: "proved"
-      note: "Theorem 6.4(iv) fails in its literal reading (already for a single frozen agent)."
+      note: "Theorem 6.4(iv) fails in its literal reading (implied by its failure in the reading admitting fixed states)."
     - source: "this development"
       lean: "HK.sbc5_closed_form"
       module: "Solution"

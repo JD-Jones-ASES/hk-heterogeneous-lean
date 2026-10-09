@@ -26,6 +26,8 @@
     "HK.not_theorem64iv_sbc",
     "HK.not_theorem64iv_sbi",
     "HK.not_theorem64iv",
+    "HK.not_theorem64iv_literal_sbc",
+    "HK.not_theorem64iv_literal_sbi",
     "HK.not_theorem64iv_literal",
     "HK.sbc5_closed_form",
     "HK.sbc5_neighbors",

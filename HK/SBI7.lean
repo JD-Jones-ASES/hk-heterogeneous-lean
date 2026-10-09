@@ -9,7 +9,7 @@ public import HK.Basic
 `λ = (1 − √5)/8`; `x(t) = (0, 7, 10, 11, 12, 15, 22) + (λᵗ/2) (0, 1, −φ, 0, φ, −1, 0)`. The middle
 agent (index 3) listens to indices 1–5 at even `t` and to 2, 3, 4 at odd `t`; the proximity digraph
 is never eventually constant; agents 1, 2, 4, 5 alternate sides of their limits. The tables need the
-bounds on the product atom `w φ` (from `1 < φ < 2` and `φ² = φ + 1`); at odd `t` the bound is
+bounds on the product atom `u φ` (from `1 < φ < 2` and `φ² = φ + 1`); at odd `t` the bound is
 `λ ≤ λᵗ`, not only `−1 ≤ λᵗ`.
 -/
 

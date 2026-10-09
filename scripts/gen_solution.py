@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Desk tool: generate Solution.lean from Challenge.lean — every theorem restated verbatim and closed by
+"""Generates Solution.lean, comparator.json and Test/Axioms.lean from Challenge.lean — every theorem restated verbatim and closed by
 the `_internal` theorem of the same name applied to its explicit binders. Also emits the ordered list
 of theorem names (for comparator.json and Test/Axioms.lean)."""
 
@@ -19,8 +19,7 @@ public import HK
 # Solution
 
 Each statement of `Challenge.lean`, restated verbatim and closed by the internal theorem of the same
-name with the suffix `_internal` (`HK/SBC7.lean`, `SBI7.lean`, `SBC6.lean`, `SBI7b.lean`,
-`Generic.lean`, `Refute.lean`). This module does not import `Challenge.lean`; the definitions come from
+name with the suffix `_internal` (the modules of `HK/`; VERIFICATION.md names the module of each theorem). This module does not import `Challenge.lean`; the definitions come from
 `HK/Defs.lean`, which restates those of the Challenge character for character.
 -/
 

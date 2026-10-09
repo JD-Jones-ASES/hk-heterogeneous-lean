@@ -9,10 +9,10 @@ time. Conjecture 2.3: every trajectory freezes or becomes pseudo-stable (two non
 its limits, the other approaching them monotonically from one side). Theorem 6.4(iv): an eventually constant
 digraph gives eventual pseudo-stability. Hegarty, Ognissanti and Wedin (arXiv:2610.03229v1) refute all three with
 four explicit systems; by their §7 these "were found by Claude Opus 5.5, upon prompting by the authors", who
-verified them by hand.
+verified them by hand; the text of the paper is the authors' own.
 
 [Challenge.lean](Challenge.lean) restates the definitions (Mirtabatabaei–Bullo's, with `≤`; agents are indexed
-`0, …, n − 1`, the paper's agent `i` being index `i − 1`) and states sixty-one theorems, and
+`0, …, n − 1`, the paper's agent `i` being index `i − 1`) and states sixty-three theorems, and
 [Solution.lean](Solution.lean) proves them, kernel-only; the table in [VERIFICATION.md](VERIFICATION.md) names each:
 
 - the four systems' closed forms `x(t) = x_∞ + c λᵗ v` (`λ = −1/6` for SBC, `(1 − √5)/8` for SBI) and complete
@@ -30,7 +30,7 @@ verified them by hand.
 - along all four systems the final value at constant topology (`fvct`, their Definition 3.1) of `x(t)` is `x_∞`,
   and in the two constant-digraph systems each agent with nonzero offset has per-step convergence factor
   (Definition 6.1) identically `λ < 0`, which converges to no non-negative number;
-- their Lemmas 4.2 and 4.8, proved without assuming `r > 0`; the constant-digraph systems satisfy Lemma 4.8's
+- their Lemmas 4.2 and 4.8, proved without assuming `r > 0`; the two constant-digraph systems of the source satisfy Lemma 4.8's
   hypothesis (every equi-topology distance of the limit positive), the alternating ones violate it.
 
 In the accompanying note ([note/](note/README.md), with standard-library certificates), not in Lean: among
@@ -59,5 +59,6 @@ axiom audit, module resolution, the elaboration check of the fifty-four definiti
 [VERIFICATION.md](VERIFICATION.md) lists them and their limits, [PROOF.md](PROOF.md) gives the mathematics with
 the Lean name of every step, and [DISCLOSURE.md](DISCLOSURE.md) the assistance statement.
 
-License: [MIT](LICENSE); `scripts/core_notation_audit.lean` is Palomar's, under its MIT licence
+License: [MIT](LICENSE) for the Lean files and scripts; the note in [note/](note/README.md) is CC BY-SA 4.0;
+`scripts/core_notation_audit.lean` is Palomar's, under its MIT licence
 ([LICENSES/PalomarSubmission-MIT.txt](LICENSES/PalomarSubmission-MIT.txt)).

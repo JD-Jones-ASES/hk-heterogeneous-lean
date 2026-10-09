@@ -177,7 +177,7 @@ this is a Lean theorem, and nothing is claimed outside that class.
 
 What HOW prove about their four systems is proved here along their route (the closed form by induction on `t`, the
 neighbourhoods checked at each step); the tables are their arc lists and parity descriptions, and the equi-topology
-zeros are their §6 observations, completed to the full zero sets. HOW's spectator systems (§4, §5), which bear on
+zeros are their §6 observations, extended to the agents on the middle agent's bound (that the zero sets are exactly {2, 3, 4} and {1, 3, 5} is checked by `scripts/check_hk.py`, not stated in Lean). HOW's spectator systems (§4, §5), which bear on
 Theorem 6.4(iii)(b), are proved as they state them (Claims 1–3: the closed forms with two geometric terms, by the
 same induction on a box in the two atoms; the constant tables; the spectator strictly on one side of its limit for
 `t ≥ 1`, from `|λ|ᵗ < μᵗ` with `μ = 1/5` or `1/4`): `sbc9_closed_form`, `sbc9_neighbors`, `sbc9_spectator_lt`,

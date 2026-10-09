@@ -6,8 +6,7 @@ public import HK
 # Solution
 
 Each statement of `Challenge.lean`, restated verbatim and closed by the internal theorem of the same
-name with the suffix `_internal` (`HK/SBC7.lean`, `SBI7.lean`, `SBC6.lean`, `SBI7b.lean`,
-`Generic.lean`, `Refute.lean`). This module does not import `Challenge.lean`; the definitions come from
+name with the suffix `_internal` (the modules of `HK/`; VERIFICATION.md names the module of each theorem). This module does not import `Challenge.lean`; the definitions come from
 `HK/Defs.lean`, which restates those of the Challenge character for character.
 -/
 
@@ -120,6 +119,12 @@ theorem not_theorem64iv_sbi : ¬ Theorem64ivFor .sbi :=
 
 theorem not_theorem64iv : ¬ Theorem64iv :=
   not_theorem64iv_internal
+
+theorem not_theorem64iv_literal_sbc : ¬ Theorem64ivLiteralFor .sbc :=
+  not_theorem64iv_literal_sbc_internal
+
+theorem not_theorem64iv_literal_sbi : ¬ Theorem64ivLiteralFor .sbi :=
+  not_theorem64iv_literal_sbi_internal
 
 theorem not_theorem64iv_literal : ¬ Theorem64ivLiteral :=
   not_theorem64iv_literal_internal
