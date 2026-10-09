@@ -1,0 +1,42 @@
+== system (a) SBC n=7  lam = -1/6
+   even table: ((0,), (0, 1, 2), (1, 2, 3, 4), (3,), (2, 3, 4, 5), (4, 5, 6), (6,))
+   odd  table: ((0,), (0, 1, 2), (1, 2, 3, 4), (2, 3, 4), (2, 3, 4, 5), (4, 5, 6), (6,))
+   dim Fix = 2  dim E_lam = 1  dim W = 3
+   x_1(0) = 0 : RIGID (e_i not in W; only delta = 0 keeps the closed form)
+   x_2(0) = 38 : RIGID (e_i not in W; only delta = 0 keeps the closed form)
+   x_3(0) = 69 : RIGID (e_i not in W; only delta = 0 keeps the closed form)
+   x_4(0) = 84 : RIGID (e_i not in W; only delta = 0 keeps the closed form)
+   x_5(0) = 99 : RIGID (e_i not in W; only delta = 0 keeps the closed form)
+   x_6(0) = 130 : RIGID (e_i not in W; only delta = 0 keeps the closed form)
+   x_7(0) = 168 : RIGID (e_i not in W; only delta = 0 keeps the closed form)
+   r_1        (0, 107/3)                    outside: 107/3 -> table changes at t=1
+   r_2        [38, 46)                      outside: 379999/10000 -> table changes at t=0; 46 -> table changes at t=0
+   r_3        [221/6, 359/6)                outside: 1104997/30000 -> table changes at t=1; 359/6 -> table changes at t=1
+   r_4        {12}                          outside: 119999/10000 -> table changes at t=7; 120001/10000 -> table changes at t=6
+   r_5        [221/6, 359/6)                outside: 1104997/30000 -> table changes at t=1; 359/6 -> table changes at t=1
+   r_6        [38, 46)                      outside: 379999/10000 -> table changes at t=0; 46 -> table changes at t=0
+   r_7        (0, 107/3)                    outside: 107/3 -> table changes at t=1
+   beta       {1}                           outside: 9999/10000 -> table changes at t=6; 10001/10000 -> table changes at t=5
+   gamma      (0, 3)                        outside: 0 -> table changes at t=0; 3 -> table changes at t=0
+   alpha      (-inf, +inf) (translation; replayed at -1000 and 37/3)
+== system (c) SBC n=6  lam = -1/6
+   even table: ((0,), (0, 1, 2), (0, 1, 2, 3), (2, 3, 4, 5), (3, 4, 5), (5,))
+   odd  table: ((0,), (0, 1, 2), (0, 1, 2, 3), (2, 3, 4, 5), (3, 4, 5), (5,))
+   dim Fix = 2  dim E_lam = 1  dim W = 3
+   x_1(0) = 0 : RIGID (e_i not in W; only delta = 0 keeps the closed form)
+   x_2(0) = 22 : RIGID (e_i not in W; only delta = 0 keeps the closed form)
+   x_3(0) = 37 : RIGID (e_i not in W; only delta = 0 keeps the closed form)
+   x_4(0) = 103 : RIGID (e_i not in W; only delta = 0 keeps the closed form)
+   x_5(0) = 118 : RIGID (e_i not in W; only delta = 0 keeps the closed form)
+   x_6(0) = 140 : RIGID (e_i not in W; only delta = 0 keeps the closed form)
+   r_1        (0, 59/3)                     outside: 59/3 -> table changes at t=1
+   r_2        [22, 479/6)                   outside: 219999/10000 -> table changes at t=0; 479/6 -> table changes at t=1
+   r_3        [66, 479/6)                   outside: 659999/10000 -> table changes at t=0; 479/6 -> table changes at t=1
+   r_4        [66, 479/6)                   outside: 659999/10000 -> table changes at t=0; 479/6 -> table changes at t=1
+   r_5        [22, 479/6)                   outside: 219999/10000 -> table changes at t=0; 479/6 -> table changes at t=1
+   r_6        (0, 59/3)                     outside: 59/3 -> table changes at t=1
+   beta       (421/480, 16/15]              outside: 421/480 -> table changes at t=1; 32003/30000 -> table changes at t=0
+   gamma      (-5, 5/3]                     outside: -5 -> table changes at t=0; 50003/30000 -> table changes at t=0
+   alpha      (-inf, +inf) (translation; replayed at -1000 and 37/3)
+forged control r_4 = 13 rejected: table changes at t=2
+VERDICT: PASS
