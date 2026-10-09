@@ -133,8 +133,58 @@ theorem sbc7_r_pos : ∀ i, 0 < sbc7_r i := by
   intro i
   fin_cases i <;> simp [sbc7_r]
 
+/-- Either parity matrix fixes the limit. -/
+theorem ref_sbc7_adj_lim (t : ℕ) :
+    (adjMatrix .sbc sbc7_r (traj .sbc sbc7_r sbc7_x0 t)).mulVec sbc7_lim = sbc7_lim := by
+  funext i
+  rw [adj_mulVec, sbc7_neighbors_internal]
+  rcases Nat.even_or_odd t with ht | ht
+  · rw [ite_eq_left ht]
+    fin_cases i <;> simp [Finset.sum_insert, sbc7_lim] <;> norm_num
+  · rw [ite_eq_right (Nat.not_even_iff_odd.mpr ht)]
+    fin_cases i <;> simp [Finset.sum_insert, sbc7_lim] <;> norm_num
+
+/-- Either parity matrix scales the offset direction by `−1/6`. -/
+theorem ref_sbc7_adj_v (t : ℕ) :
+    (adjMatrix .sbc sbc7_r (traj .sbc sbc7_r sbc7_x0 t)).mulVec sbc7_v = (-1 / 6 : ℝ) • sbc7_v := by
+  funext i
+  rw [adj_mulVec, sbc7_neighbors_internal]
+  rcases Nat.even_or_odd t with ht | ht
+  · rw [ite_eq_left ht]
+    fin_cases i <;> simp [Finset.sum_insert, sbc7_v] <;> norm_num
+  · rw [ite_eq_right (Nat.not_even_iff_odd.mpr ht)]
+    fin_cases i <;> simp [Finset.sum_insert, sbc7_v] <;> norm_num
+
+theorem ref_sbc7_adj_pow (t k : ℕ) (c : ℝ) :
+    (adjMatrix .sbc sbc7_r (traj .sbc sbc7_r sbc7_x0 t) ^ k).mulVec (sbc7_lim + c • sbc7_v) =
+      sbc7_lim + ((-1 / 6 : ℝ) ^ k * c) • sbc7_v := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    rw [pow_succ', ← Matrix.mulVec_mulVec, ih, Matrix.mulVec_add, Matrix.mulVec_smul,
+      ref_sbc7_adj_lim, ref_sbc7_adj_v, smul_smul, pow_succ]
+    congr 2
+    ring
+
 /-- Each parity matrix fixes the limit and scales the offset by `−1/6`, so the final value at constant
 topology of every `x(t)` is the limit (the route of `sbc6_fvct_internal`, one table per parity). -/
-theorem sbc7_fvct (t : ℕ) : fvct .sbc sbc7_r (traj .sbc sbc7_r sbc7_x0 t) = sbc7_lim := sorry
+theorem sbc7_fvct (t : ℕ) : fvct .sbc sbc7_r (traj .sbc sbc7_r sbc7_x0 t) = sbc7_lim := by
+  have hx : traj .sbc sbc7_r sbc7_x0 t = sbc7_lim + ((-1 / 6 : ℝ) ^ t) • sbc7_v := by
+    rw [sbc7_closed_form_internal]; funext i; simp
+  have hq : |(-1 / 6 : ℝ)| < 1 := by rw [abs_of_neg (by norm_num)]; norm_num
+  have h1 : Tendsto (fun k : ℕ => sbc7_lim + ((-1 / 6 : ℝ) ^ k * (-1 / 6 : ℝ) ^ t) • sbc7_v)
+      atTop (𝓝 sbc7_lim) := by
+    have h0 := ((tendsto_pow_atTop_nhds_zero_of_abs_lt_one hq).mul_const
+      ((-1 / 6 : ℝ) ^ t)).smul_const sbc7_v
+    have h2 := h0.const_add sbc7_lim
+    rwa [zero_mul, zero_smul, add_zero] at h2
+  have hA := ref_sbc7_adj_pow t
+  unfold fvct
+  set A := adjMatrix .sbc sbc7_r (traj .sbc sbc7_r sbc7_x0 t) with hAdef
+  have hf : (fun k : ℕ => (A ^ k).mulVec (traj .sbc sbc7_r sbc7_x0 t)) =
+      fun k => sbc7_lim + ((-1 / 6 : ℝ) ^ k * (-1 / 6 : ℝ) ^ t) • sbc7_v := by
+    funext k; rw [hx, hA]
+  rw [hf]
+  exact h1.limUnder_eq
 
 end HK
