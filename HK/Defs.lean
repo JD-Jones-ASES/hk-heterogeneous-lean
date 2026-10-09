@@ -216,4 +216,18 @@ noncomputable def sbi6_lim : Fin 6 → ℝ := ![0, 25, 31, 44, 55, 90]
 /-- Six SBI agents: the offset direction, `x(t) = x_∞ + ((13 − √249)/40)ᵗ v`. -/
 noncomputable def sbi6_v : Fin 6 → ℝ := ![0, 10 / 16, (-5 - Real.sqrt 249) / 16, 8 / 16, 10 / 16, 0]
 
+/-! ### The two spectator systems (their §4 and §5, against Theorem 6.4(iii)(b)) -/
+
+/-- Their §4 with a spectator at `210` (`r = 100`) and two beacons at `280`, `300` (`r = 10`): the
+initial opinions. -/
+noncomputable def sbc9_x0 : Fin 9 → ℝ := ![0, 22, 37, 103, 118, 140, 210, 280, 300]
+/-- Their §4 with the spectator and the beacons: the confidence bounds. -/
+noncomputable def sbc9_r : Fin 9 → ℝ := ![10, 70, 70, 70, 70, 10, 100, 10, 10]
+/-- Their §5 with a spectator at `60` (`r = 1`), which is index `1` when the opinions are listed
+increasingly: the initial opinions. -/
+noncomputable def sbi8_x0 : Fin 8 → ℝ :=
+  ![0, 60, 71, 100 - Real.goldenRatio, 110, 120 + Real.goldenRatio, 149, 220]
+/-- Their §5 with the spectator: the influence bounds. -/
+noncomputable def sbi8_r : Fin 8 → ℝ := ![85, 1, 35, 35, 75, 35, 35, 85]
+
 end HK

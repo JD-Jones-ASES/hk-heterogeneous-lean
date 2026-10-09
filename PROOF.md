@@ -178,6 +178,12 @@ this is a Lean theorem, and nothing is claimed outside that class.
 What HOW prove about their four systems is proved here along their route (the closed form by induction on `t`, the
 neighbourhoods checked at each step); the tables are their arc lists and parity descriptions, and the equi-topology
 zeros are their §6 observations, completed to the full zero sets. HOW's spectator systems (§4, §5), which bear on
-Theorem 6.4(iii)(b), and their §6 discussion of genericity are not formalized. MB's Lemmas 4.2 and 4.8 are proved
+Theorem 6.4(iii)(b), are proved as they state them (Claims 1–3: the closed forms with two geometric terms, by the
+same induction on a box in the two atoms; the constant tables; the spectator strictly on one side of its limit for
+`t ≥ 1`, from `|λ|ᵗ < μᵗ` with `μ = 1/5` or `1/4`): `sbc9_closed_form`, `sbc9_neighbors`, `sbc9_spectator_lt`,
+`sbi8_closed_form`, `sbi8_neighbors`, `sbi8_spectator_gt` (HK/SpectatorSBC.lean, HK/SpectatorSBI.lean). The
+statement of 6.4(iii)(b) itself (leader components, spectral radii) and their §6 discussion of genericity are not
+formalized. The two smaller systems also carry `fvct` and the per-step factor (`sbc5_fvct`, `sbc5_perStepFactor`,
+`sbi6_fvct`, `sbi6_perStepFactor`), by the route of §5. MB's Lemmas 4.2 and 4.8 are proved
 as MB state them but without their standing assumption `r > 0`, with Lemma 4.8's single time `T` split into two
 existentials (equivalent). The two smaller systems and the note's results are this development's.

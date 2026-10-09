@@ -40,7 +40,14 @@ systems (the agents are indexed `0, …, n − 1` here, agent `i` of the paper b
 * two smaller constant-digraph systems found in this development: five SBC agents with rate
   `(1 − √2)/3` and six SBI agents with rate `(13 − √249)/40`, each converging with a constant digraph
   and oscillating agents, so Conjecture 2.3 and Theorem 6.4(iv) fail already with five SBC agents and
-  six SBI agents (and Conjecture 2.2 with seven agents in each model, the source's counts);
+  six SBI agents (and Conjecture 2.2 with seven agents in each model, the source's counts); along
+  them too the final value at constant topology is the limit and the per-step factor is identically
+  the (negative) rate;
+* their two spectator systems (§4: nine SBC agents, a spectator and two beacons; §5: eight SBI agents
+  and a spectator): the closed forms with two geometric terms, the constant neighbourhood tables, and
+  the spectator strictly on one side of its limit for every `t ≥ 1` while its leader component's
+  agents alternate sides — the configurations their §4–§5 use against Theorem 6.4(iii)(b), whose
+  statement about leader components is not formalized here;
 * with `fvct` (their Definition 3.1, the limit of `A(y)ᵗ y`) and the per-step convergence factor
   (their Definition 6.1): along all four systems the final value at constant topology of every
   `x(t)` is the limit `x_∞`; the agents with nonzero offset in the two constant-digraph systems (all
@@ -270,6 +277,20 @@ noncomputable def sbi6_lim : Fin 6 → ℝ := ![0, 25, 31, 44, 55, 90]
 /-- Six SBI agents: the offset direction, `x(t) = x_∞ + ((13 − √249)/40)ᵗ v`. -/
 noncomputable def sbi6_v : Fin 6 → ℝ := ![0, 10 / 16, (-5 - Real.sqrt 249) / 16, 8 / 16, 10 / 16, 0]
 
+/-! ### The two spectator systems (their §4 and §5, against Theorem 6.4(iii)(b)) -/
+
+/-- Their §4 with a spectator at `210` (`r = 100`) and two beacons at `280`, `300` (`r = 10`): the
+initial opinions. -/
+noncomputable def sbc9_x0 : Fin 9 → ℝ := ![0, 22, 37, 103, 118, 140, 210, 280, 300]
+/-- Their §4 with the spectator and the beacons: the confidence bounds. -/
+noncomputable def sbc9_r : Fin 9 → ℝ := ![10, 70, 70, 70, 70, 10, 100, 10, 10]
+/-- Their §5 with a spectator at `60` (`r = 1`), which is index `1` when the opinions are listed
+increasingly: the initial opinions. -/
+noncomputable def sbi8_x0 : Fin 8 → ℝ :=
+  ![0, 60, 71, 100 - Real.goldenRatio, 110, 120 + Real.goldenRatio, 149, 220]
+/-- Their §5 with the spectator: the influence bounds. -/
+noncomputable def sbi8_r : Fin 8 → ℝ := ![85, 1, 35, 35, 75, 35, 35, 85]
+
 /-! ### The closed forms and the neighbourhood tables -/
 
 /-- §2: `x(t) = (0, 36, 72, 84, 96, 132, 168) + (−1/6)ᵗ (0, 2, −3, 0, 3, −2, 0)`. -/
@@ -445,6 +466,61 @@ theorem not_theorem64iv_sbc_five : ¬ Theorem64ivForAgents .sbc 5 := sorry
 /-- Theorem 6.4(iv) fails for the SBI model with six agents, even in the reading admitting fixed
 states. -/
 theorem not_theorem64iv_sbi_six : ¬ Theorem64ivForAgents .sbi 6 := sorry
+
+/-- Five SBC agents: the final value at constant topology of every `x(t)` is the limit. -/
+theorem sbc5_fvct (t : ℕ) : fvct .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) = sbc5_lim := sorry
+
+/-- Five SBC agents: the per-step convergence factor of each of the agents `1, 2, 3` is `(1 − √2)/3`
+at every `t`. -/
+theorem sbc5_perStepFactor (t : ℕ) (i : Fin 5) (hi : i ∈ ({1, 2, 3} : Finset (Fin 5))) :
+    perStepFactor .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0) i t = sbc5Rate := sorry
+
+/-- Six SBI agents: the final value at constant topology of every `x(t)` is the limit. -/
+theorem sbi6_fvct (t : ℕ) : fvct .sbi sbi6_r (traj .sbi sbi6_r sbi6_x0 t) = sbi6_lim := sorry
+
+/-- Six SBI agents: the per-step convergence factor of each of the agents `1, …, 4` is
+`(13 − √249)/40` at every `t`. -/
+theorem sbi6_perStepFactor (t : ℕ) (i : Fin 6) (hi : i ∈ ({1, 2, 3, 4} : Finset (Fin 6))) :
+    perStepFactor .sbi sbi6_r (traj .sbi sbi6_r sbi6_x0) i t = sbi6Rate := sorry
+
+/-! ### The spectator systems: constant digraphs, the spectator strictly on one side of its limit -/
+
+/-- §4 with the spectator and the beacons: for every `t`, agents `0`–`5` evolve as in §4, the beacons
+are fixed, and the spectator (index `6`) is at `210 + (12/11)((−1/6)ᵗ − (1/5)ᵗ)`. -/
+theorem sbc9_closed_form (t : ℕ) :
+    traj .sbc sbc9_r sbc9_x0 t =
+      ![0, 20 + 2 * (-1 / 6 : ℝ) ^ t, 40 - 3 * (-1 / 6 : ℝ) ^ t, 100 + 3 * (-1 / 6 : ℝ) ^ t,
+        120 - 2 * (-1 / 6 : ℝ) ^ t, 140, 210 + 12 / 11 * ((-1 / 6 : ℝ) ^ t - (1 / 5 : ℝ) ^ t),
+        280, 300] := sorry
+
+/-- §4 with the spectator and the beacons: the neighbourhood table, the same at every `t` (the
+spectator listens to `4, 5`, itself and the beacons; nobody listens to it). -/
+theorem sbc9_neighbors (t : ℕ) :
+    neighbors .sbc sbc9_r (traj .sbc sbc9_r sbc9_x0 t) =
+      ![{0}, {0, 1, 2}, {0, 1, 2, 3}, {2, 3, 4, 5}, {3, 4, 5}, {5}, {4, 5, 6, 7, 8}, {7}, {8}] :=
+  sorry
+
+/-- §4 with the spectator and the beacons: the spectator is strictly left of `210` for every
+`t ≥ 1`, while its leader component's agents alternate sides of their limits. -/
+theorem sbc9_spectator_lt (t : ℕ) (ht : 1 ≤ t) : traj .sbc sbc9_r sbc9_x0 t 6 < 210 := sorry
+
+/-- §5 with the spectator: for every `t`, the other agents evolve as in §5 and the spectator (index
+`1`) is at `60 + φ⁻¹((1/4)ᵗ − λᵗ)`. -/
+theorem sbi8_closed_form (t : ℕ) :
+    traj .sbi sbi8_r sbi8_x0 t =
+      ![0, 60 + Real.goldenRatio⁻¹ * ((1 / 4 : ℝ) ^ t - sbiRate ^ t), 70 + sbiRate ^ t,
+        100 - Real.goldenRatio * sbiRate ^ t, 110, 120 + Real.goldenRatio * sbiRate ^ t,
+        150 - sbiRate ^ t, 220] := sorry
+
+/-- §5 with the spectator: the neighbourhood table, the same at every `t` (the spectator listens to
+`0, 2, 4` and itself; nobody listens to it). -/
+theorem sbi8_neighbors (t : ℕ) :
+    neighbors .sbi sbi8_r (traj .sbi sbi8_r sbi8_x0 t) =
+      ![{0}, {0, 1, 2, 4}, {0, 2, 3, 4}, {2, 3, 4, 5}, {3, 4, 5}, {3, 4, 5, 6}, {4, 5, 6, 7}, {7}] :=
+  sorry
+
+/-- §5 with the spectator: the spectator is strictly right of `60` for every `t ≥ 1`. -/
+theorem sbi8_spectator_gt (t : ℕ) (ht : 1 ≤ t) : 60 < traj .sbi sbi8_r sbi8_x0 t 1 := sorry
 
 /-! ### The final value at constant topology and the per-step convergence factor -/
 

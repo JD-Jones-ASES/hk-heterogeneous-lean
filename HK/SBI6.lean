@@ -184,7 +184,7 @@ theorem si_adj_pow (t k : ℕ) (c : ℝ) :
     ring
 
 /-- The final value at constant topology (Definition 3.1) is the limit at every `t`. -/
-theorem si_fvct (t : ℕ) : fvct .sbi sbi6_r (traj .sbi sbi6_r sbi6_x0 t) = sbi6_lim := by
+theorem sbi6_fvct_internal (t : ℕ) : fvct .sbi sbi6_r (traj .sbi sbi6_r sbi6_x0 t) = sbi6_lim := by
   have hx : traj .sbi sbi6_r sbi6_x0 t = sbi6_lim + (sbi6Rate ^ t) • sbi6_v := by
     rw [sbi6_closed_form_internal]; funext i; simp
   have h1 : Tendsto (fun k : ℕ => sbi6_lim + (sbi6Rate ^ k * sbi6Rate ^ t) • sbi6_v)
@@ -203,13 +203,15 @@ theorem si_fvct (t : ℕ) : fvct .sbi sbi6_r (traj .sbi sbi6_r sbi6_x0 t) = sbi6
   exact h1.limUnder_eq
 
 /-- The per-step convergence factor (Definition 6.1) of agents 1–4 is the rate at every `t`. -/
-theorem si_perStepFactor (t : ℕ) (i : Fin 6) (hi : i ∈ ({1, 2, 3, 4} : Finset (Fin 6))) :
+theorem sbi6_perStepFactor_internal (t : ℕ) (i : Fin 6) (hi : i ∈ ({1, 2, 3, 4} : Finset (Fin 6))) :
     perStepFactor .sbi sbi6_r (traj .sbi sbi6_r sbi6_x0) i t = sbi6Rate := by
   have hv : sbi6_v i ≠ 0 := by
-    have : (0 : ℝ) ≤ Real.sqrt 249 := Real.sqrt_nonneg _
-    fin_cases i <;> simp_all [sbi6_v] <;> linarith
+    have hs : (0 : ℝ) ≤ Real.sqrt 249 := Real.sqrt_nonneg _
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hi
+    rcases hi with rfl | rfl | rfl | rfl <;> simp [sbi6_v]
+    all_goals (intro h; linarith)
   have hp : sbi6Rate ^ t ≠ 0 := pow_ne_zero _ sbi6Rate_neg.ne
-  rw [perStepFactor, si_fvct, sbi6_closed_form_internal, sbi6_closed_form_internal]
+  rw [perStepFactor, sbi6_fvct_internal, sbi6_closed_form_internal, sbi6_closed_form_internal]
   simp only [add_sub_cancel_left, pow_succ]
   field_simp
 

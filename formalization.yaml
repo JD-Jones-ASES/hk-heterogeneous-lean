@@ -66,8 +66,7 @@ sources:
       converges to no non-negative number; the strongly connected components, leader components and
       spectral radii of Definition 6.3 are not formalized. Section 6's observation that the limits of
       Sections 2 and 3 have equi-topology distance zero at the alternating agents is proved
-      (equiTopologyDistance_eq_zero). Not formalized: the spectator systems of Sections 4 and 5 (nine
-      agents with two beacons; eight agents), which bear on Theorem 6.4(iii)(b), and Section 6's
+      (equiTopologyDistance_eq_zero). The spectator systems of Sections 4 and 5 (Claims 1-3: closed forms, tables, the spectator strictly on one side of its limit) are formalized too; the statement of Theorem 6.4(iii)(b) about leader components is not.4(iii)(b), and Section 6's
       genericity discussion. By Section 7 the examples were found by Claude Opus 5.5 at the authors'
       prompting and checked by hand by the authors; the text of the paper is the authors'.
   - title: "Opinion Dynamics in Heterogeneous Networks: Convergence Conjectures and Theorems"
@@ -184,9 +183,8 @@ status:
     per-step factors above are); Conjecture 2.1 (every trajectory converges), on which nothing here
     bears; minimality of any system (computations outside Lean that bear on the least number of agents
     are confined to trajectories of the form x_inf + lambda^t v with a fixed neighbourhood pattern for
-    each sign of lambda^t, and are not part of the formalization); the spectator systems of the source's
-    Sections 4 and 5. The intentional placeholders of Challenge.lean are excluded from proof counts;
-    Solution.lean does not import Challenge.lean.
+    each sign of lambda^t, and are not part of the formalization). The intentional placeholders of
+    Challenge.lean are excluded from proof counts; Solution.lean does not import Challenge.lean.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: ["propext", "Classical.choice", "Quot.sound"]
@@ -382,6 +380,56 @@ status:
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "comparator.json"
     - declaration: "HK.not_theorem64iv_sbi_six"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc5_fvct"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc5_perStepFactor"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi6_fvct"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi6_perStepFactor"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc9_closed_form"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc9_neighbors"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc9_spectator_lt"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi8_closed_form"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi8_neighbors"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi8_spectator_gt"
       file: "Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
@@ -699,6 +747,56 @@ alignment:
       module: "Solution"
       status: "proved"
       note: "Theorem 6.4(iv) fails for the SBI model with six agents, in the reading that admits fixed states."
+    - source: "this development"
+      lean: "HK.sbc5_fvct"
+      module: "Solution"
+      status: "proved"
+      note: "Five SBC agents: the final value at constant topology of every x(t) is the limit."
+    - source: "Mirtabatabaei–Bullo 2012, Definition 6.1; this development"
+      lean: "HK.sbc5_perStepFactor"
+      module: "Solution"
+      status: "proved"
+      note: "Five SBC agents: the per-step convergence factor of indices 1, 2, 3 is (1 - sqrt 2)/3 at every t."
+    - source: "this development"
+      lean: "HK.sbi6_fvct"
+      module: "Solution"
+      status: "proved"
+      note: "Six SBI agents: the final value at constant topology of every x(t) is the limit."
+    - source: "Mirtabatabaei–Bullo 2012, Definition 6.1; this development"
+      lean: "HK.sbi6_perStepFactor"
+      module: "Solution"
+      status: "proved"
+      note: "Six SBI agents: the per-step convergence factor of indices 1 to 4 is (13 - sqrt 249)/40 at every t."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §4 (Claims 1-3)"
+      lean: "HK.sbc9_closed_form"
+      module: "Solution"
+      status: "proved"
+      note: "Nine SBC agents with a spectator and two beacons: the closed form with the two geometric terms (-1/6)^t and (1/5)^t for every t."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §4 (Claim 1)"
+      lean: "HK.sbc9_neighbors"
+      module: "Solution"
+      status: "proved"
+      note: "Nine SBC agents: the neighbourhood table, the same at every t; nobody listens to the spectator."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §4 (Claim 3)"
+      lean: "HK.sbc9_spectator_lt"
+      module: "Solution"
+      status: "proved"
+      note: "The spectator is strictly left of 210 for every t >= 1."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §5 (Claims 1-3)"
+      lean: "HK.sbi8_closed_form"
+      module: "Solution"
+      status: "proved"
+      note: "Eight SBI agents with a spectator: the closed form with the two geometric terms lambda^t and (1/4)^t for every t."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §5 (Claim 1)"
+      lean: "HK.sbi8_neighbors"
+      module: "Solution"
+      status: "proved"
+      note: "Eight SBI agents: the neighbourhood table, the same at every t; nobody listens to the spectator."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §5 (Claim 3)"
+      lean: "HK.sbi8_spectator_gt"
+      module: "Solution"
+      status: "proved"
+      note: "The spectator is strictly right of 60 for every t >= 1."
     - source: "Mirtabatabaei–Bullo 2012, Definition 3.1; Hegarty–Ognissanti–Wedin 2026, §§2-3"
       lean: "HK.alternating_fvct"
       module: "Solution"

@@ -47,11 +47,14 @@ run_cmd do
       `HK.small_not_fixedFrom, `HK.small_not_pseudoStableAfter, `HK.not_conjecture22_sbc_seven,
       `HK.not_conjecture22_sbi_seven, `HK.not_conjecture23_sbc_five,
       `HK.not_conjecture23_sbi_six, `HK.not_theorem64iv_sbc_five, `HK.not_theorem64iv_sbi_six,
-      `HK.alternating_fvct, `HK.sbc6_fvct, `HK.sbc6_perStepFactor,
-      `HK.sbc6_perStepFactor_not_tendsto, `HK.sbi7b_fvct, `HK.sbi7b_perStepFactor,
-      `HK.sbi7b_perStepFactor_not_tendsto, `HK.proximityDigraph_eq_of_equiTopologyNbhd,
-      `HK.eventually_constant_of_tendsto, `HK.fvct_eq_and_equilibrium_of_tendsto,
-      `HK.equiTopologyDistance_pos, `HK.equiTopologyDistance_eq_zero] do
+      `HK.sbc5_fvct, `HK.sbc5_perStepFactor, `HK.sbi6_fvct, `HK.sbi6_perStepFactor,
+      `HK.sbc9_closed_form, `HK.sbc9_neighbors, `HK.sbc9_spectator_lt, `HK.sbi8_closed_form,
+      `HK.sbi8_neighbors, `HK.sbi8_spectator_gt, `HK.alternating_fvct, `HK.sbc6_fvct,
+      `HK.sbc6_perStepFactor, `HK.sbc6_perStepFactor_not_tendsto, `HK.sbi7b_fvct,
+      `HK.sbi7b_perStepFactor, `HK.sbi7b_perStepFactor_not_tendsto,
+      `HK.proximityDigraph_eq_of_equiTopologyNbhd, `HK.eventually_constant_of_tendsto,
+      `HK.fvct_eq_and_equilibrium_of_tendsto, `HK.equiTopologyDistance_pos,
+      `HK.equiTopologyDistance_eq_zero] do
     unless env.contains n do
       logError m!"Compared theorem is missing from the environment: {n}"
   logInfo m!"Audited {checked} project constants; unexpected axiom dependencies: {rejected}."

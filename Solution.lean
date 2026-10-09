@@ -181,6 +181,50 @@ theorem not_theorem64iv_sbc_five : ¬ Theorem64ivForAgents .sbc 5 :=
 theorem not_theorem64iv_sbi_six : ¬ Theorem64ivForAgents .sbi 6 :=
   not_theorem64iv_sbi_six_internal
 
+theorem sbc5_fvct (t : ℕ) : fvct .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) = sbc5_lim :=
+  sbc5_fvct_internal t
+
+theorem sbc5_perStepFactor (t : ℕ) (i : Fin 5) (hi : i ∈ ({1, 2, 3} : Finset (Fin 5))) :
+    perStepFactor .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0) i t = sbc5Rate :=
+  sbc5_perStepFactor_internal t i hi
+
+theorem sbi6_fvct (t : ℕ) : fvct .sbi sbi6_r (traj .sbi sbi6_r sbi6_x0 t) = sbi6_lim :=
+  sbi6_fvct_internal t
+
+theorem sbi6_perStepFactor (t : ℕ) (i : Fin 6) (hi : i ∈ ({1, 2, 3, 4} : Finset (Fin 6))) :
+    perStepFactor .sbi sbi6_r (traj .sbi sbi6_r sbi6_x0) i t = sbi6Rate :=
+  sbi6_perStepFactor_internal t i hi
+
+theorem sbc9_closed_form (t : ℕ) :
+    traj .sbc sbc9_r sbc9_x0 t =
+      ![0, 20 + 2 * (-1 / 6 : ℝ) ^ t, 40 - 3 * (-1 / 6 : ℝ) ^ t, 100 + 3 * (-1 / 6 : ℝ) ^ t,
+        120 - 2 * (-1 / 6 : ℝ) ^ t, 140, 210 + 12 / 11 * ((-1 / 6 : ℝ) ^ t - (1 / 5 : ℝ) ^ t),
+        280, 300] :=
+  sbc9_closed_form_internal t
+
+theorem sbc9_neighbors (t : ℕ) :
+    neighbors .sbc sbc9_r (traj .sbc sbc9_r sbc9_x0 t) =
+      ![{0}, {0, 1, 2}, {0, 1, 2, 3}, {2, 3, 4, 5}, {3, 4, 5}, {5}, {4, 5, 6, 7, 8}, {7}, {8}] :=
+  sbc9_neighbors_internal t
+
+theorem sbc9_spectator_lt (t : ℕ) (ht : 1 ≤ t) : traj .sbc sbc9_r sbc9_x0 t 6 < 210 :=
+  sbc9_spectator_lt_internal t ht
+
+theorem sbi8_closed_form (t : ℕ) :
+    traj .sbi sbi8_r sbi8_x0 t =
+      ![0, 60 + Real.goldenRatio⁻¹ * ((1 / 4 : ℝ) ^ t - sbiRate ^ t), 70 + sbiRate ^ t,
+        100 - Real.goldenRatio * sbiRate ^ t, 110, 120 + Real.goldenRatio * sbiRate ^ t,
+        150 - sbiRate ^ t, 220] :=
+  sbi8_closed_form_internal t
+
+theorem sbi8_neighbors (t : ℕ) :
+    neighbors .sbi sbi8_r (traj .sbi sbi8_r sbi8_x0 t) =
+      ![{0}, {0, 1, 2, 4}, {0, 2, 3, 4}, {2, 3, 4, 5}, {3, 4, 5}, {3, 4, 5, 6}, {4, 5, 6, 7}, {7}] :=
+  sbi8_neighbors_internal t
+
+theorem sbi8_spectator_gt (t : ℕ) (ht : 1 ≤ t) : 60 < traj .sbi sbi8_r sbi8_x0 t 1 :=
+  sbi8_spectator_gt_internal t ht
+
 theorem alternating_fvct (t : ℕ) :
     fvct .sbc sbc7_r (traj .sbc sbc7_r sbc7_x0 t) = sbc7_lim ∧
     fvct .sbi sbi7_r (traj .sbi sbi7_r sbi7_x0 t) = sbi7_lim :=

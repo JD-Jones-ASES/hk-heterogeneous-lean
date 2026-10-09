@@ -13,7 +13,7 @@ standard-library `verify.py` (exact, no asserts, forged controls that must fail,
 ## A. The six source systems, replayed exactly (0005, PROVEN-BY-CERTIFICATE)
 
 (a) SBC-7 (section 2), (b) SBI-7 (section 3), (c) SBC-6 (section 4), (d) SBI-7 (section 5) are
-pinned in Lean. The two spectator systems are not:
+pinned in Lean, and so are the two spectator systems (their closed forms, tables and the spectator's side):
 - (e) SBC-9: x(0) = (0,22,37,103,118,140,210,280,300), r = (10,70,70,70,70,10,100,10,10); agents
   0-5 follow (c), x_6 = 210 + (12/11)((-1/6)^t - 5^-t), x_7 = 280, x_8 = 300.
 - (f) SBI-8: x(0) = (0,60,71,100-phi,110,120+phi,149,220), r = (85,1,35,35,75,35,35,85); the

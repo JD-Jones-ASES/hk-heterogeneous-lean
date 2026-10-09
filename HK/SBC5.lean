@@ -182,7 +182,7 @@ theorem sbc_adj_pow (t k : ℕ) (c : ℝ) :
     ring
 
 /-- The final value at constant topology along the trajectory is the limit at every `t`. -/
-theorem sbc_fvct (t : ℕ) : fvct .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) = sbc5_lim := by
+theorem sbc5_fvct_internal (t : ℕ) : fvct .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) = sbc5_lim := by
   have hx : traj .sbc sbc5_r sbc5_x0 t = sbc5_lim + (sbc5Rate ^ t) • sbc5_v := by
     rw [sbc5_closed_form_internal]; funext i; simp
   have h1 : Tendsto (fun k : ℕ => sbc5_lim + (sbc5Rate ^ k * sbc5Rate ^ t) • sbc5_v)
@@ -201,12 +201,12 @@ theorem sbc_fvct (t : ℕ) : fvct .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) = sbc
   exact h1.limUnder_eq
 
 /-- The per-step convergence factor of agents 1, 2, 3 is `λ` at every `t`. -/
-theorem sbc_perStepFactor (t : ℕ) (i : Fin 5) (hi : i ∈ ({1, 2, 3} : Finset (Fin 5))) :
+theorem sbc5_perStepFactor_internal (t : ℕ) (i : Fin 5) (hi : i ∈ ({1, 2, 3} : Finset (Fin 5))) :
     perStepFactor .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0) i t = sbc5Rate := by
   have hv : sbc5_v i ≠ 0 := by
     fin_cases i <;> simp_all [sbc5_v]
   have hp : sbc5Rate ^ t ≠ 0 := pow_ne_zero _ sbc5Rate_neg.ne
-  rw [perStepFactor, sbc_fvct, sbc5_closed_form_internal, sbc5_closed_form_internal]
+  rw [perStepFactor, sbc5_fvct_internal, sbc5_closed_form_internal, sbc5_closed_form_internal]
   simp only [add_sub_cancel_left, pow_succ]
   field_simp
 

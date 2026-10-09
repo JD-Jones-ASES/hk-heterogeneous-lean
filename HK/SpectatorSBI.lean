@@ -3,7 +3,7 @@ module
 public import HK.Basic
 
 /-!
-# The 8-agent SBI spectator system (Hegarty–Ognissanti–Wedin §5), a stretch
+# The 8-agent SBI spectator system (Hegarty–Ognissanti–Wedin §5)
 
 The seven agents of §5 with a spectator at `60` (`r = 1`), which becomes index 1 when the opinions
 are listed increasingly; for all `t` the other agents evolve as in §5 and
@@ -19,11 +19,6 @@ namespace HK
 
 open Filter Topology
 
-/-- §5 with the spectator: the initial opinions, listed increasingly. -/
-noncomputable def sbi8_x0 : Fin 8 → ℝ :=
-  ![0, 60, 71, 100 - Real.goldenRatio, 110, 120 + Real.goldenRatio, 149, 220]
-/-- §5 with the spectator: the influence bounds. -/
-noncomputable def sbi8_r : Fin 8 → ℝ := ![85, 1, 35, 35, 75, 35, 35, 85]
 
 /-- The state on the box: `u = λᵗ`, `w = (1/4)ᵗ`. -/
 noncomputable def spe_x (u w : ℝ) : Fin 8 → ℝ :=
@@ -86,14 +81,14 @@ theorem spe_closed (t : ℕ) :
     have hw1 : (1 / 4 : ℝ) ^ t ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
     rw [h, ih, spe_step _ _ h0 h1 hw0 hw1, pow_succ, pow_succ]
 
-theorem sbi8_closed_form (t : ℕ) :
+theorem sbi8_closed_form_internal (t : ℕ) :
     traj .sbi sbi8_r sbi8_x0 t =
       ![0, 60 + Real.goldenRatio⁻¹ * ((1 / 4 : ℝ) ^ t - sbiRate ^ t), 70 + sbiRate ^ t,
         100 - Real.goldenRatio * sbiRate ^ t, 110, 120 + Real.goldenRatio * sbiRate ^ t,
         150 - sbiRate ^ t, 220] := by
   rw [spe_closed, spe_inv]; rfl
 
-theorem sbi8_neighbors (t : ℕ) :
+theorem sbi8_neighbors_internal (t : ℕ) :
     neighbors .sbi sbi8_r (traj .sbi sbi8_r sbi8_x0 t) =
       ![{0}, {0, 1, 2, 4}, {0, 2, 3, 4}, {2, 3, 4, 5}, {3, 4, 5}, {3, 4, 5, 6}, {4, 5, 6, 7}, {7}] := by
   obtain ⟨h0, h1⟩ := sbiRate_pow_bounds t
@@ -107,7 +102,7 @@ theorem spe_abs_rate : |sbiRate| < 1 / 4 := by
   rw [abs_lt, sbiRate_eq]
   constructor <;> linarith
 
-theorem sbi8_spectator_gt (t : ℕ) (ht : 1 ≤ t) : 60 < traj .sbi sbi8_r sbi8_x0 t 1 := by
+theorem sbi8_spectator_gt_internal (t : ℕ) (ht : 1 ≤ t) : 60 < traj .sbi sbi8_r sbi8_x0 t 1 := by
   rw [spe_closed]
   have h0 : spe_x (sbiRate ^ t) ((1 / 4 : ℝ) ^ t) 1 =
       60 + (Real.goldenRatio - 1) * ((1 / 4 : ℝ) ^ t - sbiRate ^ t) := rfl
