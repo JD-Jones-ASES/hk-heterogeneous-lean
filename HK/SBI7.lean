@@ -141,8 +141,72 @@ theorem sbi7_r_pos : ∀ i, 0 < sbi7_r i := by
   intro i
   fin_cases i <;> simp [sbi7_r]
 
+/-- Either parity matrix fixes the limit. -/
+theorem ref_sbi7_adj_lim (t : ℕ) :
+    (adjMatrix .sbi sbi7_r (traj .sbi sbi7_r sbi7_x0 t)).mulVec sbi7_lim = sbi7_lim := by
+  funext i
+  rw [adj_mulVec, sbi7_neighbors_internal]
+  rcases Nat.even_or_odd t with ht | ht
+  · rw [ite_eq_left ht]
+    fin_cases i <;> simp [Finset.sum_insert, sbi7_lim] <;> norm_num
+  · rw [ite_eq_right (Nat.not_even_iff_odd.mpr ht)]
+    fin_cases i <;> simp [Finset.sum_insert, sbi7_lim] <;> norm_num
+
+/-- Either parity matrix scales the offset direction by `λ`. -/
+theorem ref_sbi7_adj_v (t : ℕ) :
+    (adjMatrix .sbi sbi7_r (traj .sbi sbi7_r sbi7_x0 t)).mulVec sbi_v = sbiRate • sbi_v := by
+  have hsq := Real.goldenRatio_sq
+  funext i
+  rw [adj_mulVec, sbi7_neighbors_internal, sbiRate_eq]
+  rcases Nat.even_or_odd t with ht | ht
+  · rw [ite_eq_left ht]
+    fin_cases i
+    · simp [sbi_v]
+    · simp [Finset.sum_insert, sbi_v]; ring
+    · simp [Finset.sum_insert, sbi_v]; linear_combination (-1 / 4 : ℝ) * hsq
+    · simp [Finset.sum_insert, sbi_v]
+    · simp [Finset.sum_insert, sbi_v]; linear_combination (1 / 4 : ℝ) * hsq
+    · simp [Finset.sum_insert, sbi_v]; ring
+    · simp [sbi_v]
+  · rw [ite_eq_right (Nat.not_even_iff_odd.mpr ht)]
+    fin_cases i
+    · simp [sbi_v]
+    · simp [Finset.sum_insert, sbi_v]; ring
+    · simp [Finset.sum_insert, sbi_v]; linear_combination (-1 / 4 : ℝ) * hsq
+    · simp [Finset.sum_insert, sbi_v]
+    · simp [Finset.sum_insert, sbi_v]; linear_combination (1 / 4 : ℝ) * hsq
+    · simp [Finset.sum_insert, sbi_v]; ring
+    · simp [sbi_v]
+
+theorem ref_sbi7_adj_pow (t k : ℕ) (c : ℝ) :
+    (adjMatrix .sbi sbi7_r (traj .sbi sbi7_r sbi7_x0 t) ^ k).mulVec (sbi7_lim + c • sbi_v) =
+      sbi7_lim + (sbiRate ^ k * c) • sbi_v := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    rw [pow_succ', ← Matrix.mulVec_mulVec, ih, Matrix.mulVec_add, Matrix.mulVec_smul,
+      ref_sbi7_adj_lim, ref_sbi7_adj_v, smul_smul, pow_succ]
+    congr 2
+    ring
+
 /-- Each parity matrix fixes the limit and scales the offset by `λ`, so the final value at constant
 topology of every `x(t)` is the limit (the route of `sbi7b_fvct_internal`, one table per parity). -/
-theorem sbi7_fvct (t : ℕ) : fvct .sbi sbi7_r (traj .sbi sbi7_r sbi7_x0 t) = sbi7_lim := sorry
+theorem sbi7_fvct (t : ℕ) : fvct .sbi sbi7_r (traj .sbi sbi7_r sbi7_x0 t) = sbi7_lim := by
+  have hx : traj .sbi sbi7_r sbi7_x0 t = sbi7_lim + (sbiRate ^ t / 2) • sbi_v := by
+    rw [sbi7_closed_form_internal]; funext i; simp
+  have h1 : Tendsto (fun k : ℕ => sbi7_lim + (sbiRate ^ k * (sbiRate ^ t / 2)) • sbi_v)
+      atTop (𝓝 sbi7_lim) := by
+    have h0 := ((tendsto_pow_atTop_nhds_zero_of_abs_lt_one sbiRate_abs_lt_one).mul_const
+      (sbiRate ^ t / 2)).smul_const sbi_v
+    have h2 := h0.const_add sbi7_lim
+    rwa [zero_mul, zero_smul, add_zero] at h2
+  have hA := ref_sbi7_adj_pow t
+  unfold fvct
+  set A := adjMatrix .sbi sbi7_r (traj .sbi sbi7_r sbi7_x0 t) with hAdef
+  have hf : (fun k : ℕ => (A ^ k).mulVec (traj .sbi sbi7_r sbi7_x0 t)) =
+      fun k => sbi7_lim + (sbiRate ^ k * (sbiRate ^ t / 2)) • sbi_v := by
+    funext k; rw [hx, hA]
+  rw [hf]
+  exact h1.limUnder_eq
 
 end HK

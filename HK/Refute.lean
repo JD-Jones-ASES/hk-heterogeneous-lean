@@ -131,37 +131,108 @@ theorem equiTopologyDistance_eq_zero_three :
     equiTopologyDistance_eq_zero_of _ _ 5 3 (by decide) ?_⟩ <;>
     simp [sbc7_r, sbc7_lim, sbi7_r, sbi7_lim] <;> norm_num [abs_of_pos, abs_of_neg]
 
+/-- A positive lower bound `c` on every term of the equi-topology set (with some `j ≠ i`) makes the
+equi-topology distance positive. -/
+theorem ref_equiTopologyDistance_pos_of {n : ℕ} (r z : Fin n → ℝ) (i j : Fin n) (hij : j ≠ i)
+    (c : ℝ) (hc : 0 < c)
+    (h : ∀ k, k ≠ i → c ≤ |(|z i - z k|) - r i| ∧ c ≤ |(|z i - z k|) - r k|) :
+    0 < equiTopologyDistance r z i := by
+  unfold equiTopologyDistance
+  have hS : c ≤ sInf {d : ℝ | ∃ j, j ≠ i ∧ (d = |(|z i - z j|) - r i| ∨ d = |(|z i - z j|) - r j|)} := by
+    have hne : Set.Nonempty
+        {d : ℝ | ∃ j, j ≠ i ∧ (d = |(|z i - z j|) - r i| ∨ d = |(|z i - z j|) - r j|)} :=
+      ⟨_, j, hij, Or.inl rfl⟩
+    refine le_csInf hne ?_
+    rintro d ⟨k, hk, rfl | rfl⟩
+    · exact (h k hk).1
+    · exact (h k hk).2
+  linarith
+
+/-- The twin of `equiTopologyDistance_eq_zero_of` with the other agent's bound. -/
+theorem ref_equiTopologyDistance_eq_zero_of' {n : ℕ} (r z : Fin n → ℝ) (i j : Fin n) (hij : j ≠ i)
+    (h : |z i - z j| = r j) : equiTopologyDistance r z i = 0 := by
+  unfold equiTopologyDistance
+  have hS : sInf {d : ℝ | ∃ j, j ≠ i ∧ (d = |(|z i - z j|) - r i| ∨ d = |(|z i - z j|) - r j|)} = 0 := by
+    apply IsLeast.csInf_eq
+    refine ⟨⟨j, hij, Or.inr (by rw [h, sub_self, abs_zero])⟩, ?_⟩
+    rintro d ⟨k, -, rfl | rfl⟩ <;> exact abs_nonneg _
+  rw [hS, mul_zero]
+
+/-- At the limit of the 6-agent SBC system every term of the equi-topology set is at least `10`. -/
+theorem ref_sbc6_etd_pos (i : Fin 6) : 0 < equiTopologyDistance sbc6_r sbc6_lim i := by
+  refine ref_equiTopologyDistance_pos_of _ _ i (i + 1) (by fin_cases i <;> decide) 10
+    (by norm_num) ?_
+  intro k hk
+  fin_cases i <;> fin_cases k <;> first | exact absurd rfl hk | norm_num [sbc6_r, sbc6_lim]
+
+/-- At the limit of the §5 SBI system every term of the equi-topology set is at least `5`. -/
+theorem ref_sbi7b_etd_pos (i : Fin 7) : 0 < equiTopologyDistance sbi7b_r sbi7b_lim i := by
+  refine ref_equiTopologyDistance_pos_of _ _ i (i + 1) (by fin_cases i <;> decide) 5
+    (by norm_num) ?_
+  intro k hk
+  fin_cases i <;> fin_cases k <;> first | exact absurd rfl hk | norm_num [sbi7b_r, sbi7b_lim]
+
 theorem alternating_fvct_internal (t : ℕ) :
     fvct .sbc sbc7_r (traj .sbc sbc7_r sbc7_x0 t) = sbc7_lim ∧
-    fvct .sbi sbi7_r (traj .sbi sbi7_r sbi7_x0 t) = sbi7_lim := sorry
+    fvct .sbi sbi7_r (traj .sbi sbi7_r sbi7_x0 t) = sbi7_lim :=
+  ⟨sbc7_fvct t, sbi7_fvct t⟩
 
 theorem equiTopologyDistance_pos_internal :
     (∀ i, 0 < equiTopologyDistance sbc6_r sbc6_lim i) ∧
-    (∀ i, 0 < equiTopologyDistance sbi7b_r sbi7b_lim i) := sorry
+    (∀ i, 0 < equiTopologyDistance sbi7b_r sbi7b_lim i) :=
+  ⟨ref_sbc6_etd_pos, ref_sbi7b_etd_pos⟩
 
 theorem equiTopologyDistance_eq_zero_internal :
     (∀ i ∈ ({2, 3, 4} : Finset (Fin 7)), equiTopologyDistance sbc7_r sbc7_lim i = 0) ∧
-    (∀ i ∈ ({1, 3, 5} : Finset (Fin 7)), equiTopologyDistance sbi7_r sbi7_lim i = 0) := sorry
+    (∀ i ∈ ({1, 3, 5} : Finset (Fin 7)), equiTopologyDistance sbi7_r sbi7_lim i = 0) := by
+  constructor
+  · intro i hi
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hi
+    rcases hi with rfl | rfl | rfl
+    · exact ref_equiTopologyDistance_eq_zero_of' _ _ 2 3 (by decide)
+        (by norm_num [sbc7_r, sbc7_lim])
+    · exact equiTopologyDistance_eq_zero_of _ _ 3 2 (by decide) (by norm_num [sbc7_r, sbc7_lim])
+    · exact ref_equiTopologyDistance_eq_zero_of' _ _ 4 3 (by decide)
+        (by norm_num [sbc7_r, sbc7_lim])
+  · intro i hi
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hi
+    rcases hi with rfl | rfl | rfl
+    · exact equiTopologyDistance_eq_zero_of _ _ 1 3 (by decide) (by norm_num [sbi7_r, sbi7_lim])
+    · exact ref_equiTopologyDistance_eq_zero_of' _ _ 3 1 (by decide)
+        (by norm_num [sbi7_r, sbi7_lim])
+    · exact equiTopologyDistance_eq_zero_of _ _ 5 3 (by decide) (by norm_num [sbi7_r, sbi7_lim])
 
-theorem not_conjecture22_sbc_seven_internal : ¬ Conjecture22ForAgents .sbc 7 := sorry
+theorem not_conjecture22_sbc_seven_internal : ¬ Conjecture22ForAgents .sbc 7 := by
+  intro h
+  obtain ⟨τ, hτ⟩ := h sbc7_r sbc7_x0 sbc7_r_pos
+  obtain ⟨t, ht, hne⟩ := sbc7_digraph_not_eventually_constant_internal τ
+  exact hne (hτ t ht)
 
-theorem not_conjecture22_sbi_seven_internal : ¬ Conjecture22ForAgents .sbi 7 := sorry
+theorem not_conjecture22_sbi_seven_internal : ¬ Conjecture22ForAgents .sbi 7 := by
+  intro h
+  obtain ⟨τ, hτ⟩ := h sbi7_r sbi7_x0 sbi7_r_pos
+  obtain ⟨t, ht, hne⟩ := sbi7_digraph_not_eventually_constant_internal τ
+  exact hne (hτ t ht)
 
 theorem small_tendsto_internal :
     Tendsto (traj .sbc sbc5_r sbc5_x0) atTop (𝓝 sbc5_lim) ∧
-    Tendsto (traj .sbi sbi6_r sbi6_x0) atTop (𝓝 sbi6_lim) := sorry
+    Tendsto (traj .sbi sbi6_r sbi6_x0) atTop (𝓝 sbi6_lim) :=
+  ⟨sbc5_tendsto, sbi6_tendsto⟩
 
 theorem small_digraph_constant_internal (t : ℕ) :
     proximityDigraph .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) =
       proximityDigraph .sbc sbc5_r sbc5_x0 ∧
     proximityDigraph .sbi sbi6_r (traj .sbi sbi6_r sbi6_x0 t) =
-      proximityDigraph .sbi sbi6_r sbi6_x0 := sorry
+      proximityDigraph .sbi sbi6_r sbi6_x0 :=
+  ⟨sbc5_digraph_constant t, sbi6_digraph_constant t⟩
 
 theorem small_not_fixedFrom_internal (τ : ℕ) :
-    ¬ FixedFrom (traj .sbc sbc5_r sbc5_x0) τ ∧ ¬ FixedFrom (traj .sbi sbi6_r sbi6_x0) τ := sorry
+    ¬ FixedFrom (traj .sbc sbc5_r sbc5_x0) τ ∧ ¬ FixedFrom (traj .sbi sbi6_r sbi6_x0) τ :=
+  ⟨sbc5_not_fixedFrom τ, sbi6_not_fixedFrom τ⟩
 
 theorem small_not_pseudoStableAfter_internal (xinf : Fin 5 → ℝ) (yinf : Fin 6 → ℝ) (τ : ℕ) :
     ¬ PseudoStableAfter (traj .sbc sbc5_r sbc5_x0) xinf τ ∧
-    ¬ PseudoStableAfter (traj .sbi sbi6_r sbi6_x0) yinf τ := sorry
+    ¬ PseudoStableAfter (traj .sbi sbi6_r sbi6_x0) yinf τ :=
+  ⟨sbc5_not_pseudoStableAfter xinf τ, sbi6_not_pseudoStableAfter yinf τ⟩
 
 end HK
