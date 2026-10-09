@@ -1,0 +1,767 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "Heterogeneous Hegselmann–Krause dynamics: SBC and SBI systems whose proximity digraph is never eventually constant, and constant-digraph systems whose convergence is never pseudo-stable, refuting Conjectures 2.2 and 2.3 and Theorem 6.4(iv) of Mirtabatabaei–Bullo; their Lemmas 4.2 and 4.8"
+  description: >-
+    A Lean 4 development of the counterexamples of Hegarty, Ognissanti and Wedin (arXiv:2610.03229) to
+    two conjectures and a theorem of Mirtabatabaei and Bullo on heterogeneous Hegselmann–Krause
+    dynamics. n agents with real opinions and positive bounds r_1, ..., r_n update synchronously, x(t+1)
+    = A(x(t)) x(t), where row i of A(y) averages uniformly over the neighbourhood N_i(y): the j with
+    |y_i - y_j| <= r_i in the SBC model (synchronized bounded confidence) and <= r_j in the SBI model
+    (synchronized bounded influence). Conjecture 2.2 says the proximity digraph is constant after a
+    finite time; Conjecture 2.3 says every trajectory reaches a fixed state or is eventually
+    pseudo-stable (the agents split into two non-empty classes, fixed at their limits or moving strictly
+    towards them from one side); Theorem 6.4(iv) says a trajectory whose digraph is constant from some
+    time on is eventually pseudo-stable. For the four systems of the source (SBC with seven agents and
+    rate -1/6; SBI with seven agents and rate (1 - sqrt 5)/8; SBC with six agents; a second SBI system
+    with seven agents) the development proves the closed form x(t) = x_inf + c lambda^t v for every t,
+    the neighbourhood of every agent at every t (alternating with the parity of t at the middle agent of
+    the two seven-agent alternating systems, the same at every t in the other two), convergence, and
+    that no trajectory is ever frozen or pseudo-stable after any time towards any vector, since four
+    agents alternate sides of their limits. Hence Conjectures 2.2 and 2.3 fail in each model, and
+    Theorem 6.4(iv) fails in each model, both in its literal reading and in the reading that also admits
+    a fixed state. Two smaller constant-digraph systems found in this development, five SBC agents with
+    rate (1 - sqrt 2)/3 and six SBI agents with rate (13 - sqrt 249)/40, show that Conjecture 2.3 and
+    Theorem 6.4(iv) fail already with five SBC agents and six SBI agents. Along all four source systems
+    the final value at constant topology (Definition 3.1) of every x(t) is the limit, and in the two
+    constant-digraph source systems the per-step convergence factor (Definition 6.1) of every agent with
+    nonzero offset is identically the negative rate, so it converges to no non-negative number. On the
+    positive side, Lemma 4.2 (the equi-topology neighbourhood preserves the proximity digraph) and Lemma
+    4.8 (a convergent trajectory whose limit has every equi-topology distance positive eventually has
+    the digraph of its limit, the limit as its final value at constant topology, and an equilibrium
+    limit) are proved for arbitrary bounds; the limits of the two constant-digraph systems satisfy that
+    hypothesis, and those of the two alternating systems violate it. Not claimed: Theorem 6.4(iii) in
+    full, Conjecture 2.1 (convergence of every trajectory), or that any system is the smallest of its
+    kind.
+  authors: ["JD Jones"]
+  responsible_maintainers: ["JD Jones"]
+  license: "MIT"
+
+classification:
+  arxiv: ["math.DS", "math.CO"]
+  msc2020: ["39A60", "93A14", "91D10", "91D30"]
+
+sources:
+  - title: "Non-freezing of the proximity digraph and non-pseudostable convergence in heterogeneous Hegselmann--Krause models: Counterexamples to conjectures and results of Mirtabatabaei and Bullo"
+    authors: ["Peter Hegarty", "Damiano Ognissanti", "Edvin Wedin"]
+    id: "https://arxiv.org/abs/2610.03229"
+    type: "paper"
+    location: "arXiv:2610.03229v1 (2026-10-02; math.DS, math.CO; MSC 39A60, 93A14, 91D10, 91D30; 10 pages): Section 1 (the SBC and SBI models; Conjectures 2.2 and 2.3 and Theorem 6.4(iv) of Mirtabatabaei-Bullo as restated, with footnote 1 on the literal reading of 6.4(iv)); Section 2 (SBC, seven agents); Section 3 (SBI, seven agents); Section 4 (SBC, six agents, the first system of the section); Section 5 (SBI, seven agents, the first system of the section); Section 6 (equi-topology distance zero at the limits of Sections 2 and 3); Section 7 (the AI statement)"
+    relationship: "formalizes"
+    author_endorsement: "not-contacted"
+    note: >-
+      The counterexamples formalized. The four systems (Section 2: SBC, n = 7, rate -1/6; Section 3: SBI,
+      n = 7, rate (1 - sqrt 5)/8; Section 4: SBC, n = 6; Section 5: SBI, n = 7) are restated with the
+      paper's initial opinions and bounds, and what the paper proves about each is proved here as it is
+      stated there: the closed form x(t) = x_inf + lambda^t v for every t (the paper's induction on t),
+      the neighbourhood of every agent at every t (alternating with the parity of t at the middle agent
+      in Sections 2 and 3, the same at every t in Sections 4 and 5), convergence, and the failure of
+      Conjectures 2.2 and 2.3 and of Theorem 6.4(iv), the last in both the literal reading and the reading
+      that admits freezing (footnote 1). The relationship is "formalizes" because the objects, the claims
+      and the route of proof are the paper's, with two departures recorded under fidelity: agents are
+      indexed from 0 (the paper's agent i is index i - 1), and for Theorem 6.4(iii), whose statement the
+      paper leaves to Mirtabatabaei-Bullo, what is proved is that the per-step convergence factor of the
+      open-minded agents of the Section 4 and Section 5 systems is identically the negative rate, so it
+      converges to no non-negative number; the strongly connected components, leader components and
+      spectral radii of Definition 6.3 are not formalized. Section 6's observation that the limits of
+      Sections 2 and 3 have equi-topology distance zero at the alternating agents is proved
+      (equiTopologyDistance_eq_zero). Not formalized: the spectator systems of Sections 4 and 5 (nine
+      agents with two beacons; eight agents), which bear on Theorem 6.4(iii)(b), and Section 6's
+      genericity discussion. By Section 7 the examples were found by Claude Opus 5.5 at the authors'
+      prompting and checked by hand by the authors; the text of the paper is the authors'.
+  - title: "Opinion Dynamics in Heterogeneous Networks: Convergence Conjectures and Theorems"
+    authors: ["Anahita Mirtabatabaei", "Francesco Bullo"]
+    id: "doi:10.1137/11082751X"
+    type: "paper"
+    location: "SIAM Journal on Control and Optimization 50 (2012), no. 5, 2763-2785 (online 2012-09-13); the text read is arXiv:1103.2829v2 (2011-04-07): Section 2 (the SBC and SBI digraphs, the system (2.1) and its adjacency matrix, Conjectures 2.1-2.3, pseudo-stable behaviour (2.2)), Definition 3.1 (final value at constant topology) and the definition of an equilibrium opinion vector before it, Definition 4.1(i) (equi-topology distance and neighbourhood), Lemma 4.2, Lemma 4.8, Definition 6.1 (per-step convergence factor), Theorem 6.4(iii)-(iv)"
+    relationship: "adapts"
+    author_endorsement: "not-contacted"
+    note: >-
+      Takes the source's setting and proves the negation of its Conjecture 2.2 (the proximity digraph is
+      constant after a finite time) and Conjecture 2.3 (every trajectory reaches a fixed state or is
+      eventually pseudo-stable), each for the SBC model and for the SBI model separately, and the
+      negation of its Theorem 6.4(iv) (a trajectory whose digraph is constant from some time on is
+      eventually pseudo-stable), in the literal reading and in the reading that also admits a fixed
+      state, through the systems of Hegarty, Ognissanti and Wedin above. The definitions are restated
+      from Section 2 (the neighbourhoods N_i(y) with the non-strict inequality, the adjacency matrix, the
+      system (2.1), the proximity digraph G_r(y), pseudo-stable behaviour after tau as in (2.2) with both
+      classes non-empty), Definition 3.1 (fvct, the limit of A(y)^t y), Definition 4.1(i) (the
+      equi-topology distance and neighbourhood) and Definition 6.1 (the per-step convergence factor). Two
+      of the source's positive results are proved, not refuted: Lemma 4.2 (a point of the equi-topology
+      neighbourhood of z has the proximity digraph of z) and Lemma 4.8 (a convergent trajectory whose
+      limit has every equi-topology distance positive has, from some time on, the digraph of its limit,
+      the limit as its final value at constant topology, and the limit is an equilibrium opinion
+      vector), with the sharpness of 4.8's hypothesis at the two alternating systems. Conjecture 2.1
+      (every trajectory converges) is not addressed. The published SIAM text was not read (its landing
+      page refused automated access); the numbering used is that of the arXiv version, which agrees with
+      the numbering Hegarty, Ognissanti and Wedin cite from the journal. The development also
+      exhibits two smaller constant-digraph systems of its own (five SBC agents, six SBI agents)
+      along which Conjecture 2.3 and Theorem 6.4(iv) fail in the same way.
+  - title: "Opinion dynamics and bounded confidence: models, analysis and simulation"
+    authors: ["Rainer Hegselmann", "Ulrich Krause"]
+    id: "https://www.jasss.org/5/3/2.html"
+    type: "paper"
+    location: "Journal of Artificial Societies and Social Simulation 5 (2002), no. 3, article 2 (published 2002-06-30); Section 2 (the nonlinear model with bounded confidence), Section 3 (analytical results)"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      The homogeneous Hegselmann-Krause model, the case of equal bounds in which the SBC and SBI models
+      coincide. Background only; nothing from it is formalized.
+  - title: "Heterogeneous bounds of confidence: Meet, discuss and find consensus!"
+    authors: ["Jan Lorenz"]
+    id: "doi:10.1002/cplx.20295"
+    type: "paper"
+    location: "Complexity 15 (2010), no. 4, 43-52 (online 2009-11-25)"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      The Hegselmann-Krause model with heterogeneous bounds of confidence, which Mirtabatabaei and Bullo
+      call the SBC model and Hegarty, Ognissanti and Wedin attribute to this paper. Background only;
+      nothing from it is formalized.
+  - title: "Attitude Dynamics With Limited Verbalisation Capabilities"
+    authors: ["Diemo Urbig"]
+    id: "https://www.jasss.org/6/1/2.html"
+    type: "paper"
+    location: "Journal of Artificial Societies and Social Simulation 6 (2003), no. 1, article 2 (published 2003-01-31); paragraph 4.14"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      The source of the term pseudo-stable, used informally there for configurations in which most agents
+      are stable and a few keep moving; Mirtabatabaei and Bullo borrow the term for the precise notion
+      (2.2) that is pinned here. Background only.
+  - title: "Partial convergence of heterogeneous Hegselmann-Krause opinion dynamics"
+    authors: ["Wei Su", "YaJuan Gu", "Sha Wang", "YongGuang Yu"]
+    id: "doi:10.1007/s11431-016-0615-x"
+    type: "paper"
+    location: "Science China Technological Sciences 60 (2017), no. 9, 1433-1438 (online 2017-05-02)"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      Proves that in the heterogeneous Hegselmann-Krause (SBC) dynamics some agents, the extremal ones,
+      reach static states in finite time; Hegarty, Ognissanti and Wedin note that the proof carries over
+      to SBI, so that what remained open in Conjecture 2.3 concerned the agents that never freeze.
+      Background only; nothing from it is formalized.
+  - title: "The Lean 4 Theorem Prover and Programming Language"
+    authors: ["Leonardo de Moura", "Sebastian Ullrich"]
+    id: "doi:10.1007/978-3-030-79876-5_37"
+    type: "paper"
+    location: "Automated Deduction - CADE 28, Lecture Notes in Computer Science, Springer, 2021, 625-635"
+    relationship: "background"
+    author_endorsement: "n/a"
+    note: "The proof assistant (leanprover/lean4:v4.35.0-rc2). Nothing mathematical is taken from it."
+  - title: "The Lean mathematical library"
+    authors: ["The mathlib Community"]
+    id: "doi:10.1145/3372885.3373824"
+    type: "paper"
+    location: "Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs (CPP 2020), 367-381"
+    relationship: "background"
+    author_endorsement: "n/a"
+    note: "The library the development imports (tag v4.35.0-rc2)."
+
+status:
+  scope: >-
+    Fifty-one compared theorems over the definitions of Challenge.lean, none of them a hole. For the
+    four systems of Hegarty, Ognissanti and Wedin (SBC with seven and with six agents, SBI with seven
+    agents twice): the closed form of the trajectory for every t, the neighbourhood table at every t,
+    convergence to the stated limit, a proximity digraph that is never eventually constant (the two
+    alternating systems) or the same at every t (the other two), no fixed state from any time on and no
+    pseudo-stability after any time towards any vector; hence the negations of Mirtabatabaei and Bullo's
+    Conjecture 2.2 and Conjecture 2.3, each for the SBC model and for the SBI model, and of their
+    Theorem 6.4(iv) in each model, in the reading admitting fixed states and in the literal reading (the
+    latter already fails for a single frozen agent). For two smaller constant-digraph systems of this
+    development (five SBC agents, rate (1 - sqrt 2)/3; six SBI agents, rate (13 - sqrt 249)/40): the
+    same facts, so Conjecture 2.3 and Theorem 6.4(iv) fail with five SBC agents and with six SBI agents,
+    and Conjecture 2.2 with seven agents in each model. The final value at constant topology of every
+    x(t) is the limit along all four source systems; the per-step convergence factor of the agents with
+    nonzero offset in the six-agent SBC system (indices 1 to 4) and the second seven-agent SBI system
+    (indices 1, 2, 4, 5) is identically the negative rate, so it converges to no non-negative number.
+    Mirtabatabaei and Bullo's Lemma 4.2 and Lemma 4.8 (both parts, with the equilibrium) are proved for
+    arbitrary bounds; every equi-topology distance of the limits of the two constant-digraph systems is
+    positive, and the limits of the two alternating systems have equi-topology distance 0 at indices 2,
+    3, 4 (SBC) and 1, 3, 5 (SBI). Not claimed: Theorem 6.4(iii) in full (the strongly connected
+    components, leader components and spectral radii of Definition 6.3 are not formalized; only the
+    per-step factors above are); Conjecture 2.1 (every trajectory converges), on which nothing here
+    bears; minimality of any system (computations outside Lean that bear on the least number of agents
+    are confined to trajectories of the form x_inf + lambda^t v with a fixed neighbourhood pattern for
+    each sign of lambda^t, and are not part of the formalization); the spectator systems of the source's
+    Sections 4 and 5. The intentional placeholders of Challenge.lean are excluded from proof counts;
+    Solution.lean does not import Challenge.lean.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Classical.choice", "Quot.sound"]
+  main_results:
+    - declaration: "HK.sbc7_closed_form"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc7_neighbors"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi7_closed_form"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi7_neighbors"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc6_closed_form"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc6_neighbors"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi7b_closed_form"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi7b_neighbors"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.tendsto_limits"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc7_digraph_not_eventually_constant"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi7_digraph_not_eventually_constant"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc6_digraph_constant"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi7b_digraph_constant"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_fixedFrom"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_pseudoStableAfter"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_conjecture22_sbc"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_conjecture22_sbi"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_conjecture22"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_conjecture23_sbc"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_conjecture23_sbi"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_conjecture23"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_theorem64iv_sbc"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_theorem64iv_sbi"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_theorem64iv"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_theorem64iv_literal"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc5_closed_form"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc5_neighbors"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi6_closed_form"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi6_neighbors"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.small_tendsto"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.small_digraph_constant"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.small_not_fixedFrom"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.small_not_pseudoStableAfter"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_conjecture22_sbc_seven"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_conjecture22_sbi_seven"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_conjecture23_sbc_five"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_conjecture23_sbi_six"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_theorem64iv_sbc_five"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_theorem64iv_sbi_six"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.alternating_fvct"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc6_fvct"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc6_perStepFactor"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc6_perStepFactor_not_tendsto"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi7b_fvct"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi7b_perStepFactor"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi7b_perStepFactor_not_tendsto"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.proximityDigraph_eq_of_equiTopologyNbhd"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.eventually_constant_of_tendsto"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.fvct_eq_and_equilibrium_of_tendsto"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.equiTopologyDistance_pos"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.equiTopologyDistance_eq_zero"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["Claude Opus 5.5 (Anthropic)", "Claude Fable 5.1 (Anthropic)"]
+      framework: "Claude Code with parallel subagents"
+      tool_setup: >-
+        The project was directed by its author. Claude (Anthropic) in Claude Code was used throughout:
+        the statements and their fidelity checks against both papers, the Lean proofs, the
+        exact-arithmetic replays and searches outside Lean (which found the five- and six-agent
+        systems), the literature and prior-art searches, and the repository text. Lean v4.35.0-rc2 and
+        Mathlib v4.35.0-rc2 (commit 065356127b1dc0016f66b7283ce0ce2c4055aa55) are pinned by the
+        committed manifest and lake update is never run; there are no GitHub Actions workflows. There is
+        no native_decide. The proofs are linear arithmetic over the offset atom lambda^t with fin_cases
+        neighbourhood tables, linear_combination with the quadratic identities of sqrt 5, sqrt 2 and
+        sqrt 249, inductions on t for the closed forms, and the limit lemmas of Mathlib (geometric
+        decay, limUnder of a convergent sequence, continuity of mulVec); decide is used only for
+        inequalities between Fin indices.
+      spend_usd: "not tracked"
+
+fidelity:
+  divergences: >-
+    Agents are indexed from 0: the paper's agent i is index i - 1 throughout (the docstrings give both).
+    Each conjecture and the theorem is split into a statement for one model and n agents
+    (Conjecture22ForAgents, Conjecture23ForAgents, Theorem64ivForAgents, Theorem64ivLiteralForAgents),
+    one for a model and every n (the ...For forms) and one for both models; the source's statement is
+    the last (for all models and all n), and the refutations are proved at every level, the per-model
+    ones being stronger. Pseudo-stability after tau (Mirtabatabaei–Bullo (2.2)) is pinned with the
+    convergence built in and with the "or" of the converging class taken at each t; with the strict
+    inequalities towards the limit, this is equivalent to the per-agent reading of Hegarty, Ognissanti
+    and Wedin (a side chosen at tau persists), so the refutations have the same strength under both.
+    perStepFactor is a total function (division by zero gives 0 in Lean); it is evaluated only at agents
+    whose offset from the final value at constant topology is nonzero at every t. fvct (Definition 3.1)
+    is limUnder of A(y)^t y, which is the limit wherever it exists, and it exists at every point where a
+    compared theorem evaluates it. The equi-topology distance (Definition 4.1(i)) is half the infimum of
+    the finite set of values; for n = 1 the set is empty and sInf of the empty set is 0 on the reals.
+    Lemmas 4.2 and 4.8 are stated without positivity of the bounds (no step of the source's proofs uses
+    it), so they are slightly more general than the source; Lemma 4.8's single time T is two
+    existentials, one per conclusion (equivalent by taking the maximum). Theorem 6.4(iv) is stated in
+    its literal reading, which is refuted trivially (both classes of (2.2) must be non-empty, so a
+    single frozen agent with a constant digraph violates it, as the source's footnote 1 observes), and
+    in the reading that admits a fixed state, whose refutation needs the constant-digraph systems. For
+    Theorem 6.4(iii) only the per-step factors of the two constant-digraph source systems are
+    formalized. The data (initial opinions, bounds, limits, offset directions and rates) are as in the
+    source, with the factor 1/2 of the Section 3 closed form x(t) = x_inf + (lambda^t / 2) v kept; the
+    Section 5 closed form has no such factor.
+
+review:
+  status: "self-assessed"
+  notes: >-
+    No independent human expert review and no source-author endorsement is claimed; AI agents developed
+    the proofs and audited them in separate passes, the statements were checked against Mirtabatabaei
+    and Bullo's arXiv text (v2) and Hegarty, Ognissanti and Wedin's paper, and every data vector and
+    neighbourhood table was replayed outside Lean in exact arithmetic. Mechanical correctness and
+    agreement of formal statements do not establish priority or significance.
+
+alignment:
+  namespace: "HK"
+  statements:
+    - source: "Hegarty–Ognissanti–Wedin 2026, §2"
+      lean: "HK.sbc7_closed_form"
+      module: "Solution"
+      status: "proved"
+      note: "x(t) = (0, 36, 72, 84, 96, 132, 168) + (-1/6)^t (0, 2, -3, 0, 3, -2, 0) for every t."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §2"
+      lean: "HK.sbc7_neighbors"
+      module: "Solution"
+      status: "proved"
+      note: "The neighbourhood table at every t; the middle agent (index 3) listens to itself alone at even t and also to indices 2 and 4 at odd t."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §3"
+      lean: "HK.sbi7_closed_form"
+      module: "Solution"
+      status: "proved"
+      note: "x(t) = (0, 7, 10, 11, 12, 15, 22) + (lambda^t / 2) (0, 1, -phi, 0, phi, -1, 0), lambda = (1 - sqrt 5)/8, for every t."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §3"
+      lean: "HK.sbi7_neighbors"
+      module: "Solution"
+      status: "proved"
+      note: "The neighbourhood table at every t; the middle agent listens to indices 1 to 5 at even t and to 2, 3, 4 at odd t."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §4"
+      lean: "HK.sbc6_closed_form"
+      module: "Solution"
+      status: "proved"
+      note: "x(t) = (0, 20, 40, 100, 120, 140) + (-1/6)^t (0, 2, -3, 3, -2, 0) for every t."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §4"
+      lean: "HK.sbc6_neighbors"
+      module: "Solution"
+      status: "proved"
+      note: "The neighbourhood table, the same at every t."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §5"
+      lean: "HK.sbi7b_closed_form"
+      module: "Solution"
+      status: "proved"
+      note: "x(t) = (0, 70, 100, 110, 120, 150, 220) + lambda^t (0, 1, -phi, 0, phi, -1, 0) for every t."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §5"
+      lean: "HK.sbi7b_neighbors"
+      module: "Solution"
+      status: "proved"
+      note: "The neighbourhood table, the same at every t."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §§2-5"
+      lean: "HK.tendsto_limits"
+      module: "Solution"
+      status: "proved"
+      note: "Each of the four trajectories converges to its limit."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §2"
+      lean: "HK.sbc7_digraph_not_eventually_constant"
+      module: "Solution"
+      status: "proved"
+      note: "The proximity digraph of the seven-agent SBC system is not constant on any tail."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §3"
+      lean: "HK.sbi7_digraph_not_eventually_constant"
+      module: "Solution"
+      status: "proved"
+      note: "The proximity digraph of the seven-agent SBI system is not constant on any tail."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §4"
+      lean: "HK.sbc6_digraph_constant"
+      module: "Solution"
+      status: "proved"
+      note: "The proximity digraph of the six-agent SBC system is the same at every t."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §5"
+      lean: "HK.sbi7b_digraph_constant"
+      module: "Solution"
+      status: "proved"
+      note: "The proximity digraph of the second seven-agent SBI system is the same at every t."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §§2-5"
+      lean: "HK.not_fixedFrom"
+      module: "Solution"
+      status: "proved"
+      note: "None of the four trajectories is in a fixed state from any time on."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §§2-5; Mirtabatabaei–Bullo 2012, (2.2)"
+      lean: "HK.not_pseudoStableAfter"
+      module: "Solution"
+      status: "proved"
+      note: "None of the four trajectories is pseudo-stable after any time towards any vector."
+    - source: "Mirtabatabaei–Bullo 2012, Conjecture 2.2; Hegarty–Ognissanti–Wedin 2026, §2"
+      lean: "HK.not_conjecture22_sbc"
+      module: "Solution"
+      status: "proved"
+      note: "Conjecture 2.2 fails for the SBC model."
+    - source: "Mirtabatabaei–Bullo 2012, Conjecture 2.2; Hegarty–Ognissanti–Wedin 2026, §3"
+      lean: "HK.not_conjecture22_sbi"
+      module: "Solution"
+      status: "proved"
+      note: "Conjecture 2.2 fails for the SBI model."
+    - source: "Mirtabatabaei–Bullo 2012, Conjecture 2.2; Hegarty–Ognissanti–Wedin 2026, §§2-3"
+      lean: "HK.not_conjecture22"
+      module: "Solution"
+      status: "proved"
+      note: "Conjecture 2.2 fails."
+    - source: "Mirtabatabaei–Bullo 2012, Conjecture 2.3; Hegarty–Ognissanti–Wedin 2026, §§2, 4"
+      lean: "HK.not_conjecture23_sbc"
+      module: "Solution"
+      status: "proved"
+      note: "Conjecture 2.3 fails for the SBC model."
+    - source: "Mirtabatabaei–Bullo 2012, Conjecture 2.3; Hegarty–Ognissanti–Wedin 2026, §§3, 5"
+      lean: "HK.not_conjecture23_sbi"
+      module: "Solution"
+      status: "proved"
+      note: "Conjecture 2.3 fails for the SBI model."
+    - source: "Mirtabatabaei–Bullo 2012, Conjecture 2.3; Hegarty–Ognissanti–Wedin 2026, §§2-5"
+      lean: "HK.not_conjecture23"
+      module: "Solution"
+      status: "proved"
+      note: "Conjecture 2.3 fails."
+    - source: "Mirtabatabaei–Bullo 2012, Theorem 6.4(iv); Hegarty–Ognissanti–Wedin 2026, §4"
+      lean: "HK.not_theorem64iv_sbc"
+      module: "Solution"
+      status: "proved"
+      note: "Theorem 6.4(iv) fails for the SBC model, in the reading that admits fixed states."
+    - source: "Mirtabatabaei–Bullo 2012, Theorem 6.4(iv); Hegarty–Ognissanti–Wedin 2026, §5"
+      lean: "HK.not_theorem64iv_sbi"
+      module: "Solution"
+      status: "proved"
+      note: "Theorem 6.4(iv) fails for the SBI model, in the reading that admits fixed states."
+    - source: "Mirtabatabaei–Bullo 2012, Theorem 6.4(iv); Hegarty–Ognissanti–Wedin 2026, §§4-5"
+      lean: "HK.not_theorem64iv"
+      module: "Solution"
+      status: "proved"
+      note: "Theorem 6.4(iv) fails in the reading that admits fixed states."
+    - source: "Mirtabatabaei–Bullo 2012, Theorem 6.4(iv); Hegarty–Ognissanti–Wedin 2026, §1, footnote 1"
+      lean: "HK.not_theorem64iv_literal"
+      module: "Solution"
+      status: "proved"
+      note: "Theorem 6.4(iv) fails in its literal reading (already for a single frozen agent)."
+    - source: "this development"
+      lean: "HK.sbc5_closed_form"
+      module: "Solution"
+      status: "proved"
+      note: "Five SBC agents: x(t) = (0, 6, 12, 18, 24) + ((1 - sqrt 2)/3)^t (0, 1, -sqrt 2, 1, 0) for every t."
+    - source: "this development"
+      lean: "HK.sbc5_neighbors"
+      module: "Solution"
+      status: "proved"
+      note: "Five SBC agents: the neighbourhood table, the same at every t."
+    - source: "this development"
+      lean: "HK.sbi6_closed_form"
+      module: "Solution"
+      status: "proved"
+      note: "Six SBI agents: x(t) = (0, 25, 31, 44, 55, 90) + ((13 - sqrt 249)/40)^t v for every t."
+    - source: "this development"
+      lean: "HK.sbi6_neighbors"
+      module: "Solution"
+      status: "proved"
+      note: "Six SBI agents: the neighbourhood table, the same at every t."
+    - source: "this development"
+      lean: "HK.small_tendsto"
+      module: "Solution"
+      status: "proved"
+      note: "Both smaller systems converge to their limits."
+    - source: "this development"
+      lean: "HK.small_digraph_constant"
+      module: "Solution"
+      status: "proved"
+      note: "Both smaller systems have a proximity digraph that is the same at every t."
+    - source: "this development"
+      lean: "HK.small_not_fixedFrom"
+      module: "Solution"
+      status: "proved"
+      note: "Neither smaller system is in a fixed state from any time on."
+    - source: "this development"
+      lean: "HK.small_not_pseudoStableAfter"
+      module: "Solution"
+      status: "proved"
+      note: "Neither smaller system is pseudo-stable after any time towards any vector."
+    - source: "Mirtabatabaei–Bullo 2012, Conjecture 2.2; Hegarty–Ognissanti–Wedin 2026, §2"
+      lean: "HK.not_conjecture22_sbc_seven"
+      module: "Solution"
+      status: "proved"
+      note: "Conjecture 2.2 fails for the SBC model with seven agents."
+    - source: "Mirtabatabaei–Bullo 2012, Conjecture 2.2; Hegarty–Ognissanti–Wedin 2026, §3"
+      lean: "HK.not_conjecture22_sbi_seven"
+      module: "Solution"
+      status: "proved"
+      note: "Conjecture 2.2 fails for the SBI model with seven agents."
+    - source: "Mirtabatabaei–Bullo 2012, Conjecture 2.3; this development"
+      lean: "HK.not_conjecture23_sbc_five"
+      module: "Solution"
+      status: "proved"
+      note: "Conjecture 2.3 fails for the SBC model with five agents."
+    - source: "Mirtabatabaei–Bullo 2012, Conjecture 2.3; this development"
+      lean: "HK.not_conjecture23_sbi_six"
+      module: "Solution"
+      status: "proved"
+      note: "Conjecture 2.3 fails for the SBI model with six agents."
+    - source: "Mirtabatabaei–Bullo 2012, Theorem 6.4(iv); this development"
+      lean: "HK.not_theorem64iv_sbc_five"
+      module: "Solution"
+      status: "proved"
+      note: "Theorem 6.4(iv) fails for the SBC model with five agents, in the reading that admits fixed states."
+    - source: "Mirtabatabaei–Bullo 2012, Theorem 6.4(iv); this development"
+      lean: "HK.not_theorem64iv_sbi_six"
+      module: "Solution"
+      status: "proved"
+      note: "Theorem 6.4(iv) fails for the SBI model with six agents, in the reading that admits fixed states."
+    - source: "Mirtabatabaei–Bullo 2012, Definition 3.1; Hegarty–Ognissanti–Wedin 2026, §§2-3"
+      lean: "HK.alternating_fvct"
+      module: "Solution"
+      status: "proved"
+      note: "Along the two alternating systems the final value at constant topology of every x(t) is the limit."
+    - source: "Mirtabatabaei–Bullo 2012, Definition 3.1; Hegarty–Ognissanti–Wedin 2026, §4"
+      lean: "HK.sbc6_fvct"
+      module: "Solution"
+      status: "proved"
+      note: "Along the six-agent SBC system the final value at constant topology of every x(t) is the limit."
+    - source: "Mirtabatabaei–Bullo 2012, Definition 6.1 and Theorem 6.4(iii)(a); Hegarty–Ognissanti–Wedin 2026, §4"
+      lean: "HK.sbc6_perStepFactor"
+      module: "Solution"
+      status: "proved"
+      note: "The per-step convergence factor of indices 1 to 4 is -1/6 at every t."
+    - source: "Mirtabatabaei–Bullo 2012, Theorem 6.4(iii)(a); Hegarty–Ognissanti–Wedin 2026, §4"
+      lean: "HK.sbc6_perStepFactor_not_tendsto"
+      module: "Solution"
+      status: "proved"
+      note: "That factor converges to no non-negative number."
+    - source: "Mirtabatabaei–Bullo 2012, Definition 3.1; Hegarty–Ognissanti–Wedin 2026, §5"
+      lean: "HK.sbi7b_fvct"
+      module: "Solution"
+      status: "proved"
+      note: "Along the second seven-agent SBI system the final value at constant topology of every x(t) is the limit."
+    - source: "Mirtabatabaei–Bullo 2012, Definition 6.1 and Theorem 6.4(iii)(a); Hegarty–Ognissanti–Wedin 2026, §5"
+      lean: "HK.sbi7b_perStepFactor"
+      module: "Solution"
+      status: "proved"
+      note: "The per-step convergence factor of indices 1, 2, 4, 5 is (1 - sqrt 5)/8 at every t (index 3 sits at its limit)."
+    - source: "Mirtabatabaei–Bullo 2012, Theorem 6.4(iii)(a); Hegarty–Ognissanti–Wedin 2026, §5"
+      lean: "HK.sbi7b_perStepFactor_not_tendsto"
+      module: "Solution"
+      status: "proved"
+      note: "That factor converges to no non-negative number."
+    - source: "Mirtabatabaei–Bullo 2012, Lemma 4.2"
+      lean: "HK.proximityDigraph_eq_of_equiTopologyNbhd"
+      module: "Solution"
+      status: "proved"
+      note: "A point of the equi-topology neighbourhood of z has the proximity digraph of z (no positivity of the bounds assumed)."
+    - source: "Mirtabatabaei–Bullo 2012, Lemma 4.8(i)"
+      lean: "HK.eventually_constant_of_tendsto"
+      module: "Solution"
+      status: "proved"
+      note: "A convergent trajectory whose limit has every equi-topology distance positive eventually has the proximity digraph of its limit."
+    - source: "Mirtabatabaei–Bullo 2012, Lemma 4.8(ii)"
+      lean: "HK.fvct_eq_and_equilibrium_of_tendsto"
+      module: "Solution"
+      status: "proved"
+      note: "Under the same hypotheses the limit is eventually the final value at constant topology of x(t), and an equilibrium."
+    - source: "this development; Mirtabatabaei–Bullo 2012, Lemma 4.8 (its hypothesis)"
+      lean: "HK.equiTopologyDistance_pos"
+      module: "Solution"
+      status: "proved"
+      note: "Every equi-topology distance of the limits of the two constant-digraph source systems is positive."
+    - source: "Hegarty–Ognissanti–Wedin 2026, §6, extended"
+      lean: "HK.equiTopologyDistance_eq_zero"
+      module: "Solution"
+      status: "proved"
+      note: "The limits of the two alternating systems have equi-topology distance 0 at indices 2, 3, 4 (SBC) and 1, 3, 5 (SBI)."
+
+acknowledgements: >-
+  Mirtabatabaei and Bullo for the models, the conjectures and the lemmas; Hegarty, Ognissanti and Wedin
+  for the systems formalized; Lean, Mathlib, Comparator, lean4export, NanoDa, and the Palomar policy and
+  verifier projects. AI assistance is disclosed above.
