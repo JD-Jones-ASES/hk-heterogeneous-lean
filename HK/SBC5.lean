@@ -152,4 +152,62 @@ theorem not_theorem64iv_sbc_five_internal : ¬ Theorem64ivForAgents .sbc 5 := by
   · exact sbc5_not_fixedFrom t₂ hf
   · exact sbc5_not_pseudoStableAfter xinf t₂ hps
 
+theorem sbc_adj_lim (t : ℕ) :
+    (adjMatrix .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t)).mulVec sbc5_lim = sbc5_lim := by
+  funext i
+  rw [adj_mulVec, sbc5_neighbors_internal]
+  fin_cases i <;> simp [Finset.sum_insert, sbc5_lim] <;> norm_num
+
+theorem sbc_adj_v (t : ℕ) :
+    (adjMatrix .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t)).mulVec sbc5_v = sbc5Rate • sbc5_v := by
+  have h2 := sbc_sqrt_two_sq
+  funext i
+  rw [adj_mulVec, sbc5_neighbors_internal]
+  fin_cases i
+  · simp [sbc5_v]
+  · simp [Finset.sum_insert, sbc5_v, sbc5Rate]; ring
+  · simp [Finset.sum_insert, sbc5_v, sbc5Rate]; linear_combination (-1 / 3 : ℝ) * h2
+  · simp [Finset.sum_insert, sbc5_v, sbc5Rate]; ring
+  · simp [sbc5_v]
+
+theorem sbc_adj_pow (t k : ℕ) (c : ℝ) :
+    (adjMatrix .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) ^ k).mulVec (sbc5_lim + c • sbc5_v) =
+      sbc5_lim + (sbc5Rate ^ k * c) • sbc5_v := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    rw [pow_succ', ← Matrix.mulVec_mulVec, ih, Matrix.mulVec_add, Matrix.mulVec_smul,
+      sbc_adj_lim, sbc_adj_v, smul_smul, pow_succ]
+    congr 2
+    ring
+
+/-- The final value at constant topology along the trajectory is the limit at every `t`. -/
+theorem sbc_fvct (t : ℕ) : fvct .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) = sbc5_lim := by
+  have hx : traj .sbc sbc5_r sbc5_x0 t = sbc5_lim + (sbc5Rate ^ t) • sbc5_v := by
+    rw [sbc5_closed_form_internal]; funext i; simp
+  have h1 : Tendsto (fun k : ℕ => sbc5_lim + (sbc5Rate ^ k * sbc5Rate ^ t) • sbc5_v)
+      atTop (𝓝 sbc5_lim) := by
+    have h0 := ((tendsto_pow_atTop_nhds_zero_of_abs_lt_one abs_sbc5Rate_lt_one).mul_const
+      (sbc5Rate ^ t)).smul_const sbc5_v
+    have h2 := h0.const_add sbc5_lim
+    rwa [zero_mul, zero_smul, add_zero] at h2
+  have hA := sbc_adj_pow t
+  unfold fvct
+  set A := adjMatrix .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) with hAdef
+  have hf : (fun k : ℕ => (A ^ k).mulVec (traj .sbc sbc5_r sbc5_x0 t)) =
+      fun k => sbc5_lim + (sbc5Rate ^ k * sbc5Rate ^ t) • sbc5_v := by
+    funext k; rw [hx, hA]
+  rw [hf]
+  exact h1.limUnder_eq
+
+/-- The per-step convergence factor of agents 1, 2, 3 is `λ` at every `t`. -/
+theorem sbc_perStepFactor (t : ℕ) (i : Fin 5) (hi : i ∈ ({1, 2, 3} : Finset (Fin 5))) :
+    perStepFactor .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0) i t = sbc5Rate := by
+  have hv : sbc5_v i ≠ 0 := by
+    fin_cases i <;> simp_all [sbc5_v]
+  have hp : sbc5Rate ^ t ≠ 0 := pow_ne_zero _ sbc5Rate_neg.ne
+  rw [perStepFactor, sbc_fvct, sbc5_closed_form_internal, sbc5_closed_form_internal]
+  simp only [add_sub_cancel_left, pow_succ]
+  field_simp
+
 end HK
