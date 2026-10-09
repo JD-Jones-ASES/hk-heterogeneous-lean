@@ -87,5 +87,26 @@ for m in pattern.finditer(src):
     out.append(f"theorem {name}{rest.rstrip()} :=\n  {call}\n\n")
 out.append("end HK\n")
 (ROOT / "Solution.lean").write_text("".join(out), encoding="utf-8", newline="\n")
-print(len(names), "theorems")
-print(json.dumps(["HK." + n for n in names], indent=2))
+# comparator.json
+cfg = {"challenge_module": "Challenge", "solution_module": "Solution", "theorem_names": ["HK." + n for n in names],
+       "definition_names": [], "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"], "enable_nanoda": True}
+(ROOT / "comparator.json").write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8", newline="\n")
+# Test/Axioms.lean: the compared-theorem list between the markers
+ax_path = ROOT / "Test" / "Axioms.lean"
+ax = ax_path.read_text(encoding="utf-8")
+start = ax.index("  for n in [")
+end = ax.index("] do", start) + len("] do")
+items = ", ".join("`HK." + n for n in names)
+# wrap at ~95 columns
+wrapped, line = [], "  for n in ["
+for item in items.split(", "):
+    piece = item + ", "
+    if len(line) + len(piece) > 96:
+        wrapped.append(line.rstrip())
+        line = "      " + piece
+    else:
+        line += piece
+wrapped.append(line.rstrip().rstrip(",") + "] do")
+ax = ax[:start] + "\n".join(wrapped) + ax[end:]
+ax_path.write_text(ax, encoding="utf-8", newline="\n")
+print(len(names), "theorems; Solution.lean, comparator.json and Test/Axioms.lean written")

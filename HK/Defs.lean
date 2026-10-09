@@ -68,43 +68,55 @@ def PseudoStableAfter {n : ℕ} (x : ℕ → Fin n → ℝ) (xinf : Fin n → �
 
 /-! ### The conjectures and the theorem, as statements about one model and about both -/
 
-/-- Conjecture 2.2 (constant topology in finite time) for the model `m`: for every number of agents,
-every positive bounds vector and every initial opinion vector there is a finite time after which the
+/-- Conjecture 2.2 (constant topology in finite time) for the model `m` and `n` agents: for every
+positive bounds vector and every initial opinion vector there is a finite time after which the
 proximity digraph is constant. -/
-def Conjecture22For (m : Model) : Prop :=
-  ∀ (n : ℕ) (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
+def Conjecture22ForAgents (m : Model) (n : ℕ) : Prop :=
+  ∀ (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
     ∃ τ, ∀ t, τ ≤ t →
       proximityDigraph m r (traj m r x₀ t) = proximityDigraph m r (traj m r x₀ τ)
+
+/-- Conjecture 2.2 for the model `m` and every number of agents. -/
+def Conjecture22For (m : Model) : Prop := ∀ n : ℕ, Conjecture22ForAgents m n
 
 /-- Conjecture 2.2 for any SBC or SBI system. -/
 def Conjecture22 : Prop := ∀ m : Model, Conjecture22For m
 
-/-- Conjecture 2.3 (pseudo-stable behaviour) for the model `m`: every trajectory reaches a fixed
-state in finite time or is pseudo-stable after some finite time. -/
-def Conjecture23For (m : Model) : Prop :=
-  ∀ (n : ℕ) (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
+/-- Conjecture 2.3 (pseudo-stable behaviour) for the model `m` and `n` agents: every trajectory
+reaches a fixed state in finite time or is pseudo-stable after some finite time. -/
+def Conjecture23ForAgents (m : Model) (n : ℕ) : Prop :=
+  ∀ (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
     ∃ τ, FixedFrom (traj m r x₀) τ ∨ ∃ xinf, PseudoStableAfter (traj m r x₀) xinf τ
+
+/-- Conjecture 2.3 for the model `m` and every number of agents. -/
+def Conjecture23For (m : Model) : Prop := ∀ n : ℕ, Conjecture23ForAgents m n
 
 /-- Conjecture 2.3 for any SBC or SBI system. -/
 def Conjecture23 : Prop := ∀ m : Model, Conjecture23For m
 
-/-- Theorem 6.4(iv) for the model `m`, read literally: if the proximity digraph of a trajectory is
-constant from `τ` on, the trajectory is pseudo-stable from some `t₂ ≥ τ` on (already false for a
-trajectory frozen from the start, since both classes of (2.2) must be non-empty). -/
-def Theorem64ivLiteralFor (m : Model) : Prop :=
-  ∀ (n : ℕ) (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
+/-- Theorem 6.4(iv) for the model `m` and `n` agents, read literally: if the proximity digraph of a
+trajectory is constant from `τ` on, the trajectory is pseudo-stable from some `t₂ ≥ τ` on (already
+false for a trajectory frozen from the start, since both classes of (2.2) must be non-empty). -/
+def Theorem64ivLiteralForAgents (m : Model) (n : ℕ) : Prop :=
+  ∀ (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
     ∀ τ, (∀ t, τ ≤ t →
         proximityDigraph m r (traj m r x₀ t) = proximityDigraph m r (traj m r x₀ τ)) →
       ∃ t₂, τ ≤ t₂ ∧ ∃ xinf, PseudoStableAfter (traj m r x₀) xinf t₂
 
-/-- Theorem 6.4(iv) for the model `m`, the reading that also admits a trajectory in a fixed state
-from `t₂` on. -/
-def Theorem64ivFor (m : Model) : Prop :=
-  ∀ (n : ℕ) (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
+/-- Theorem 6.4(iv) for the model `m` and every number of agents, read literally. -/
+def Theorem64ivLiteralFor (m : Model) : Prop := ∀ n : ℕ, Theorem64ivLiteralForAgents m n
+
+/-- Theorem 6.4(iv) for the model `m` and `n` agents, the reading that also admits a trajectory in a
+fixed state from `t₂` on. -/
+def Theorem64ivForAgents (m : Model) (n : ℕ) : Prop :=
+  ∀ (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
     ∀ τ, (∀ t, τ ≤ t →
         proximityDigraph m r (traj m r x₀ t) = proximityDigraph m r (traj m r x₀ τ)) →
       ∃ t₂, τ ≤ t₂ ∧
         (FixedFrom (traj m r x₀) t₂ ∨ ∃ xinf, PseudoStableAfter (traj m r x₀) xinf t₂)
+
+/-- Theorem 6.4(iv) for the model `m` and every number of agents, the reading admitting fixed states. -/
+def Theorem64ivFor (m : Model) : Prop := ∀ n : ℕ, Theorem64ivForAgents m n
 
 /-- Theorem 6.4(iv), literal reading, for any SBC or SBI system. -/
 def Theorem64ivLiteral : Prop := ∀ m : Model, Theorem64ivLiteralFor m
@@ -178,5 +190,30 @@ noncomputable def sbi7b_x0 : Fin 7 → ℝ :=
 noncomputable def sbi7b_r : Fin 7 → ℝ := ![85, 35, 35, 75, 35, 35, 85]
 /-- Their §5: the limit. -/
 noncomputable def sbi7b_lim : Fin 7 → ℝ := ![0, 70, 100, 110, 120, 150, 220]
+
+/-! ### Two smaller constant-digraph systems (this development) -/
+
+/-- Five SBC agents: the rate `(1 − √2)/3`. -/
+noncomputable def sbc5Rate : ℝ := (1 - Real.sqrt 2) / 3
+/-- Five SBC agents: the initial opinions `(0, 7, 12 − √2, 19, 24)`. -/
+noncomputable def sbc5_x0 : Fin 5 → ℝ := ![0, 7, 12 - Real.sqrt 2, 19, 24]
+/-- Five SBC agents: the confidence bounds. -/
+noncomputable def sbc5_r : Fin 5 → ℝ := ![3, 9, 9, 9, 3]
+/-- Five SBC agents: the limit. -/
+noncomputable def sbc5_lim : Fin 5 → ℝ := ![0, 6, 12, 18, 24]
+/-- Five SBC agents: the offset direction, `x(t) = x_∞ + ((1 − √2)/3)ᵗ v`. -/
+noncomputable def sbc5_v : Fin 5 → ℝ := ![0, 1, -Real.sqrt 2, 1, 0]
+
+/-- Six SBI agents: the rate `(13 − √249)/40`. -/
+noncomputable def sbi6Rate : ℝ := (13 - Real.sqrt 249) / 40
+/-- Six SBI agents: the initial opinions `x_∞ + v`. -/
+noncomputable def sbi6_x0 : Fin 6 → ℝ :=
+  ![0, 25 + 10 / 16, 31 + (-5 - Real.sqrt 249) / 16, 44 + 8 / 16, 55 + 10 / 16, 90]
+/-- Six SBI agents: the influence bounds. -/
+noncomputable def sbi6_r : Fin 6 → ℝ := ![45, 18, 27, 45 / 2, 27, 54]
+/-- Six SBI agents: the limit. -/
+noncomputable def sbi6_lim : Fin 6 → ℝ := ![0, 25, 31, 44, 55, 90]
+/-- Six SBI agents: the offset direction, `x(t) = x_∞ + ((13 − √249)/40)ᵗ v`. -/
+noncomputable def sbi6_v : Fin 6 → ℝ := ![0, 10 / 16, (-5 - Real.sqrt 249) / 16, 8 / 16, 10 / 16, 0]
 
 end HK

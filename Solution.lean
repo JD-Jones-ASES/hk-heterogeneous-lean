@@ -124,6 +124,63 @@ theorem not_theorem64iv : ¬ Theorem64iv :=
 theorem not_theorem64iv_literal : ¬ Theorem64ivLiteral :=
   not_theorem64iv_literal_internal
 
+theorem sbc5_closed_form (t : ℕ) :
+    traj .sbc sbc5_r sbc5_x0 t = fun i => sbc5_lim i + sbc5Rate ^ t * sbc5_v i :=
+  sbc5_closed_form_internal t
+
+theorem sbc5_neighbors (t : ℕ) :
+    neighbors .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) =
+      ![{0}, {0, 1, 2}, {1, 2, 3}, {2, 3, 4}, {4}] :=
+  sbc5_neighbors_internal t
+
+theorem sbi6_closed_form (t : ℕ) :
+    traj .sbi sbi6_r sbi6_x0 t = fun i => sbi6_lim i + sbi6Rate ^ t * sbi6_v i :=
+  sbi6_closed_form_internal t
+
+theorem sbi6_neighbors (t : ℕ) :
+    neighbors .sbi sbi6_r (traj .sbi sbi6_r sbi6_x0 t) =
+      ![{0}, {0, 1, 2, 3}, {0, 1, 2, 3, 4}, {0, 2, 3, 4, 5}, {2, 3, 4, 5}, {5}] :=
+  sbi6_neighbors_internal t
+
+theorem small_tendsto :
+    Tendsto (traj .sbc sbc5_r sbc5_x0) atTop (𝓝 sbc5_lim) ∧
+    Tendsto (traj .sbi sbi6_r sbi6_x0) atTop (𝓝 sbi6_lim) :=
+  small_tendsto_internal
+
+theorem small_digraph_constant (t : ℕ) :
+    proximityDigraph .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) =
+      proximityDigraph .sbc sbc5_r sbc5_x0 ∧
+    proximityDigraph .sbi sbi6_r (traj .sbi sbi6_r sbi6_x0 t) =
+      proximityDigraph .sbi sbi6_r sbi6_x0 :=
+  small_digraph_constant_internal t
+
+theorem small_not_fixedFrom (τ : ℕ) :
+    ¬ FixedFrom (traj .sbc sbc5_r sbc5_x0) τ ∧ ¬ FixedFrom (traj .sbi sbi6_r sbi6_x0) τ :=
+  small_not_fixedFrom_internal τ
+
+theorem small_not_pseudoStableAfter (xinf : Fin 5 → ℝ) (yinf : Fin 6 → ℝ) (τ : ℕ) :
+    ¬ PseudoStableAfter (traj .sbc sbc5_r sbc5_x0) xinf τ ∧
+    ¬ PseudoStableAfter (traj .sbi sbi6_r sbi6_x0) yinf τ :=
+  small_not_pseudoStableAfter_internal xinf yinf τ
+
+theorem not_conjecture22_sbc_seven : ¬ Conjecture22ForAgents .sbc 7 :=
+  not_conjecture22_sbc_seven_internal
+
+theorem not_conjecture22_sbi_seven : ¬ Conjecture22ForAgents .sbi 7 :=
+  not_conjecture22_sbi_seven_internal
+
+theorem not_conjecture23_sbc_five : ¬ Conjecture23ForAgents .sbc 5 :=
+  not_conjecture23_sbc_five_internal
+
+theorem not_conjecture23_sbi_six : ¬ Conjecture23ForAgents .sbi 6 :=
+  not_conjecture23_sbi_six_internal
+
+theorem not_theorem64iv_sbc_five : ¬ Theorem64ivForAgents .sbc 5 :=
+  not_theorem64iv_sbc_five_internal
+
+theorem not_theorem64iv_sbi_six : ¬ Theorem64ivForAgents .sbi 6 :=
+  not_theorem64iv_sbi_six_internal
+
 theorem alternating_fvct (t : ℕ) :
     fvct .sbc sbc7_r (traj .sbc sbc7_r sbc7_x0 t) = sbc7_lim ∧
     fvct .sbi sbi7_r (traj .sbi sbi7_r sbi7_x0 t) = sbi7_lim :=

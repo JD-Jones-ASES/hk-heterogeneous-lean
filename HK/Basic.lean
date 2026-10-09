@@ -5,11 +5,9 @@ public import HK.Defs
 /-!
 # Generic lemmas about the models
 
-The mean form of a step, the trajectory recursion, convergence of a geometric closed form, the two
-ways an alternating agent defeats a fixed state and pseudo-stability, the final value at constant
-topology along a trajectory whose neighbourhoods are constant, the per-step factor of a geometric
-closed form, the implication from the literal reading of Theorem 6.4(iv) to the reading admitting
-fixed states, and the facts about `sbiRate = (1 − √5)/8`.
+The mean form of a step, the sign and size of the rates' powers, convergence of a geometric closed form
+`L + a(t) v`, the two ways an alternating agent defeats a fixed state and pseudo-stability, the mean form of
+`A(y) z`, neighbourhoods from digraphs, and the facts about `sbiRate = (1 − √5)/8`.
 -/
 
 @[expose] public section
@@ -18,83 +16,132 @@ namespace HK
 
 open Filter Topology
 
-/-- The mean form of (2.1): `step m r y i` is the average of `y` over `N_i(y)`. -/
+/-- One step, coordinatewise: the average of the out-neighbours' opinions. -/
 theorem step_apply (m : Model) {n : ℕ} (r y : Fin n → ℝ) (i : Fin n) :
-    step m r y i = (∑ j ∈ neighbors m r y i, y j) / ((neighbors m r y i).card : ℝ) := sorry
+    step m r y i = (∑ j ∈ neighbors m r y i, y j) / (neighbors m r y i).card := by
+  simp only [step, adjMatrix, Matrix.mulVec, dotProduct, Matrix.of_apply, ite_mul, zero_mul]
+  rw [Finset.sum_ite_mem, Finset.univ_inter, Finset.sum_div]
+  exact Finset.sum_congr rfl (fun j _ => by ring)
 
-theorem traj_zero (m : Model) {n : ℕ} (r x₀ : Fin n → ℝ) : traj m r x₀ 0 = x₀ := sorry
+/-- The sign and size of `(-1/6)^t` by parity. -/
+theorem pow_even {t : ℕ} (ht : Even t) : 0 < (-1 / 6 : ℝ) ^ t ∧ (-1 / 6 : ℝ) ^ t ≤ 1 := by
+  rw [neg_div, ht.neg_pow]
+  exact ⟨pow_pos (by norm_num) t, pow_le_one₀ (by norm_num) (by norm_num)⟩
 
-theorem traj_succ (m : Model) {n : ℕ} (r x₀ : Fin n → ℝ) (t : ℕ) :
-    traj m r x₀ (t + 1) = step m r (traj m r x₀ t) := sorry
+theorem pow_odd {t : ℕ} (ht : Odd t) : -1 / 6 ≤ (-1 / 6 : ℝ) ^ t ∧ (-1 / 6 : ℝ) ^ t < 0 := by
+  rw [neg_div, ht.neg_pow]
+  have hle : (1 / 6 : ℝ) ^ t ≤ 1 / 6 :=
+    pow_le_of_le_one (by norm_num) (by norm_num) (by rintro rfl; simp at ht)
+  have hpos : 0 < (1 / 6 : ℝ) ^ t := pow_pos (by norm_num) t
+  constructor <;> linarith
 
-/-- Equal neighbourhood functions give equal proximity digraphs. -/
-theorem proximityDigraph_eq_of_neighbors_eq (m : Model) {n : ℕ} (r y z : Fin n → ℝ)
-    (h : neighbors m r y = neighbors m r z) : proximityDigraph m r y = proximityDigraph m r z := sorry
+/-- `λ = (1 − φ)/4`. -/
+theorem sbiRate_eq : sbiRate = (1 - Real.goldenRatio) / 4 := by
+  unfold sbiRate Real.goldenRatio
+  ring
 
-/-- Equal proximity digraphs give equal neighbourhood functions. -/
-theorem neighbors_eq_of_proximityDigraph_eq (m : Model) {n : ℕ} (r y z : Fin n → ℝ)
-    (h : proximityDigraph m r y = proximityDigraph m r z) : neighbors m r y = neighbors m r z := sorry
+/-- The sign and size of `λ^t / 2` by parity. -/
+theorem sbiRate_pow_even {t : ℕ} (ht : Even t) :
+    0 < sbiRate ^ t / 2 ∧ sbiRate ^ t / 2 ≤ 1 / 2 := by
+  have hφ1 := Real.one_lt_goldenRatio
+  have hφ2 := Real.goldenRatio_lt_two
+  have h : sbiRate = -((Real.goldenRatio - 1) / 4) := by rw [sbiRate_eq]; ring
+  rw [h, ht.neg_pow]
+  have h0 : 0 < ((Real.goldenRatio - 1) / 4) ^ t := pow_pos (by linarith) t
+  have h1 : ((Real.goldenRatio - 1) / 4) ^ t ≤ 1 := pow_le_one₀ (by linarith) (by linarith)
+  constructor <;> linarith
 
-/-- Equal neighbourhood functions give equal adjacency matrices. -/
-theorem adjMatrix_eq_of_neighbors_eq (m : Model) {n : ℕ} (r y z : Fin n → ℝ)
-    (h : neighbors m r y = neighbors m r z) : adjMatrix m r y = adjMatrix m r z := sorry
+theorem sbiRate_pow_odd {t : ℕ} (ht : Odd t) :
+    (1 - Real.goldenRatio) / 8 ≤ sbiRate ^ t / 2 ∧ sbiRate ^ t / 2 < 0 := by
+  have hφ1 := Real.one_lt_goldenRatio
+  have hφ2 := Real.goldenRatio_lt_two
+  have h : sbiRate = -((Real.goldenRatio - 1) / 4) := by rw [sbiRate_eq]; ring
+  rw [h, ht.neg_pow]
+  have h0 : 0 < ((Real.goldenRatio - 1) / 4) ^ t := pow_pos (by linarith) t
+  have h1 : ((Real.goldenRatio - 1) / 4) ^ t ≤ (Real.goldenRatio - 1) / 4 :=
+    pow_le_of_le_one (by linarith) (by linarith) (by rintro rfl; simp at ht)
+  constructor <;> linarith
 
-/-- A trajectory with the closed form `L + cᵗ v`, `|c| < 1`, converges to `L`. -/
-theorem tendsto_of_closed_form {n : ℕ} (x : ℕ → Fin n → ℝ) (L v : Fin n → ℝ) (c : ℝ)
-    (hc : |c| < 1) (hx : ∀ t, x t = fun i => L i + c ^ t * v i) :
-    Tendsto x atTop (𝓝 L) := sorry
+theorem pow_bounds (t : ℕ) : -1 / 6 ≤ (-1 / 6 : ℝ) ^ t ∧ (-1 / 6 : ℝ) ^ t ≤ 1 := by
+  rcases Nat.even_or_odd t with ht | ht
+  · obtain ⟨h0, h1⟩ := pow_even ht
+    constructor <;> linarith
+  · obtain ⟨h0, h1⟩ := pow_odd ht
+    constructor <;> linarith
 
-/-- An agent with a nonzero offset `cᵗ v i`, `c < 0`, is never in a fixed state. -/
-theorem not_fixedFrom_of_alternating {n : ℕ} (x : ℕ → Fin n → ℝ) (L v : Fin n → ℝ) (c : ℝ)
-    (hc : c < 0) (i : Fin n) (hv : v i ≠ 0) (hx : ∀ t, x t i = L i + c ^ t * v i) (τ : ℕ) :
-    ¬ FixedFrom x τ := sorry
+theorem sbiRate_pow_bounds (t : ℕ) :
+    (1 - Real.goldenRatio) / 4 ≤ sbiRate ^ t ∧ sbiRate ^ t ≤ 1 := by
+  have hφ1 := Real.one_lt_goldenRatio
+  rcases Nat.even_or_odd t with ht | ht
+  · obtain ⟨h0, h1⟩ := sbiRate_pow_even ht
+    constructor <;> linarith
+  · obtain ⟨h0, h1⟩ := sbiRate_pow_odd ht
+    constructor <;> linarith
 
-/-- A trajectory converging to `L` with an agent whose offset `cᵗ v i`, `c < 0`, `v i ≠ 0`,
-alternates sign is pseudo-stable after no time towards no vector. -/
-theorem not_pseudoStableAfter_of_alternating {n : ℕ} (x : ℕ → Fin n → ℝ) (L v : Fin n → ℝ) (c : ℝ)
-    (hc : c < 0) (hL : Tendsto x atTop (𝓝 L)) (i : Fin n) (hv : v i ≠ 0)
-    (hx : ∀ t, x t i = L i + c ^ t * v i) (xinf : Fin n → ℝ) (τ : ℕ) :
-    ¬ PseudoStableAfter x xinf τ := sorry
+theorem tendsto_of_closed_form {n : ℕ} (x : ℕ → Fin n → ℝ) (lim v : Fin n → ℝ) (a : ℕ → ℝ)
+    (ha : Tendsto a atTop (𝓝 0)) (hx : ∀ t, x t = fun i => lim i + a t * v i) :
+    Tendsto x atTop (𝓝 lim) := by
+  rw [tendsto_pi_nhds]
+  intro i
+  have := (ha.mul_const (v i)).const_add (lim i)
+  simpa [hx] using this
 
-/-- Along a trajectory whose neighbourhoods are constant from time `t` on, the final value at
-constant topology of `x(t)` is the limit of the trajectory. -/
-theorem fvct_eq_of_constant_neighbors (m : Model) {n : ℕ} (r x₀ L : Fin n → ℝ) (t : ℕ)
-    (hN : ∀ s, neighbors m r (traj m r x₀ (t + s)) = neighbors m r (traj m r x₀ t))
-    (hL : Tendsto (traj m r x₀) atTop (𝓝 L)) : fvct m r (traj m r x₀ t) = L := sorry
+theorem not_monotone_side (l a b c : ℝ) (hab : a * b < 0) :
+    ¬ ((l + a * c < l + b * c ∧ l + b * c < l) ∨ (l + a * c > l + b * c ∧ l + b * c > l)) := by
+  rintro (⟨h1, h2⟩ | ⟨h1, h2⟩) <;> nlinarith [sq_nonneg c, sq_nonneg (b * c)]
 
-/-- If `A(y)` fixes `L` and scales `v` by `c` with `|c| < 1`, and `y = L + a v`, then the final value
-at constant topology of `y` is `L` (`A(y)ˢ y = L + a cˢ v → L`). -/
-theorem fvct_eq_of_eigen (m : Model) {n : ℕ} (r y L v : Fin n → ℝ) (a c : ℝ) (hc : |c| < 1)
-    (hy : y = fun i => L i + a * v i) (hL : (adjMatrix m r y).mulVec L = L)
-    (hv : (adjMatrix m r y).mulVec v = c • v) : fvct m r y = L := sorry
+theorem not_pseudoStable_of_closed_form {n : ℕ} (x : ℕ → Fin n → ℝ) (lim v : Fin n → ℝ)
+    (a : ℕ → ℝ) (ha : Tendsto a atTop (𝓝 0)) (hx : ∀ t, x t = fun i => lim i + a t * v i)
+    (hab : ∀ t, a t * a (t + 1) < 0) (xinf : Fin n → ℝ) (τ : ℕ) :
+    ¬ PseudoStableAfter x xinf τ := by
+  rintro ⟨hlim, F, C, -, ⟨i, hi⟩, -, -, h⟩
+  have hx' : xinf = lim := tendsto_nhds_unique hlim (tendsto_of_closed_form x lim v a ha hx)
+  subst hx'
+  have hc := (h τ le_rfl).2 i hi
+  rw [hx, hx] at hc
+  exact not_monotone_side _ _ _ _ (hab τ) hc
 
-/-- The per-step factor of an agent with the closed form `L i + cˢ v i`, `v i ≠ 0`, `c ≠ 0`, at a
-time where the final value at constant topology is `L`, is `c`. -/
-theorem perStepFactor_of_closed_form (m : Model) {n : ℕ} (r x₀ L v : Fin n → ℝ) (c : ℝ)
-    (hc : c ≠ 0) (i : Fin n) (hv : v i ≠ 0) (t : ℕ) (hf : fvct m r (traj m r x₀ t) = L)
-    (hx : ∀ s, traj m r x₀ s i = L i + c ^ s * v i) :
-    perStepFactor m r (traj m r x₀) i t = c := sorry
+theorem not_fixedFrom_of_closed_form {n : ℕ} (x : ℕ → Fin n → ℝ) (lim v : Fin n → ℝ)
+    (a : ℕ → ℝ) (hx : ∀ t, x t = fun i => lim i + a t * v i)
+    (hab : ∀ t, a t * a (t + 1) < 0) (i : Fin n) (hv : v i ≠ 0) (τ : ℕ) :
+    ¬ FixedFrom x τ := by
+  intro h
+  have h1 := congrFun (h (τ + 1) (Nat.le_succ τ)) i
+  rw [hx, hx] at h1
+  have h2 : a (τ + 1) = a τ := mul_right_cancel₀ hv (by simpa using h1)
+  have h3 := hab τ
+  rw [h2] at h3
+  nlinarith [sq_nonneg (a τ)]
 
-/-- A sequence constantly equal to a negative number converges to no non-negative number. -/
-theorem not_tendsto_of_const_neg (f : ℕ → ℝ) (c ρ : ℝ) (hc : c < 0) (hρ : 0 ≤ ρ)
-    (hf : ∀ t, f t = c) : ¬ Tendsto f atTop (𝓝 ρ) := sorry
+/-- `a t · a (t+1) < 0` for `a t = q^t · c` with `q < 0`, `c ≠ 0`. -/
+theorem alternating (q c : ℝ) (hq : q < 0) (hc : c ≠ 0) (t : ℕ) :
+    q ^ t * c * (q ^ (t + 1) * c) < 0 := by
+  have h : q ^ t * c * (q ^ (t + 1) * c) = q * (q ^ t * c) ^ 2 := by ring
+  rw [h]
+  have : 0 < (q ^ t * c) ^ 2 := by
+    have : q ^ t * c ≠ 0 := mul_ne_zero (pow_ne_zero _ hq.ne) hc
+    positivity
+  nlinarith
 
-/-- The literal reading of Theorem 6.4(iv) implies the reading admitting fixed states. -/
-theorem theorem64ivFor_of_literal (m : Model) : Theorem64ivLiteralFor m → Theorem64ivFor m := sorry
+theorem sbiRate_neg : sbiRate < 0 := by
+  rw [sbiRate_eq]; linarith [Real.one_lt_goldenRatio]
 
-/-- `sbiRate = ψ / 4` with `ψ = (1 − √5)/2` the golden ratio conjugate. -/
-theorem sbiRate_eq : sbiRate = Real.goldenConj / 4 := sorry
+theorem sbiRate_abs_lt_one : |sbiRate| < 1 := by
+  rw [sbiRate_eq, abs_lt]
+  constructor <;> linarith [Real.one_lt_goldenRatio, Real.goldenRatio_lt_two]
 
-theorem sbiRate_neg : sbiRate < 0 := sorry
+theorem adj_mulVec (m : Model) {n : ℕ} (r y z : Fin n → ℝ) (i : Fin n) :
+    (adjMatrix m r y).mulVec z i = (∑ j ∈ neighbors m r y i, z j) / (neighbors m r y i).card := by
+  simp only [adjMatrix, Matrix.mulVec, dotProduct, Matrix.of_apply, ite_mul, zero_mul]
+  rw [Finset.sum_ite_mem, Finset.univ_inter, Finset.sum_div]
+  exact Finset.sum_congr rfl (fun j _ => by ring)
 
-theorem neg_one_div_four_lt_sbiRate : -1 / 4 < sbiRate := sorry
-
-theorem abs_sbiRate_lt_one : |sbiRate| < 1 := sorry
-
-/-- `4 λ φ = −1`: the identity (3.1) of the source. -/
-theorem four_mul_sbiRate_mul_goldenRatio : 4 * sbiRate * Real.goldenRatio = -1 := sorry
-
-/-- `4 λ = 1 − φ`: the identity (3.1) of the source. -/
-theorem four_mul_sbiRate : 4 * sbiRate = 1 - Real.goldenRatio := sorry
+theorem neighbors_eq_of_digraph_eq (m : Model) {n : ℕ} (r y z : Fin n → ℝ)
+    (hd : proximityDigraph m r y = proximityDigraph m r z) : neighbors m r y = neighbors m r z := by
+  funext i
+  ext j
+  have := congrFun (congrFun (congrArg Digraph.Adj hd) i) j
+  simp only [proximityDigraph] at this
+  exact Iff.of_eq this
 
 end HK

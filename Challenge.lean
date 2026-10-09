@@ -37,6 +37,10 @@ systems (the agents are indexed `0, …, n − 1` here, agent `i` of the paper b
   vector, since four agents alternate sides of their limits;
 * hence Conjecture 2.2 and Conjecture 2.3 fail in each model, and Theorem 6.4(iv) fails in each
   model under both readings;
+* two smaller constant-digraph systems found in this development: five SBC agents with rate
+  `(1 − √2)/3` and six SBI agents with rate `(13 − √249)/40`, each converging with a constant digraph
+  and oscillating agents, so Conjecture 2.3 and Theorem 6.4(iv) fail already with five SBC agents and
+  six SBI agents (and Conjecture 2.2 with seven agents in each model, the source's counts);
 * with `fvct` (their Definition 3.1, the limit of `A(y)ᵗ y`) and the per-step convergence factor
   (their Definition 6.1): along all four systems the final value at constant topology of every
   `x(t)` is the limit `x_∞`; the agents with nonzero offset in the two constant-digraph systems (all
@@ -118,43 +122,55 @@ def PseudoStableAfter {n : ℕ} (x : ℕ → Fin n → ℝ) (xinf : Fin n → �
 
 /-! ### The conjectures and the theorem, as statements about one model and about both -/
 
-/-- Conjecture 2.2 (constant topology in finite time) for the model `m`: for every number of agents,
-every positive bounds vector and every initial opinion vector there is a finite time after which the
+/-- Conjecture 2.2 (constant topology in finite time) for the model `m` and `n` agents: for every
+positive bounds vector and every initial opinion vector there is a finite time after which the
 proximity digraph is constant. -/
-def Conjecture22For (m : Model) : Prop :=
-  ∀ (n : ℕ) (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
+def Conjecture22ForAgents (m : Model) (n : ℕ) : Prop :=
+  ∀ (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
     ∃ τ, ∀ t, τ ≤ t →
       proximityDigraph m r (traj m r x₀ t) = proximityDigraph m r (traj m r x₀ τ)
+
+/-- Conjecture 2.2 for the model `m` and every number of agents. -/
+def Conjecture22For (m : Model) : Prop := ∀ n : ℕ, Conjecture22ForAgents m n
 
 /-- Conjecture 2.2 for any SBC or SBI system. -/
 def Conjecture22 : Prop := ∀ m : Model, Conjecture22For m
 
-/-- Conjecture 2.3 (pseudo-stable behaviour) for the model `m`: every trajectory reaches a fixed
-state in finite time or is pseudo-stable after some finite time. -/
-def Conjecture23For (m : Model) : Prop :=
-  ∀ (n : ℕ) (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
+/-- Conjecture 2.3 (pseudo-stable behaviour) for the model `m` and `n` agents: every trajectory
+reaches a fixed state in finite time or is pseudo-stable after some finite time. -/
+def Conjecture23ForAgents (m : Model) (n : ℕ) : Prop :=
+  ∀ (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
     ∃ τ, FixedFrom (traj m r x₀) τ ∨ ∃ xinf, PseudoStableAfter (traj m r x₀) xinf τ
+
+/-- Conjecture 2.3 for the model `m` and every number of agents. -/
+def Conjecture23For (m : Model) : Prop := ∀ n : ℕ, Conjecture23ForAgents m n
 
 /-- Conjecture 2.3 for any SBC or SBI system. -/
 def Conjecture23 : Prop := ∀ m : Model, Conjecture23For m
 
-/-- Theorem 6.4(iv) for the model `m`, read literally: if the proximity digraph of a trajectory is
-constant from `τ` on, the trajectory is pseudo-stable from some `t₂ ≥ τ` on (already false for a
-trajectory frozen from the start, since both classes of (2.2) must be non-empty). -/
-def Theorem64ivLiteralFor (m : Model) : Prop :=
-  ∀ (n : ℕ) (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
+/-- Theorem 6.4(iv) for the model `m` and `n` agents, read literally: if the proximity digraph of a
+trajectory is constant from `τ` on, the trajectory is pseudo-stable from some `t₂ ≥ τ` on (already
+false for a trajectory frozen from the start, since both classes of (2.2) must be non-empty). -/
+def Theorem64ivLiteralForAgents (m : Model) (n : ℕ) : Prop :=
+  ∀ (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
     ∀ τ, (∀ t, τ ≤ t →
         proximityDigraph m r (traj m r x₀ t) = proximityDigraph m r (traj m r x₀ τ)) →
       ∃ t₂, τ ≤ t₂ ∧ ∃ xinf, PseudoStableAfter (traj m r x₀) xinf t₂
 
-/-- Theorem 6.4(iv) for the model `m`, the reading that also admits a trajectory in a fixed state
-from `t₂` on. -/
-def Theorem64ivFor (m : Model) : Prop :=
-  ∀ (n : ℕ) (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
+/-- Theorem 6.4(iv) for the model `m` and every number of agents, read literally. -/
+def Theorem64ivLiteralFor (m : Model) : Prop := ∀ n : ℕ, Theorem64ivLiteralForAgents m n
+
+/-- Theorem 6.4(iv) for the model `m` and `n` agents, the reading that also admits a trajectory in a
+fixed state from `t₂` on. -/
+def Theorem64ivForAgents (m : Model) (n : ℕ) : Prop :=
+  ∀ (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
     ∀ τ, (∀ t, τ ≤ t →
         proximityDigraph m r (traj m r x₀ t) = proximityDigraph m r (traj m r x₀ τ)) →
       ∃ t₂, τ ≤ t₂ ∧
         (FixedFrom (traj m r x₀) t₂ ∨ ∃ xinf, PseudoStableAfter (traj m r x₀) xinf t₂)
+
+/-- Theorem 6.4(iv) for the model `m` and every number of agents, the reading admitting fixed states. -/
+def Theorem64ivFor (m : Model) : Prop := ∀ n : ℕ, Theorem64ivForAgents m n
 
 /-- Theorem 6.4(iv), literal reading, for any SBC or SBI system. -/
 def Theorem64ivLiteral : Prop := ∀ m : Model, Theorem64ivLiteralFor m
@@ -228,6 +244,31 @@ noncomputable def sbi7b_x0 : Fin 7 → ℝ :=
 noncomputable def sbi7b_r : Fin 7 → ℝ := ![85, 35, 35, 75, 35, 35, 85]
 /-- Their §5: the limit. -/
 noncomputable def sbi7b_lim : Fin 7 → ℝ := ![0, 70, 100, 110, 120, 150, 220]
+
+/-! ### Two smaller constant-digraph systems (this development) -/
+
+/-- Five SBC agents: the rate `(1 − √2)/3`. -/
+noncomputable def sbc5Rate : ℝ := (1 - Real.sqrt 2) / 3
+/-- Five SBC agents: the initial opinions `(0, 7, 12 − √2, 19, 24)`. -/
+noncomputable def sbc5_x0 : Fin 5 → ℝ := ![0, 7, 12 - Real.sqrt 2, 19, 24]
+/-- Five SBC agents: the confidence bounds. -/
+noncomputable def sbc5_r : Fin 5 → ℝ := ![3, 9, 9, 9, 3]
+/-- Five SBC agents: the limit. -/
+noncomputable def sbc5_lim : Fin 5 → ℝ := ![0, 6, 12, 18, 24]
+/-- Five SBC agents: the offset direction, `x(t) = x_∞ + ((1 − √2)/3)ᵗ v`. -/
+noncomputable def sbc5_v : Fin 5 → ℝ := ![0, 1, -Real.sqrt 2, 1, 0]
+
+/-- Six SBI agents: the rate `(13 − √249)/40`. -/
+noncomputable def sbi6Rate : ℝ := (13 - Real.sqrt 249) / 40
+/-- Six SBI agents: the initial opinions `x_∞ + v`. -/
+noncomputable def sbi6_x0 : Fin 6 → ℝ :=
+  ![0, 25 + 10 / 16, 31 + (-5 - Real.sqrt 249) / 16, 44 + 8 / 16, 55 + 10 / 16, 90]
+/-- Six SBI agents: the influence bounds. -/
+noncomputable def sbi6_r : Fin 6 → ℝ := ![45, 18, 27, 45 / 2, 27, 54]
+/-- Six SBI agents: the limit. -/
+noncomputable def sbi6_lim : Fin 6 → ℝ := ![0, 25, 31, 44, 55, 90]
+/-- Six SBI agents: the offset direction, `x(t) = x_∞ + ((13 − √249)/40)ᵗ v`. -/
+noncomputable def sbi6_v : Fin 6 → ℝ := ![0, 10 / 16, (-5 - Real.sqrt 249) / 16, 8 / 16, 10 / 16, 0]
 
 /-! ### The closed forms and the neighbourhood tables -/
 
@@ -343,6 +384,67 @@ theorem not_theorem64iv : ¬ Theorem64iv := sorry
 
 /-- Theorem 6.4(iv) fails in its literal reading (which the reading admitting fixed states implies). -/
 theorem not_theorem64iv_literal : ¬ Theorem64ivLiteral := sorry
+
+/-! ### Smaller systems: Theorem 6.4(iv) and Conjecture 2.3 fail with five SBC agents and six SBI agents -/
+
+/-- Five SBC agents: `x(t) = (0, 6, 12, 18, 24) + ((1 − √2)/3)ᵗ (0, 1, −√2, 1, 0)`. -/
+theorem sbc5_closed_form (t : ℕ) :
+    traj .sbc sbc5_r sbc5_x0 t = fun i => sbc5_lim i + sbc5Rate ^ t * sbc5_v i := sorry
+
+/-- Five SBC agents: the neighbourhood table, the same at every `t`. -/
+theorem sbc5_neighbors (t : ℕ) :
+    neighbors .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) =
+      ![{0}, {0, 1, 2}, {1, 2, 3}, {2, 3, 4}, {4}] := sorry
+
+/-- Six SBI agents: `x(t) = (0, 25, 31, 44, 55, 90) + ((13 − √249)/40)ᵗ v`. -/
+theorem sbi6_closed_form (t : ℕ) :
+    traj .sbi sbi6_r sbi6_x0 t = fun i => sbi6_lim i + sbi6Rate ^ t * sbi6_v i := sorry
+
+/-- Six SBI agents: the neighbourhood table, the same at every `t`. -/
+theorem sbi6_neighbors (t : ℕ) :
+    neighbors .sbi sbi6_r (traj .sbi sbi6_r sbi6_x0 t) =
+      ![{0}, {0, 1, 2, 3}, {0, 1, 2, 3, 4}, {0, 2, 3, 4, 5}, {2, 3, 4, 5}, {5}] := sorry
+
+/-- Both smaller systems converge to their limits. -/
+theorem small_tendsto :
+    Tendsto (traj .sbc sbc5_r sbc5_x0) atTop (𝓝 sbc5_lim) ∧
+    Tendsto (traj .sbi sbi6_r sbi6_x0) atTop (𝓝 sbi6_lim) := sorry
+
+/-- Both smaller systems have a constant proximity digraph. -/
+theorem small_digraph_constant (t : ℕ) :
+    proximityDigraph .sbc sbc5_r (traj .sbc sbc5_r sbc5_x0 t) =
+      proximityDigraph .sbc sbc5_r sbc5_x0 ∧
+    proximityDigraph .sbi sbi6_r (traj .sbi sbi6_r sbi6_x0 t) =
+      proximityDigraph .sbi sbi6_r sbi6_x0 := sorry
+
+/-- Neither smaller system is ever in a fixed state. -/
+theorem small_not_fixedFrom (τ : ℕ) :
+    ¬ FixedFrom (traj .sbc sbc5_r sbc5_x0) τ ∧ ¬ FixedFrom (traj .sbi sbi6_r sbi6_x0) τ := sorry
+
+/-- Neither smaller system is pseudo-stable after any time towards any vector. -/
+theorem small_not_pseudoStableAfter (xinf : Fin 5 → ℝ) (yinf : Fin 6 → ℝ) (τ : ℕ) :
+    ¬ PseudoStableAfter (traj .sbc sbc5_r sbc5_x0) xinf τ ∧
+    ¬ PseudoStableAfter (traj .sbi sbi6_r sbi6_x0) yinf τ := sorry
+
+/-- Conjecture 2.2 fails for the SBC model with seven agents. -/
+theorem not_conjecture22_sbc_seven : ¬ Conjecture22ForAgents .sbc 7 := sorry
+
+/-- Conjecture 2.2 fails for the SBI model with seven agents. -/
+theorem not_conjecture22_sbi_seven : ¬ Conjecture22ForAgents .sbi 7 := sorry
+
+/-- Conjecture 2.3 fails for the SBC model with five agents. -/
+theorem not_conjecture23_sbc_five : ¬ Conjecture23ForAgents .sbc 5 := sorry
+
+/-- Conjecture 2.3 fails for the SBI model with six agents. -/
+theorem not_conjecture23_sbi_six : ¬ Conjecture23ForAgents .sbi 6 := sorry
+
+/-- Theorem 6.4(iv) fails for the SBC model with five agents, even in the reading admitting fixed
+states. -/
+theorem not_theorem64iv_sbc_five : ¬ Theorem64ivForAgents .sbc 5 := sorry
+
+/-- Theorem 6.4(iv) fails for the SBI model with six agents, even in the reading admitting fixed
+states. -/
+theorem not_theorem64iv_sbi_six : ¬ Theorem64ivForAgents .sbi 6 := sorry
 
 /-! ### The final value at constant topology and the per-step convergence factor -/
 
