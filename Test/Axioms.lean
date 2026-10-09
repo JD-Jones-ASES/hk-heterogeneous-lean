@@ -42,11 +42,11 @@ run_cmd do
       `HK.not_conjecture22_sbc, `HK.not_conjecture22_sbi, `HK.not_conjecture22,
       `HK.not_conjecture23_sbc, `HK.not_conjecture23_sbi, `HK.not_conjecture23,
       `HK.not_theorem64iv_sbc, `HK.not_theorem64iv_sbi, `HK.not_theorem64iv,
-      `HK.not_theorem64iv_literal, `HK.sbc6_fvct, `HK.sbc6_perStepFactor,
+      `HK.not_theorem64iv_literal, `HK.alternating_fvct, `HK.sbc6_fvct, `HK.sbc6_perStepFactor,
       `HK.sbc6_perStepFactor_not_tendsto, `HK.sbi7b_fvct, `HK.sbi7b_perStepFactor,
       `HK.sbi7b_perStepFactor_not_tendsto, `HK.proximityDigraph_eq_of_equiTopologyNbhd,
       `HK.eventually_constant_of_tendsto, `HK.fvct_eq_and_equilibrium_of_tendsto,
-      `HK.equiTopologyDistance_eq_zero] do
+      `HK.equiTopologyDistance_pos, `HK.equiTopologyDistance_eq_zero] do
     unless env.contains n do
       logError m!"Compared theorem is missing from the environment: {n}"
   logInfo m!"Audited {checked} project constants; unexpected axiom dependencies: {rejected}."

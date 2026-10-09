@@ -27,6 +27,7 @@
     "HK.not_theorem64iv_sbi",
     "HK.not_theorem64iv",
     "HK.not_theorem64iv_literal",
+    "HK.alternating_fvct",
     "HK.sbc6_fvct",
     "HK.sbc6_perStepFactor",
     "HK.sbc6_perStepFactor_not_tendsto",
@@ -36,6 +37,7 @@
     "HK.proximityDigraph_eq_of_equiTopologyNbhd",
     "HK.eventually_constant_of_tendsto",
     "HK.fvct_eq_and_equilibrium_of_tendsto",
+    "HK.equiTopologyDistance_pos",
     "HK.equiTopologyDistance_eq_zero"
   ],
   "definition_names": [],

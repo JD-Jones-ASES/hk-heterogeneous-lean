@@ -112,3 +112,405 @@ sbi7: index 3 against index 1 with `R = r 1 = 4`, and symmetrically index 5).
 ## Proof plans
 
 (Appended by the desk from the generic lane's report.)
+
+### The generic lane's plan (verbatim, 2026-10-09)
+
+
+RT-067 GENERIC LANE: proof plan for the generic module (ARCH.md section)
+Lane: generic. Nothing was compiled; there was no build slot. Every Mathlib name below was grepped in C:/GitHub_Files/Claude-Repos/l2-lean/.lake/packages/mathlib (git describe: v4.35.0-rc2), and the signatures are quoted from it.
+
+== Result in brief ==
+- No pin in Challenge.lean is wrong. Everything in (1)–(9) is provable as pinned.
+- Lemma 4.2 holds under the pinned definitions with no `0 < r` hypothesis:
+  - j = i: both sides reduce to `0 ≤ r i`.
+  - n = 1: `sInf ∅ = 0`, so ε = 0 and y = z.
+  - A random exact test agreed: 40,000 instances × 2 models, 83,025 coordinates with ε = 0, 11,159 bounds ≤ 0, 0 failures (COMPUTED).
+- Optional strengthenings for the desk. None of them is a pin error.
+  - (a) ε = 0 at more agents than the pin lists. sbc7: indices 2, 3, 4. sbi7: indices 1, 3, 5. In sbi7 the middle agent (index 3) is the one whose neighbourhood alternates, so `equiTopologyDistance sbi7_r sbi7_lim 3 = 0` is the most natural sharpness pin. The pinned 1 and 5 are true as well.
+  - (b) The two alternating systems refute only the conclusion of Lemma 4.8(i), not (ii). In sbc7 and sbi7, fvct(x(t)) = x∞ for every t, and x∞ is an equilibrium (COMPUTED, details below). If wanted, the theorems `sbc7_fvct`/`sbi7_fvct` and `step … sbc7_lim = sbc7_lim` would make that precise. The header docstring line "the sharpness of that condition" should read as sharpness for (i).
+  - (c) A general split worth adding: `fvct_eq_and_equilibrium_of_eventually_eq`. It takes hconv and hG : ∃ T, ∀ t ≥ T, G(x t) = G(xinf), and leaves no hε.
+
+== Verified Mathlib signatures (v4.35.0-rc2) ==
+- tendsto_pi_nhds {f : Y → ∀ i, A i} {g : ∀ i, A i} {u : Filter Y} : Tendsto f u (𝓝 g) ↔ ∀ x, Tendsto (fun i => f i x) u (𝓝 (g x))   [Topology/Constructions.lean:813]
+- tendsto_pow_atTop_nhds_zero_of_abs_lt_one {r : ℝ} (h : |r| < 1) : Tendsto (fun n : ℕ ↦ r ^ n) atTop (𝓝 0)   [Analysis/SpecificLimits/Normed.lean:229]
+- Filter.Tendsto.mul_const (b : M) (hf : Tendsto f x (𝓝 a)) : Tendsto (f · * b) x (𝓝 (a * b)). Filter.Tendsto.const_mul (b) (hf) : Tendsto (b * f ·) x (𝓝 (b * a)). Both are @[to_additive], which generates Filter.Tendsto.const_add (b) (hf) : Tendsto (b + f ·) x (𝓝 (b + a)).   [Topology/Algebra/Monoid/Defs.lean:132,137]
+- tendsto_nhds_unique [T2Space X] {f : Y → X} {l : Filter Y} {a b : X} [NeBot l] (ha : Tendsto f l (𝓝 a)) (hb : Tendsto f l (𝓝 b)) : a = b   [Topology/Separation/Hausdorff.lean:181]
+- Filter.tendsto_add_atTop_iff_nat {f : ℕ → α} {l : Filter α} (k : ℕ) : Tendsto (fun n => f (n + k)) atTop l ↔ Tendsto f atTop l. Note the order is n + k, not k + n.   [Order/Filter/AtTopBot/Basic.lean:337]
+- Filter.Tendsto.limUnder_eq {x : X} {f : Filter Y} [NeBot f] {g : Y → X} (h : Tendsto g f (𝓝 x)) : @limUnder _ _ _ ⟨x⟩ f g = x. The Nonempty instance is a Prop, so it unifies with fvct's instance by proof irrelevance.   [Topology/Separation/Hausdorff.lean:297]
+- Matrix.mulVec_mulVec (v) (M : Matrix m n α) (N : Matrix n o α) : M *ᵥ N *ᵥ v = (M * N) *ᵥ v   [@[simp]; Data/Matrix/Mul.lean:889]
+- Matrix.one_mulVec (v) : 1 *ᵥ v = v   [Mul.lean:1003]
+- Matrix.mulVec_add (A) (x y) [Mul.lean:792] and Matrix.mulVec_smul [Mul.lean:812]
+- Matrix.mulVec: def mulVec (M : Matrix m n α) (v : n → α) : m → α | i => (fun j => M i j) ⬝ᵥ v [Mul.lean:698]. dotProduct (root namespace): ∑ i, v i * w i [Mul.lean:72]. Matrix.of_apply (f) (i j) : of f i j = f i j [LinearAlgebra/Matrix/Defs.lean:92].
+- tendsto_const_nhds_iff [T1Space X] {l : Filter Y} [NeBot l] {c d : X} : Tendsto (fun _ => c) l (𝓝 d) ↔ c = d   [@[simp]; Topology/Separation/Basic.lean:808]
+- csInf_le (h₁ : BddBelow s) (h₂ : a ∈ s) : sInf s ≤ a. le_csInf (h₁ : s.Nonempty) (h₂ : ∀ b ∈ s, a ≤ b) : a ≤ sInf s. Both are to_dual of le_csSup/csSup_le.   [Order/ConditionallyCompleteLattice/Basic.lean:196,200]
+- Real.sInf_nonneg (hs : ∀ x ∈ s, 0 ≤ x) : 0 ≤ sInf s [Algebra/Order/Archimedean/Real/Basic.lean:258]. Real.sInf_empty : sInf (∅ : Set ℝ) = 0 [:189].
+- Additive forms of the mabs lemmas (to_additive): abs_le : |a| ≤ b ↔ -b ≤ a ∧ a ≤ b; abs_lt; abs_sub_comm (a b) : |a - b| = |b - a|; abs_sub_le (a b c) : |a - c| ≤ |a - b| + |b - c|; abs_sub_abs_le_abs_sub (a b) : |a| - |b| ≤ |a - b|; abs_cases; abs_nonneg; abs_of_nonneg; abs_of_nonpos (… = -a); abs_of_pos; abs_eq_zero.   [Algebra/Order/Group/Abs.lean:62,108,177,234; Unbundled/Abs.lean:76,88,91,93,107,254,262]
+- Metric.tendsto_nhds {f : Filter β} {u : β → α} {a : α} : Tendsto u f (𝓝 a) ↔ ∀ ε > 0, ∀ᶠ x in f, dist (u x) a < ε [Topology/MetricSpace/Pseudo/Defs.lean:891]. Real.dist_eq (x y : ℝ) : dist x y = |x - y| := rfl [:1118].
+- Filter.eventually_all {ι : Sort*} [Finite ι] {l} {p : ι → α → Prop} : (∀ᶠ x in l, ∀ i, p i x) ↔ ∀ i, ∀ᶠ x in l, p i x   [@[simp]; Order/Filter/Finite.lean:247]
+- Filter.eventually_atTop : (∀ᶠ x in atTop, p x) ↔ ∃ a, ∀ b, a ≤ b → p b   [AtTopBot/Basic.lean:79]
+- Continuous.matrix_mulVec {A : X → Matrix m n R} {B : X → n → R} (hA : Continuous A) (hB : Continuous B) : Continuous fun x => A x *ᵥ B x [Topology/Instances/Matrix.lean:177]. Continuous.tendsto (hf) (x) : Tendsto f (𝓝 x) (𝓝 (f x)).
+- Filter.Tendsto.congr' (hl : f₁ =ᶠ[l₁] f₂) (h : Tendsto f₁ l₁ l₂) : Tendsto f₂ l₁ l₂   [Order/Filter/Tendsto.lean:105]
+- Function.iterate_succ_apply' (n) (x) : f^[n.succ] x = f (f^[n] x). Function.iterate_zero_apply (x) : f^[0] x = x := rfl.   [Logic/Function/Iterate.lean:174,58]
+- Finset.sum_ite_mem [DecidableEq ι] (s t) (f) : ∑ i ∈ s, (if i ∈ t then f i else 0) = ∑ i ∈ s ∩ t, f i. This is the additive form of prod_ite_mem and is @[simp]. [BigOperators/Group/Finset/Piecewise.lean:103]
+- Finset.sum_div (s) (f) (a) : (∑ i ∈ s, f i) / a = ∑ i ∈ s, f i / a [BigOperators/Field.lean:26]. Finset.mul_sum (s f a) [BigOperators/Ring/Finset.lean:59].
+- tendsto_finsetSum (s) : (∀ i ∈ s, Tendsto (f i) x (𝓝 (a i))) → Tendsto (fun b => ∑ c ∈ s, f c b) x (𝓝 (∑ c ∈ s, a c)). The old name tendsto_finset_sum is DEPRECATED (2026-04-08). [Topology/Algebra/Monoid.lean:945]
+- pow_succ (a) (n) : a ^ (n + 1) = a ^ n * a. pow_succ' (a) n : a ^ (n + 1) = a * a ^ n.   [Algebra/Group/Monoid.lean:413,419]
+- div_eq_iff (hb : b ≠ 0) : a / b = c ↔ a = c * b [GroupWithZero/Units/Basic.lean:346]. pow_ne_zero (n) (h : a ≠ 0). mul_ne_zero. mul_eq_zero. mul_pos_of_neg_of_neg. mul_neg_of_neg_of_pos (ha : a < 0) (hb : 0 < b) : a * b < 0.
+- Digraph is `@[ext] structure Digraph (V) where Adj : V → V → Prop`, giving Digraph.ext and Digraph.ext_iff; also Digraph.adj_inj. [Combinatorics/Digraph/Basic.lean:47,107]
+- Real.goldenRatio : abbrev (1 + √5) / 2; Real.goldenRatio_pos; one_lt_goldenRatio; goldenRatio_sq [NumberTheory/Real/GoldenRatio.lean:37,90,96,83]. Real.lt_sqrt (hx : 0 ≤ x) : x < √y ↔ x ^ 2 < y; Real.sqrt_lt' (hy : 0 < y) : √x < y ↔ x < y ^ 2.
+
+== (1) step_apply, traj_zero, traj_succ ==
+Lean:
+  theorem traj_zero (m : Model) {n : ℕ} (r x₀ : Fin n → ℝ) : traj m r x₀ 0 = x₀ := rfl
+  theorem traj_succ (m : Model) {n : ℕ} (r x₀ : Fin n → ℝ) (t : ℕ) :
+      traj m r x₀ (t + 1) = step m r (traj m r x₀ t) := Function.iterate_succ_apply' _ _ _
+  @[simp] theorem mem_neighbors {m : Model} {n : ℕ} {r y : Fin n → ℝ} {i j : Fin n} :
+      j ∈ neighbors m r y i ↔ |y i - y j| ≤ m.bound r i j := by simp [neighbors]
+  theorem step_apply (m : Model) {n : ℕ} (r y : Fin n → ℝ) (i : Fin n) :
+      step m r y i = (∑ j ∈ neighbors m r y i, y j) / ((neighbors m r y i).card : ℝ)
+Paper: (A y)_i = Σ_j a_ij y_j, with a_ij = 1/|N_i| on N_i and 0 off it. So the sum is Σ_{j∈N_i} y_j/|N_i|. This holds with no positivity: if N_i = ∅, both sides are 0 in Lean.
+Tactics:
+  simp only [step, adjMatrix, Matrix.mulVec, dotProduct, Matrix.of_apply, ite_mul, zero_mul, Finset.sum_ite_mem, Finset.univ_inter, Finset.sum_div]
+  refine Finset.sum_congr rfl fun j _ => ?_ ; ring
+Fallback if sum_ite_mem does not fire: rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.filter_mem_eq_inter].
+Also useful: `theorem bound_self (m) (r) (i) : m.bound r i i = r i := by cases m <;> rfl`.
+
+== (2) tendsto_of_closed_form ==
+  theorem tendsto_of_closed_form {n : ℕ} {x : ℕ → Fin n → ℝ} {L v : Fin n → ℝ} {c : ℝ}
+      (hx : ∀ t, x t = fun i => L i + c ^ t * v i) (hc : |c| < 1) : Tendsto x atTop (𝓝 L) := by
+    rw [tendsto_pi_nhds]; intro i
+    have h := ((tendsto_pow_atTop_nhds_zero_of_abs_lt_one hc).mul_const (v i)).const_add (L i)
+    rw [zero_mul, add_zero] at h
+    exact h.congr fun t => (congrFun (hx t) i).symm
+Mind the shapes. `mul_const` produces `c^t * v i` and `const_add` produces `L i + _`, which is exactly the pinned order. The closing `exact` relies on defeq up to beta.
+Instances:
+- sbc7 and sbc6: c = -1/6, `|(-1/6 : ℝ)| < 1` by norm_num [abs_div].
+- sbi7b: c = sbiRate.
+- sbi7: first reshape: `have : ∀ t, traj … t = fun i => sbi7_lim i + sbiRate ^ t * (sbi_v i / 2) := fun t => by rw [sbi7_closed_form]; funext i; ring`.
+- `|sbiRate| < 1`: unfold sbiRate; abs_lt.2 ⟨_, _⟩ with √5 < 9 from (Real.sqrt_lt' (by norm_num)).2 (by norm_num), and Real.sqrt_nonneg 5; then linarith.
+- `sbiRate < 0`: 1 < √5 from (Real.lt_sqrt (by norm_num)).2 (by norm_num); linarith.
+
+== (3) not_fixedFrom_of_alternating, not_pseudoStableAfter_of_alternating ==
+These are stated per agent, with a scalar limit Li and a scalar w. That lets sbi7 use w = sbi_v 1 / 2.
+  theorem not_fixedFrom_of_alternating {n : ℕ} {x : ℕ → Fin n → ℝ} {Li c w : ℝ} (i : Fin n)
+      (hx : ∀ t, x t i = Li + c ^ t * w) (hc0 : c < 0) (hw : w ≠ 0) (τ : ℕ) : ¬ FixedFrom x τ
+Paper: FixedFrom gives x(τ+1)_i = x(τ)_i, so c^τ(c − 1)w = 0. But c^τ ≠ 0, c − 1 < 0 and w ≠ 0. Contradiction.
+Tactics:
+  intro h; have h1 := congrFun (h (τ + 1) (Nat.le_succ τ)) i; rw [hx, hx] at h1
+  have h2 : (c - 1) * (c ^ τ * w) = 0 := by linear_combination h1
+  rcases mul_eq_zero.1 h2 with h3 | h3
+  · linarith
+  · exact mul_ne_zero (pow_ne_zero τ hc0.ne) hw h3
+
+  theorem not_pseudoStableAfter_of_alternating {n : ℕ} {x : ℕ → Fin n → ℝ} {Li c w : ℝ} (i : Fin n)
+      (hx : ∀ t, x t i = Li + c ^ t * w) (hc0 : c < 0) (hc1 : -1 < c) (hw : w ≠ 0)
+      (xinf : Fin n → ℝ) (τ : ℕ) : ¬ PseudoStableAfter x xinf τ
+Paper:
+1. Coordinate i tends to Li, because |c| < 1. PseudoStableAfter gives Tendsto x → xinf, so coordinate i tends to xinf i. Uniqueness gives xinf i = Li.
+2. Put a := c^τ w ≠ 0. Then x(τ)_i − Li = a and x(τ+1)_i − Li = c·a.
+3. i ∈ F ∪ C = univ.
+   - If i ∈ F, then x(τ)_i = Li, so a = 0. Contradiction.
+   - If i ∈ C, take the alternative at t = τ.
+     - Alternative 1: a < c·a < 0. So a < 0, and then c·a > 0 (product of two negatives). Contradiction.
+     - Alternative 2: a > c·a > 0. So a > 0, and then c·a < 0. Contradiction.
+   In both alternatives x(τ)_i and x(τ+1)_i are strictly on the same side of Li, while the sign of the offset alternates at every step.
+Tactics:
+  rintro ⟨hconv, F, C, -, -, -, hFC, hτ⟩
+  have hlim : Tendsto (fun t => x t i) atTop (𝓝 Li) := by
+    have h := ((tendsto_pow_atTop_nhds_zero_of_abs_lt_one (abs_lt.2 ⟨hc1, by linarith⟩)).mul_const w).const_add Li
+    rw [zero_mul, add_zero] at h; exact h.congr fun t => (hx t).symm
+  have hi : xinf i = Li := tendsto_nhds_unique ((tendsto_pi_nhds.1 hconv) i) hlim
+  have hmem : i ∈ F ∪ C := by rw [hFC]; exact Finset.mem_univ i
+  obtain ⟨hF, hC⟩ := hτ τ le_rfl
+  have ha : c ^ τ * w ≠ 0 := mul_ne_zero (pow_ne_zero τ hc0.ne) hw
+  have hs : x (τ + 1) i = Li + c * (c ^ τ * w) := by rw [hx]; ring
+  rcases Finset.mem_union.1 hmem with hiF | hiC
+  · have h0 := hF i hiF; rw [hx, hi] at h0; exact ha (by linarith)
+  · rcases hC i hiC with ⟨h1, h2⟩ | ⟨h1, h2⟩ <;> rw [hs, hx τ] at h1 <;> rw [hs, hi] at h2
+    · have hn : c ^ τ * w < 0 := by linarith
+      linarith [mul_pos_of_neg_of_neg hc0 hn]
+    · have hp : 0 < c ^ τ * w := by linarith
+      linarith [mul_neg_of_neg_of_pos hc0 hp]
+Note: the `rw … at h1` order may need adjusting once the goal is visible; the hypotheses are x τ i < x (τ+1) i and x (τ+1) i < xinf i, or the reversed pair.
+Instances for the pinned `not_fixedFrom` and `not_pseudoStableAfter` (agent index 1 everywhere; −1 < c < 0 for both rates):
+- sbc7: Li = sbc7_lim 1, c = -1/6, w = sbc7_v 1 (= 2, `by norm_num [sbc7_v]`), hx t := by rw [sbc7_closed_form].
+- sbi7: Li = sbi7_lim 1, c = sbiRate, w = sbi_v 1 / 2, hx t := by rw [sbi7_closed_form]; beta_reduce; ring.
+- sbc6: Li = sbc6_lim 1, c = -1/6, w = sbc6_v 1 = 2.
+- sbi7b: Li = sbi7b_lim 1, c = sbiRate, w = sbi_v 1 = 1.
+Each pinned conjunct is one application. For pseudo-stability, pass xinf (or yinf for sbc6).
+
+== (4) The refutations ==
+  hr7 : ∀ i, 0 < sbc7_r i := by intro i; fin_cases i <;> norm_num [sbc7_r]   (the same for sbi7_r, sbc6_r, sbi7b_r; all are rational)
+  not_conjecture22_sbc : intro h; obtain ⟨τ, hτ⟩ := h 7 sbc7_r sbc7_x0 hr7
+    obtain ⟨t, ht, hne⟩ := sbc7_digraph_not_eventually_constant τ; exact hne (hτ t ht)
+  not_conjecture22_sbi : the same, with sbi7 and sbi7_digraph_not_eventually_constant.
+  not_conjecture22 := fun h => not_conjecture22_sbc (h .sbc)
+  not_conjecture23_sbc : intro h; obtain ⟨τ, hfix | ⟨xinf, hps⟩⟩ := h 7 sbc7_r sbc7_x0 hr7
+    · exact (not_fixedFrom τ).1 hfix
+    · exact (not_pseudoStableAfter xinf 0 τ).1 hps
+  not_conjecture23_sbi : the same with sbi7, using .2.1 of both. sbi7b (.2.2.2) also works.
+  not_conjecture23 := fun h => not_conjecture23_sbc (h .sbc)
+  not_theorem64iv_sbc : intro h
+    obtain ⟨t₂, -, hfix | ⟨xinf, hps⟩⟩ := h 6 sbc6_r sbc6_x0 hr6 0
+      (fun t _ => (sbc6_digraph_constant t).trans (sbc6_digraph_constant 0).symm)
+    · exact (not_fixedFrom t₂).2.2.1 hfix
+    · exact (not_pseudoStableAfter 0 xinf t₂).2.2.1 hps
+  (Using sbc6_digraph_constant 0 avoids traj_zero; traj_zero also works because it is rfl.)
+  not_theorem64iv_sbi : the same with sbi7b, sbi7b_digraph_constant, and .2.2.2.
+  not_theorem64iv := fun h => not_theorem64iv_sbc (h .sbc)
+  The literal reading implies the repaired one, so the literal refutation follows by contraposition:
+  theorem theorem64ivFor_of_literal (m : Model) : Theorem64ivLiteralFor m → Theorem64ivFor m :=
+    fun h n r x₀ hr τ hτ => let ⟨t₂, ht₂, hps⟩ := h n r x₀ hr τ hτ; ⟨t₂, ht₂, Or.inr hps⟩
+  theorem theorem64iv_of_literal : Theorem64ivLiteral → Theorem64iv := fun h m => theorem64ivFor_of_literal m (h m)
+  not_theorem64iv_literal := fun h => not_theorem64iv (theorem64iv_of_literal h)
+
+== (5) fvct_of_constant_adj ==
+  theorem adjMatrix_congr {m : Model} {n : ℕ} {r y z : Fin n → ℝ} (h : neighbors m r y = neighbors m r z) :
+      adjMatrix m r y = adjMatrix m r z := by unfold adjMatrix; rw [h]
+  theorem mulVec_pow_eq_traj (m : Model) {n : ℕ} (r x₀ : Fin n → ℝ) (t : ℕ)
+      (hA : ∀ s, adjMatrix m r (traj m r x₀ (t + s)) = adjMatrix m r (traj m r x₀ t)) (s : ℕ) :
+      (adjMatrix m r (traj m r x₀ t) ^ s) *ᵥ traj m r x₀ t = traj m r x₀ (t + s) := by
+    induction s with
+    | zero => simp
+    | succ s ih => rw [pow_succ', ← Matrix.mulVec_mulVec, ih, ← add_assoc, traj_succ, step, hA s]
+  theorem fvct_of_constant_adj (m : Model) {n : ℕ} (r x₀ L : Fin n → ℝ) (t : ℕ)
+      (hA : ∀ s, adjMatrix m r (traj m r x₀ (t + s)) = adjMatrix m r (traj m r x₀ t))
+      (hconv : Tendsto (traj m r x₀) atTop (𝓝 L)) : fvct m r (traj m r x₀ t) = L := by
+    have h : Tendsto (fun s => (adjMatrix m r (traj m r x₀ t) ^ s) *ᵥ traj m r x₀ t) atTop (𝓝 L) :=
+      ((Filter.tendsto_add_atTop_iff_nat t).2 hconv).congr fun s => by rw [mulVec_pow_eq_traj m r x₀ t hA s, add_comm]
+    rw [fvct]; exact h.limUnder_eq
+Paper: under constant A, A^s x(t) = x(t+s), which tends to L. So lim_s A^s x(t) = L (MB Def 3.1).
+Using it for sbc6_fvct and sbi7b_fvct:
+  hA s := adjMatrix_congr (by rw [sbc6_neighbors (t + s), sbc6_neighbors t])
+  hconv := tendsto_limits.2.2.1 (and .2.2.2 for sbi7b).
+Optional alternative, for the alternating systems: `fvct_of_eigen`. Put A := adjMatrix m r y. If A *ᵥ L = L, A *ᵥ w = c • w and |c| < 1, then fvct m r (L + w) = L. The proof: by induction (Matrix.mulVec_add, Matrix.mulVec_smul, pow_succ'), (A ^ s) *ᵥ (L + w) = L + c ^ s • w; then the tendsto from (2) and limUnder_eq.
+
+== (6) perStepFactor ==
+  theorem perStepFactor_of_closed_form (m : Model) {n : ℕ} (r : Fin n → ℝ) (x : ℕ → Fin n → ℝ)
+      (L : Fin n → ℝ) (c w : ℝ) (i : Fin n) (t : ℕ) (hf : fvct m r (x t) = L)
+      (hx : ∀ s, x s i = L i + c ^ s * w) (hc : c ≠ 0) (hw : w ≠ 0) : perStepFactor m r x i t = c := by
+    have hd : x t i - L i ≠ 0 := by rw [hx, add_sub_cancel_left]; exact mul_ne_zero (pow_ne_zero t hc) hw
+    rw [perStepFactor, hf, div_eq_iff hd, hx, hx]; ring
+  theorem not_tendsto_of_const_neg {f : ℕ → ℝ} {c ρ : ℝ} (hf : ∀ t, f t = c) (hc : c < 0) (hρ : 0 ≤ ρ) :
+      ¬ Tendsto f atTop (𝓝 ρ) := by
+    intro h; have h' : Tendsto (fun _ : ℕ => c) atTop (𝓝 ρ) := h.congr hf
+    rw [tendsto_const_nhds_iff] at h'; linarith
+Notes:
+- add_sub_cancel_left is the to_additive form of mul_div_cancel_left (a * b / a = b), meaning a + b - a = b. If it does not fire, use `simp only [add_sub_cancel_left]` or `ring_nf`.
+- Instances: in sbc6_perStepFactor, hf := sbc6_fvct t, hx s := by rw [sbc6_closed_form], c = -1/6. Get hw from hi with `simp only [Finset.mem_insert, Finset.mem_singleton] at hi; rcases hi with rfl|rfl|rfl|rfl <;> norm_num [sbc6_v]`.
+- For sbi7b the values are sbi_v = 1, −φ, φ, −1. For the φ cases use Real.goldenRatio_pos.ne' (and neg_ne_zero). sbiRate ≠ 0 comes from sbiRate < 0.
+
+== (7) Lemma 4.2 (proximityDigraph_eq_of_equiTopologyNbhd) ==
+Paper (MB's two cases, repaired for the pinned definitions):
+- Fix i, j and put R := m.bound r i j ∈ {r_i, r_j}.
+- Case j = i: |y_i − y_i| = 0 = |z_i − z_i|, so both memberships say 0 ≤ R. They are equivalent with no positivity hypothesis.
+- Case j ≠ i: put D := ||z_i − z_j| − R|.
+  - D is in the set defining ε_i, at index j. It is also in the set defining ε_j, at index i, because |z_j − z_i| = |z_i − z_j| and R is one of r_i, r_j. So 2ε_i ≤ D and 2ε_j ≤ D.
+  - The neighbourhood gives |y_k − z_k| ≤ ε_k for every k. It is strict when ε_k > 0, and when ε_k = 0 it gives |y_k − z_k| = 0.
+- (Case 1) If |z_i − z_j| ≤ R, then D = R − |z_i − z_j| and |y_i − y_j| ≤ |y_i − z_i| + |z_i − z_j| + |z_j − y_j| ≤ ε_i + ε_j + |z_i − z_j| ≤ D + |z_i − z_j| = R.
+- (Case 2) If |z_i − z_j| > R, then D = |z_i − z_j| − R > 0, and |z_i − z_j| ≤ |z_i − y_i| + |y_i − y_j| + |y_j − z_j|.
+  - If ε_i = ε_j = 0, both offsets are 0, so |y_i − y_j| ≥ |z_i − z_j| > R.
+  - Otherwise one offset is strict, so |z_i − z_j| < ε_i + ε_j + |y_i − y_j| ≤ D + |y_i − y_j| (if only one ε is positive, use ε_k ≤ D/2 < D). Hence |y_i − y_j| > |z_i − z_j| − D = R.
+- Together the two cases give the iff, so the neighbourhoods and the digraphs agree.
+Lean:
+  theorem equiTopologyDistance_nonneg {n : ℕ} (r z : Fin n → ℝ) (i : Fin n) : 0 ≤ equiTopologyDistance r z i :=
+    mul_nonneg (by norm_num) (Real.sInf_nonneg fun d ⟨k, _, hk⟩ => by rcases hk with rfl | rfl <;> exact abs_nonneg _)
+  theorem two_mul_eTD_le (m : Model) {n : ℕ} (r z : Fin n → ℝ) {i j : Fin n} (hij : j ≠ i) :
+      2 * equiTopologyDistance r z i ≤ |(|z i - z j|) - m.bound r i j| := by
+    unfold equiTopologyDistance
+    rw [← mul_assoc, show (2:ℝ) * (1/2) = 1 by norm_num, one_mul]
+    refine csInf_le ⟨0, fun d ⟨k, _, hk⟩ => by rcases hk with rfl | rfl <;> exact abs_nonneg _⟩ ?_
+    cases m
+    exacts [⟨j, hij, Or.inl rfl⟩, ⟨j, hij, Or.inr rfl⟩]
+  theorem two_mul_eTD_le' (m : Model) {n : ℕ} (r z : Fin n → ℝ) {i j : Fin n} (hij : j ≠ i) :
+      2 * equiTopologyDistance r z j ≤ |(|z i - z j|) - m.bound r i j| := by
+    (the same opening) … refine csInf_le ⟨0, …⟩ ⟨i, hij.symm, ?_⟩
+    rw [abs_sub_comm (z i) (z j)]; cases m; exacts [Or.inr rfl, Or.inl rfl]
+    (SBC: R = r i, which is the "r k" slot with k = i. SBI: R = r j, the "r j" slot of j's set.)
+  theorem adj_iff_of_nbhd (m : Model) {n : ℕ} (r z y : Fin n → ℝ) (h : EquiTopologyNbhd r z y) (i j : Fin n) :
+      |y i - y j| ≤ m.bound r i j ↔ |z i - z j| ≤ m.bound r i j := by
+    by_cases hij : j = i
+    · subst hij; simp
+    have ki := two_mul_eTD_le m r z hij; have kj := two_mul_eTD_le' m r z hij
+    have hle : ∀ k, |y k - z k| ≤ equiTopologyDistance r z k := fun k => by
+      rcases (equiTopologyDistance_nonneg r z k).eq_or_lt with h0 | hp
+      · exact ((h k).2 h0.symm).le
+      · exact ((h k).1 hp).le
+    have hst : ∀ k, |y k - z k| < equiTopologyDistance r z k ∨ |y k - z k| = 0 := fun k => by
+      rcases (equiTopologyDistance_nonneg r z k).eq_or_lt with h0 | hp
+      · exact Or.inr (by rw [(h k).2 h0.symm, ← h0])
+      · exact Or.inl ((h k).1 hp)
+    have t1 := abs_sub_le (y i) (z i) (y j); have t2 := abs_sub_le (z i) (z j) (y j)
+    have t3 := abs_sub_le (z i) (y i) (z j); have t4 := abs_sub_le (y i) (y j) (z j)
+    have c1 := abs_sub_comm (z j) (y j); have c2 := abs_sub_comm (z i) (y i)
+    have ei := equiTopologyDistance_nonneg r z i; have ej := equiTopologyDistance_nonneg r z j
+    constructor
+    · intro hy; by_contra hz; push_neg at hz
+      rw [abs_of_pos (by linarith : 0 < |z i - z j| - m.bound r i j)] at ki kj
+      rcases hst i with hi | hi <;> rcases hst j with hj | hj <;> linarith [hle i, hle j]
+    · intro hz
+      rw [abs_of_nonpos (by linarith : |z i - z j| - m.bound r i j ≤ 0)] at ki kj
+      linarith [hle i, hle j]
+  theorem neighbors_eq_of_equiTopologyNbhd (m : Model) {n : ℕ} (r z y : Fin n → ℝ) (h : EquiTopologyNbhd r z y) :
+      neighbors m r y = neighbors m r z := by
+    funext i; ext j; simp only [mem_neighbors]; exact adj_iff_of_nbhd m r z y h i j
+  theorem proximityDigraph_eq_of_equiTopologyNbhd … := by
+    unfold proximityDigraph; rw [neighbors_eq_of_equiTopologyNbhd m r z y h]
+  theorem neighbors_eq_of_proximityDigraph_eq {m n r y z} (h : proximityDigraph m r y = proximityDigraph m r z) :
+      neighbors m r y = neighbors m r z := by
+    funext i; ext j; exact Iff.of_eq (congrFun (congrFun (congrArg Digraph.Adj h) i) j)
+How the four ε cases close:
+- Every case is linear in the atoms |y i − y j|, |z i − z j|, |y i − z i|, |y j − z j|, |z i − y i|, |z j − y j|, |y i − z j|, ε_i, ε_j and R.
+- Case 2 needs one strict offset or both zero, and hst supplies exactly that.
+- If linarith struggles with the 4-way rcases, set the abs terms as local variables first.
+Exact check (COMPUTED): generic_check.py ran Lemma 4.2 under the pinned definitions. It used 40,000 random rational instances with n from 1 to 6, in both models, with bounds that are zero, negative, or equal to a gap, and found no failures. The control placed y_i at distance exactly ε_i > 0, the boundary MB exclude, and it did change the digraph. Witness: SBC, r = (1, 4), z = (1, 20), y = (17/2, 25/2). So the strict inequality in Def 4.1 is necessary.
+
+== (8) Lemma 4.8 ==
+(i) eventually_constant_of_tendsto:
+  have hev : ∀ᶠ t in atTop, ∀ i, |traj m r x₀ t i - xinf i| < equiTopologyDistance r xinf i := by
+    rw [Filter.eventually_all]; intro i
+    simpa only [Real.dist_eq] using Metric.tendsto_nhds.1 ((tendsto_pi_nhds.1 hconv) i) _ (hε i)
+  obtain ⟨T, hT⟩ := Filter.eventually_atTop.1 hev
+  exact ⟨T, fun t ht => proximityDigraph_eq_of_equiTopologyNbhd m r xinf _
+    fun i => ⟨fun _ => hT t ht i, fun h0 => absurd h0 (hε i).ne'⟩⟩
+Paper: MB's proof uses the sup norm and δ = min_i ε_i. Our version works coordinate by coordinate and combines the coordinates with eventually_all over the finite type Fin n, so it needs no min. That also covers n = 0.
+(ii) fvct_eq_and_equilibrium_of_tendsto:
+  obtain ⟨T, hT⟩ := eventually_constant_of_tendsto m r x₀ xinf hconv hε
+  have hA : ∀ t, T ≤ t → adjMatrix m r (traj m r x₀ t) = adjMatrix m r xinf :=
+    fun t ht => adjMatrix_congr (neighbors_eq_of_proximityDigraph_eq (hT t ht))
+  refine ⟨⟨T, fun t ht => fvct_of_constant_adj m r x₀ xinf t
+      (fun s => (hA (t + s) (by omega)).trans (hA t ht).symm) hconv⟩, ?_⟩
+  have h1 : Tendsto (fun t => traj m r x₀ (t + 1)) atTop (𝓝 xinf) := (Filter.tendsto_add_atTop_iff_nat 1).2 hconv
+  have hc : Continuous fun v : Fin n → ℝ => adjMatrix m r xinf *ᵥ v := continuous_const.matrix_mulVec continuous_id
+  have h2 : Tendsto (fun t => adjMatrix m r xinf *ᵥ traj m r x₀ t) atTop (𝓝 (adjMatrix m r xinf *ᵥ xinf)) :=
+    (hc.tendsto xinf).comp hconv
+  have h3 : (fun t => adjMatrix m r xinf *ᵥ traj m r x₀ t) =ᶠ[atTop] fun t => traj m r x₀ (t + 1) :=
+    Filter.eventually_atTop.2 ⟨T, fun t ht => by rw [traj_succ, step, hA t ht]⟩
+  rw [step]; exact tendsto_nhds_unique (h2.congr' h3) h1
+- The topology-free alternative to continuity: each coordinate is ∑ j, a_ij * x t j. Use tendsto_pi_nhds, then tendsto_finsetSum (NOT tendsto_finset_sum, which is deprecated), then Tendsto.const_mul.
+- Hypothesis dependency (exact):
+  - hε is used exactly once, to obtain (i).
+  - The fvct conjunct needs hconv and an eventually constant adjacency matrix: ∀ t ≥ T, ∀ s, A(x(t+s)) = A(x(t)).
+  - The equilibrium conjunct needs hconv and A(x(t)) = A(xinf) for t ≥ T, so the eventual digraph must be xinf's own.
+  - Recommended general form: `fvct_eq_and_equilibrium_of_eventually_eq (hconv) (hG : ∃ T, ∀ t, T ≤ t → proximityDigraph m r (traj m r x₀ t) = proximityDigraph m r xinf)`. The pinned (ii) is then (i) composed with it.
+  - hconv alone does not give (i): sbc7 converges and its digraph is never eventually constant. That is PROVEN once the pins close (tendsto_limits, sbc7_digraph_not_eventually_constant).
+  - Whether hconv alone gives (ii) in general is UNKNOWN. In the two alternating systems (ii)'s conclusions still hold (COMPUTED, below).
+
+== (9) equiTopologyDistance_eq_zero ==
+  theorem equiTopologyDistance_eq_zero_of {n : ℕ} (r z : Fin n → ℝ) (i j : Fin n) (hij : j ≠ i)
+      (h0 : |(|z i - z j|) - r i| = 0 ∨ |(|z i - z j|) - r j| = 0) : equiTopologyDistance r z i = 0 := by
+    unfold equiTopologyDistance
+    set S := {d : ℝ | ∃ j, j ≠ i ∧ (d = |(|z i - z j|) - r i| ∨ d = |(|z i - z j|) - r j|)} with hS
+    have hlb : ∀ d ∈ S, 0 ≤ d := fun d ⟨k, _, hk⟩ => by rcases hk with rfl | rfl <;> exact abs_nonneg _
+    have hmem : (0 : ℝ) ∈ S := ⟨j, hij, h0.imp Eq.symm Eq.symm⟩
+    rw [le_antisymm (csInf_le ⟨0, hlb⟩ hmem) (Real.sInf_nonneg hlb), mul_zero]
+    (Alternatively: le_csInf ⟨0, hmem⟩ hlb in place of Real.sInf_nonneg.)
+Instances (computed exactly, generic_check.py):
+- sbc7_lim index 3 (84): j = 2 (72), left disjunct R = r 3 = 12, since |84 − 72| = 12. Also j = 4 (96).
+  `equiTopologyDistance_eq_zero_of sbc7_r sbc7_lim 3 2 (by decide) (Or.inl (by norm_num [sbc7_lim, sbc7_r]))`
+- sbi7_lim index 1 (7): j = 3 (11), left disjunct R = r 1 = 4, since |7 − 11| = 4. (In the paper's numbering this is agent 2 against agent 4, with r = 4.)
+- sbi7_lim index 5 (15): j = 3, left disjunct R = r 5 = 4, since |15 − 11| = 4.
+- If `norm_num` does not evaluate `![…] k`, add Matrix.cons_val (Fin literals are handled by the Fin.isValue simproc).
+
+== COMPUTED side results (exact; scripts in the lane folder, each ending VERDICT: PASS, each with a forged control that fails) ==
+- ε at the limits (generic_check.py):
+  - sbc7: (3, 3, 0, 0, 0, 3, 3). Zeros: index 2 via (j=3, R=r_j); index 3 via (j=2 or 4, R=r_i); index 4 via (j=3, R=r_j).
+  - sbi7: (1/2, 0, 1/2, 0, 1/2, 0, 1/2). Zeros: index 1 via (j=3, R=r_i); index 3 via (j=1 or 5, R=r_j); index 5 via (j=3, R=r_i).
+  - sbc6: all 5.
+  - sbi7b: (15/2, 5/2, 5/2, 5/2, 5/2, 5/2, 15/2).
+  - So Lemma 4.8 applies to (c) and (d), consistent with their constant digraphs.
+- All four limits are equilibria: A(x∞)x∞ = x∞.
+- G(sbc7_lim) is the pinned ODD-t table. G(sbi7_lim) is the pinned EVEN-t table.
+  - Lane note: the first run expected sbi7's ODD table and reported FAIL. The expectation was the lane's own guess, not a pin, and was replaced by a computed comparison against both pinned tables.
+- sbc7 (sbc7_parity_eigen.py): both the even and the odd matrix fix L and send v to −v/6.
+- sbi7 (sbi7_parity_eigen.py, exact in ℚ(√5) as pairs): both parity matrices fix L and send v to λv, with λ = (1 − √5)/8.
+- Hence, in both alternating systems, A(x(t))^s x(t) = L + λ^{t+s}·v, which tends to L. So fvct(x(t)) = x∞ for every t, and x∞ is an equilibrium. The alternating systems sit on the boundary of Lemma 4.8(i) only.
+- Controls: a forged sbc7 limit (index 3 moved to 85) gives ε_3 = 1/2 ≠ 0, so the checker can fail. A forged v is rejected in both eigen scripts. The boundary forgery changes the digraph.
+
+== Labels ==
+- (1)–(9) Lean plans: PLAN. The paper proofs are complete; nothing was compiled.
+- Lemma 4.2 random test: COMPUTED (bounded).
+- ε tables, equilibria and parity eigen-identities: COMPUTED.
+- (ii) without hε in general: UNKNOWN.
+- No pin defect found.
+
+### The replay lane's intervals and tactic notes (verbatim)
+
+2. INDUCTIVE STEP FOR ALL t (PROVEN-BY-CERTIFICATE, check_hk.py)
+
+Positions are affine in the atom u = lambda^t (and in w = 5^-t or 4^-t for (e), (f)).
+- Each membership |p_i - p_j| <= R is split as f1 = (p_i - p_j) - R <= 0 and f2 = -(p_i - p_j) - R <= 0.
+- A member needs f1 and f2 strictly negative on the box.
+- A non-member needs f1 or f2 strictly positive on the box.
+
+The exact test is:
+- s*f >= 0 at every corner of the box's closure, and
+- s*f > 0 at every corner lying in the box.
+
+This is sufficient because f is affine and each atom interval has a closed end. Open ends are allowed to be ties, which is exactly how u = 0 enters (a) and (b).
+
+Requested boxes, all PASS:
+- (a), (c): even u in (0,1], odd u in [-1/6, 0).
+- (b), (d): even u in (0,1], odd u in [lambda, 0).
+- (e): even u in (0,1] x w in (0,1]; odd u in [-1/6,0) x w in (0,1].
+- (f): even u in (0,1] x w in (0,1]; odd u in [lambda,0) x w in (0,1].
+
+Update identities, exact, for every row of every table:
+- the mean of x_inf over N_i equals x_inf_i;
+- the mean of each offset vector over N_i equals rate * entry_i.
+- For (b) and (d) this goes through phi^2 = phi + 1 inside the Q(sqrt5) arithmetic.
+- For (e), the spectator row {4,5,6,7,8}: mean of V = (-2 + 12/11)/5 = -2/11 = xi*(12/11), and mean of W = (1/5)(-12/11).
+- For (f), the spectator row {0,1,2,4}: mean of V = (1 - phi^-1)/4 = lambda*(-phi^-1), since 2 - phi = 1/phi^2. Mean of W = (1/4)phi^-1.
+
+Closure:
+- u -> lambda*u maps (0,1] onto [lambda,0), and [lambda,0) onto (0, lambda^2], which lies in (0,1]. The same holds with xi.
+- w -> w/5 and w -> w/4 keep w in (0,1].
+- At t = 0, u = w = 1.
+So the closed forms and tables hold for every t by induction.
+
+WIDEST u-INTERVALS (exact; single-atom systems; what the Lean lanes can spend):
+
+(a)
+- The even table holds on u in (0, 3); it breaks at u = 3 itself. Binding: rows 1 and 5 begin to hear 3, a tie under <=.
+- The odd table holds on u in [-6/5, 0]. It also holds at u = 0: the table of the limit is the odd table. Binding at -6/5: pairs (1,2) and (5,4).
+- So for (a), |u| <= 1 plus the sign of u by parity suffices.
+
+(b)
+- The even table holds on u in [0, sqrt5 - 1] ~ [0, 1.2361]. It holds at u = 0: the limit's table is the even table. Binding: pairs (2,4) and (4,2).
+- The odd table holds on [sqrt5 - 3, 0) ~ [-0.7639, 0). Binding: pairs (1,2), (2,1), (4,5) and (5,4).
+- So the odd step does NOT follow from u >= -1. It needs u >= sqrt5 - 3. Any rational bound such as u >= -3/4 or u >= -1/4 works, and lambda > -1/4.
+
+(c)
+- One table on u in (-5, 5/3], with u = 0 included.
+- Binding at 5/3: pairs (2,3) and (3,2). At -5 the endpoint is open: pairs (0,1) and (5,4).
+- |u| <= 1 suffices with NO parity split.
+
+(d)
+- One table on [-15/2 + 5sqrt5/2, 15(sqrt5-1)/4] ~ [-1.9098, 4.6353].
+- |u| <= 1 suffices with NO parity split.
+
+(e), (f)
+- The table is constant on the closed box u in [-1,1] x w in [0,1].
+- |u| <= 1 and 0 <= w <= 1 suffice; no parity split and no relation between u and w is needed.
+
+BONUS for H1 (COMPUTED, phi_atoms.py): treat s = phi*u as a second atom, using only 1 < phi < 2.
+- Even parity: u in (0,1] with u < s < 2u.
+- Odd parity: u in [-1/4, 0) with 2u < s < u.
+- These decide every table of (b) and (d). The vertex test with phi <= 2 closed flags only pair (2,4)/(4,2) of (b)-even, at the corner u = 1, s = 2. With the strict phi < 2 (Mathlib goldenRatio_lt_two), s - 2 < 2u - 2 <= 0, so that case closes too.
+- With phi < 13/8 the closed-vertex test passes outright.
+- So linarith over (u, s), with one_lt_goldenRatio, goldenRatio_lt_two, 0 < u <= 1 or -1/4 <= u < 0, decides the SBI tables. The sqrt5 enters only through the averaging identities.
+
+====================================================================
+7. TACTIC PATTERN FOR THE LEAN LANES (from these numbers)
+
+Step lemma, per system:
+- Hypotheses: x = L + u • V (and + w • W), with u in the stated box.
+- Conclusions: neighbors = table (`ext j; fin_cases i <;> fin_cases j <;> simp [abs_le] <;> linarith`), then step x = L + (λu) • V (`funext i; fin_cases i; simp [Finset.sum_*]; ring` or `linear_combination` with phi^2 = phi + 1).
+
+Parity splits:
+- (c), (d), (e), (f): use |λ^t| <= 1 (`abs_pow`, `pow_le_one₀`) and 0 < w^t <= 1, with no parity split.
+- (a): sign of u by parity (`Even.neg_pow` / `Odd.neg_pow`), plus |u| <= 1.
+- (b): even 0 < u <= 1. Odd λ <= u < 0, i.e. u = λ * λ^(t-1) with 0 < λ^(t-1) <= 1. Any rational bound >= sqrt5 - 3 works, e.g. -1/4.
+- For the SBI tables, linarith over u and s = phi*u, with one_lt_goldenRatio and goldenRatio_lt_two, suffices.
+
+====================================================================

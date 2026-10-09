@@ -89,7 +89,8 @@ def Conjecture23For (m : Model) : Prop :=
 def Conjecture23 : Prop := ∀ m : Model, Conjecture23For m
 
 /-- Theorem 6.4(iv) for the model `m`, read literally: if the proximity digraph of a trajectory is
-constant from `τ` on, the trajectory is pseudo-stable from some `t₂ ≥ τ` on. -/
+constant from `τ` on, the trajectory is pseudo-stable from some `t₂ ≥ τ` on (already false for a
+trajectory frozen from the start, since both classes of (2.2) must be non-empty). -/
 def Theorem64ivLiteralFor (m : Model) : Prop :=
   ∀ (n : ℕ) (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
     ∀ τ, (∀ t, τ ≤ t →

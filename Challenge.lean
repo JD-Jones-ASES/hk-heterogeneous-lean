@@ -3,10 +3,10 @@ module
 public import Mathlib
 
 /-!
-# Heterogeneous Hegselmann–Krause dynamics: explicit systems whose proximity digraph is never eventually constant and whose convergence is never pseudo-stable
+# Heterogeneous Hegselmann–Krause dynamics: explicit systems whose proximity digraph is never eventually constant, and constant-digraph systems whose convergence is never pseudo-stable
 
 Mirtabatabaei and Bullo (*Opinion dynamics in heterogeneous networks: convergence conjectures and
-theorems*, SIAM J. Control Optim. 50 (2012) 2763–2785; arXiv:1103.2829) study `n` agents with real
+theorems*, SIAM J. Control Optim. 50 (2012) 2763–2785; arXiv:1103.2829v2, the text read) study `n` agents with real
 opinions and positive bounds `r₁, …, rₙ` that update synchronously by averaging, their (2.1):
 `x(t+1) = A(x(t)) x(t)`, where row `i` of `A(y)` is the uniform average over the out-neighbours
 `N_i(y)` of `i`. In the **SBC** model (synchronized bounded confidence, the heterogeneous
@@ -21,12 +21,15 @@ Their Conjecture 2.2: for every SBC or SBI system the proximity digraph is const
 time. Conjecture 2.3: every trajectory reaches a fixed state or is eventually pseudo-stable.
 Theorem 6.4(iv): if the proximity digraph is constant from some `τ` on, the trajectory is pseudo-stable
 from some `t₂ ≥ τ` on (read literally; the reading that also admits a trajectory frozen from `t₂` on is
-stated too, and refuted too). Hegarty, Ognissanti and Wedin (arXiv:2610.03229) give explicit systems
+stated too, and refuted too — the literal reading already fails for a single frozen agent, since both
+classes of (2.2) must be non-empty, so the content is the refutation of the reading admitting fixed
+states). Hegarty, Ognissanti and Wedin (arXiv:2610.03229v1) give explicit systems
 refuting all three; this file states, and `Solution.lean` proves, the following about their four
 systems (the agents are indexed `0, …, n − 1` here, agent `i` of the paper being index `i − 1`):
 
-* the closed forms of the trajectories for every `t`: `x(t) = x_∞ + λᵗ v` with `λ = −1/6` for the
-  SBC systems and `λ = (1 − √5)/8` for the SBI systems (so every trajectory converges to `x_∞`);
+* the closed forms of the trajectories for every `t`: `x(t) = x_∞ + c λᵗ v` with `λ = −1/6` for the
+  SBC systems and `λ = (1 − √5)/8` for the SBI systems (`c = 1/2` for the first SBI system, `1`
+  otherwise; so every trajectory converges to `x_∞`);
 * the complete neighbourhood tables: in the 7-agent SBC and SBI systems the middle agent's
   neighbourhood alternates with the parity of `t` (the digraph is never eventually constant), while
   in the 6-agent SBC and the second 7-agent SBI system the digraph is the same for every `t`;
@@ -35,16 +38,21 @@ systems (the agents are indexed `0, …, n − 1` here, agent `i` of the paper b
 * hence Conjecture 2.2 and Conjecture 2.3 fail in each model, and Theorem 6.4(iv) fails in each
   model under both readings;
 * with `fvct` (their Definition 3.1, the limit of `A(y)ᵗ y`) and the per-step convergence factor
-  (their Definition 6.1), the open-minded agents of the two constant-digraph systems have per-step
-  factor identically `λ < 0`, which converges to no non-negative number (their Theorem 6.4(iii)(a)
-  asserts convergence to a spectral radius; the classification of components it needs is not
-  formalized here);
+  (their Definition 6.1): along all four systems the final value at constant topology of every
+  `x(t)` is the limit `x_∞`; the agents with nonzero offset in the two constant-digraph systems (all
+  four agents of the open-minded component of the 6-agent system; the open-minded component of the
+  second 7-agent SBI system less its middle agent, which sits at its limit) have per-step factor
+  identically `λ < 0`, which converges to no non-negative number (their Theorem 6.4(iii)(a) asserts
+  convergence to a spectral radius; the classification of components it needs is not formalized
+  here);
 * the positive side, their Lemma 4.2 and Lemma 4.8: a point of the equi-topology neighbourhood of
   `z` (Definition 4.1) has the proximity digraph of `z`; a convergent trajectory whose limit has every
   equi-topology distance positive has an eventually constant proximity digraph, equal to that of the
-  limit, with the limit its final value at constant topology and an equilibrium; and the sharpness
-  of that condition: in the two alternating systems the limit has equi-topology distance `0` at the
-  alternating agents.
+  limit, with the limit its final value at constant topology and an equilibrium; the two
+  constant-digraph systems satisfy that hypothesis (every equi-topology distance of their limits is
+  positive); and the sharpness of the hypothesis for the digraph conclusion: in the two alternating
+  systems the limit has equi-topology distance `0` at the middle agent and at the agents on whose
+  bound it sits (indices `2, 3, 4` in the SBC system, `1, 3, 5` in the SBI system).
 
 Conjecture 2.1 of the same paper (every trajectory converges) is open and nothing here bears on it.
 
@@ -131,7 +139,8 @@ def Conjecture23For (m : Model) : Prop :=
 def Conjecture23 : Prop := ∀ m : Model, Conjecture23For m
 
 /-- Theorem 6.4(iv) for the model `m`, read literally: if the proximity digraph of a trajectory is
-constant from `τ` on, the trajectory is pseudo-stable from some `t₂ ≥ τ` on. -/
+constant from `τ` on, the trajectory is pseudo-stable from some `t₂ ≥ τ` on (already false for a
+trajectory frozen from the start, since both classes of (2.2) must be non-empty). -/
 def Theorem64ivLiteralFor (m : Model) : Prop :=
   ∀ (n : ℕ) (r x₀ : Fin n → ℝ), (∀ i, 0 < r i) →
     ∀ τ, (∀ t, τ ≤ t →
@@ -332,10 +341,17 @@ theorem not_theorem64iv_sbi : ¬ Theorem64ivFor .sbi := sorry
 /-- Theorem 6.4(iv) fails in the reading that admits fixed states. -/
 theorem not_theorem64iv : ¬ Theorem64iv := sorry
 
-/-- Theorem 6.4(iv) fails in its literal reading. -/
+/-- Theorem 6.4(iv) fails in its literal reading (which the reading admitting fixed states implies). -/
 theorem not_theorem64iv_literal : ¬ Theorem64ivLiteral := sorry
 
-/-! ### The per-step convergence factor along the constant-digraph systems -/
+/-! ### The final value at constant topology and the per-step convergence factor -/
+
+/-- §2 and §3: along the two alternating systems the final value at constant topology of every
+`x(t)` is the limit (each of the two parity matrices fixes the limit and scales the offset by `λ`),
+so the conclusion of Lemma 4.8(ii) holds for them although that of Lemma 4.8(i) fails. -/
+theorem alternating_fvct (t : ℕ) :
+    fvct .sbc sbc7_r (traj .sbc sbc7_r sbc7_x0 t) = sbc7_lim ∧
+    fvct .sbi sbi7_r (traj .sbi sbi7_r sbi7_x0 t) = sbi7_lim := sorry
 
 /-- §4: along the 6-agent SBC system, the final value at constant topology of every `x(t)` is the
 limit `(0, 20, 40, 100, 120, 140)`. -/
@@ -357,7 +373,7 @@ is the limit `(0, 70, 100, 110, 120, 150, 220)`. -/
 theorem sbi7b_fvct (t : ℕ) : fvct .sbi sbi7b_r (traj .sbi sbi7b_r sbi7b_x0 t) = sbi7b_lim := sorry
 
 /-- §5: the per-step convergence factor of each of the agents `1, 2, 4, 5` (the paper's `2, 3, 5, 6`;
-agent `3` sits at its limit) is `λ = (1 − √5)/8` at every `t`. -/
+index `3`, the paper's agent `4`, sits at its limit) is `λ = (1 − √5)/8` at every `t`. -/
 theorem sbi7b_perStepFactor (t : ℕ) (i : Fin 7) (hi : i ∈ ({1, 2, 4, 5} : Finset (Fin 7))) :
     perStepFactor .sbi sbi7b_r (traj .sbi sbi7b_r sbi7b_x0) i t = sbiRate := sorry
 
@@ -387,11 +403,18 @@ theorem fvct_eq_and_equilibrium_of_tendsto (m : Model) {n : ℕ} (r x₀ xinf : 
     (hε : ∀ i, 0 < equiTopologyDistance r xinf i) :
     (∃ T, ∀ t, T ≤ t → fvct m r (traj m r x₀ t) = xinf) ∧ step m r xinf = xinf := sorry
 
-/-- Sharpness: in the 7-agent SBC system the limit has equi-topology distance `0` at the middle
-agent, and in the 7-agent SBI system at the agents `1` and `5` (the paper's `2` and `6`). -/
+/-- The two constant-digraph systems satisfy the hypothesis of Lemma 4.8: every equi-topology
+distance of their limits is positive. -/
+theorem equiTopologyDistance_pos :
+    (∀ i, 0 < equiTopologyDistance sbc6_r sbc6_lim i) ∧
+    (∀ i, 0 < equiTopologyDistance sbi7b_r sbi7b_lim i) := sorry
+
+/-- Sharpness of that hypothesis for the digraph conclusion (Hegarty–Ognissanti–Wedin §6): the
+limits of the two alternating systems violate it. In the 7-agent SBC system the middle agent (index
+`3`) and the two agents it sits on the bound of (indices `2`, `4`) have equi-topology distance `0`;
+in the 7-agent SBI system the middle agent and the agents `1` and `5` (the paper's `2` and `6`) do. -/
 theorem equiTopologyDistance_eq_zero :
-    equiTopologyDistance sbc7_r sbc7_lim 3 = 0 ∧
-    equiTopologyDistance sbi7_r sbi7_lim 1 = 0 ∧ equiTopologyDistance sbi7_r sbi7_lim 5 = 0 :=
-  sorry
+    (∀ i ∈ ({2, 3, 4} : Finset (Fin 7)), equiTopologyDistance sbc7_r sbc7_lim i = 0) ∧
+    (∀ i ∈ ({1, 3, 5} : Finset (Fin 7)), equiTopologyDistance sbi7_r sbi7_lim i = 0) := sorry
 
 end HK

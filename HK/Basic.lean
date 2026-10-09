@@ -62,6 +62,12 @@ theorem fvct_eq_of_constant_neighbors (m : Model) {n : ℕ} (r x₀ L : Fin n �
     (hN : ∀ s, neighbors m r (traj m r x₀ (t + s)) = neighbors m r (traj m r x₀ t))
     (hL : Tendsto (traj m r x₀) atTop (𝓝 L)) : fvct m r (traj m r x₀ t) = L := sorry
 
+/-- If `A(y)` fixes `L` and scales `v` by `c` with `|c| < 1`, and `y = L + a v`, then the final value
+at constant topology of `y` is `L` (`A(y)ˢ y = L + a cˢ v → L`). -/
+theorem fvct_eq_of_eigen (m : Model) {n : ℕ} (r y L v : Fin n → ℝ) (a c : ℝ) (hc : |c| < 1)
+    (hy : y = fun i => L i + a * v i) (hL : (adjMatrix m r y).mulVec L = L)
+    (hv : (adjMatrix m r y).mulVec v = c • v) : fvct m r y = L := sorry
+
 /-- The per-step factor of an agent with the closed form `L i + cˢ v i`, `v i ≠ 0`, `c ≠ 0`, at a
 time where the final value at constant topology is `L`, is `c`. -/
 theorem perStepFactor_of_closed_form (m : Model) {n : ℕ} (r x₀ L v : Fin n → ℝ) (c : ℝ)

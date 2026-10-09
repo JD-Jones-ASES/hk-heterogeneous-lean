@@ -124,6 +124,11 @@ theorem not_theorem64iv : ¬ Theorem64iv :=
 theorem not_theorem64iv_literal : ¬ Theorem64ivLiteral :=
   not_theorem64iv_literal_internal
 
+theorem alternating_fvct (t : ℕ) :
+    fvct .sbc sbc7_r (traj .sbc sbc7_r sbc7_x0 t) = sbc7_lim ∧
+    fvct .sbi sbi7_r (traj .sbi sbi7_r sbi7_x0 t) = sbi7_lim :=
+  alternating_fvct_internal t
+
 theorem sbc6_fvct (t : ℕ) : fvct .sbc sbc6_r (traj .sbc sbc6_r sbc6_x0 t) = sbc6_lim :=
   sbc6_fvct_internal t
 
@@ -164,9 +169,14 @@ theorem fvct_eq_and_equilibrium_of_tendsto (m : Model) {n : ℕ} (r x₀ xinf : 
     (∃ T, ∀ t, T ≤ t → fvct m r (traj m r x₀ t) = xinf) ∧ step m r xinf = xinf :=
   fvct_eq_and_equilibrium_of_tendsto_internal m r x₀ xinf hconv hε
 
+theorem equiTopologyDistance_pos :
+    (∀ i, 0 < equiTopologyDistance sbc6_r sbc6_lim i) ∧
+    (∀ i, 0 < equiTopologyDistance sbi7b_r sbi7b_lim i) :=
+  equiTopologyDistance_pos_internal
+
 theorem equiTopologyDistance_eq_zero :
-    equiTopologyDistance sbc7_r sbc7_lim 3 = 0 ∧
-    equiTopologyDistance sbi7_r sbi7_lim 1 = 0 ∧ equiTopologyDistance sbi7_r sbi7_lim 5 = 0 :=
+    (∀ i ∈ ({2, 3, 4} : Finset (Fin 7)), equiTopologyDistance sbc7_r sbc7_lim i = 0) ∧
+    (∀ i ∈ ({1, 3, 5} : Finset (Fin 7)), equiTopologyDistance sbi7_r sbi7_lim i = 0) :=
   equiTopologyDistance_eq_zero_internal
 
 end HK

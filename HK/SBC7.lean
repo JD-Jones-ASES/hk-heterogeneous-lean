@@ -38,4 +38,8 @@ theorem sbc7_not_fixedFrom (τ : ℕ) : ¬ FixedFrom (traj .sbc sbc7_r sbc7_x0) 
 theorem sbc7_not_pseudoStableAfter (xinf : Fin 7 → ℝ) (τ : ℕ) :
     ¬ PseudoStableAfter (traj .sbc sbc7_r sbc7_x0) xinf τ := sorry
 
+/-- Each parity matrix fixes the limit and scales the offset by `−1/6`, so the final value at constant
+topology of every `x(t)` is the limit (`fvct_eq_of_eigen`). -/
+theorem sbc7_fvct (t : ℕ) : fvct .sbc sbc7_r (traj .sbc sbc7_r sbc7_x0 t) = sbc7_lim := sorry
+
 end HK

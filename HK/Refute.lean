@@ -58,9 +58,16 @@ theorem not_theorem64iv_internal : ¬ Theorem64iv := sorry
 
 theorem not_theorem64iv_literal_internal : ¬ Theorem64ivLiteral := sorry
 
+theorem alternating_fvct_internal (t : ℕ) :
+    fvct .sbc sbc7_r (traj .sbc sbc7_r sbc7_x0 t) = sbc7_lim ∧
+    fvct .sbi sbi7_r (traj .sbi sbi7_r sbi7_x0 t) = sbi7_lim := sorry
+
+theorem equiTopologyDistance_pos_internal :
+    (∀ i, 0 < equiTopologyDistance sbc6_r sbc6_lim i) ∧
+    (∀ i, 0 < equiTopologyDistance sbi7b_r sbi7b_lim i) := sorry
+
 theorem equiTopologyDistance_eq_zero_internal :
-    equiTopologyDistance sbc7_r sbc7_lim 3 = 0 ∧
-    equiTopologyDistance sbi7_r sbi7_lim 1 = 0 ∧ equiTopologyDistance sbi7_r sbi7_lim 5 = 0 :=
-  sorry
+    (∀ i ∈ ({2, 3, 4} : Finset (Fin 7)), equiTopologyDistance sbc7_r sbc7_lim i = 0) ∧
+    (∀ i ∈ ({1, 3, 5} : Finset (Fin 7)), equiTopologyDistance sbi7_r sbi7_lim i = 0) := sorry
 
 end HK
