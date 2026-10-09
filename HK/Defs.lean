@@ -230,4 +230,38 @@ noncomputable def sbi8_x0 : Fin 8 → ℝ :=
 /-- Their §5 with the spectator: the influence bounds. -/
 noncomputable def sbi8_r : Fin 8 → ℝ := ![85, 1, 35, 35, 75, 35, 35, 85]
 
+/-! ### Five SBI agents with complex modes; the near-homogeneous SBC family (this development) -/
+
+/-- Five SBI agents: the influence bounds. -/
+noncomputable def sbi5_r : Fin 5 → ℝ := ![31, 9, 5, 15, 28]
+
+/-- Five SBI agents: the limit. -/
+noncomputable def sbi5_lim : Fin 5 → ℝ := ![0, 10, 18, 20, 42]
+
+/-- Five SBI agents: the averaging map on the offsets of agents `1, 2, 3` under the table
+`{0}, {0, 1, 3}, {0, 1, 2, 3, 4}, {0, 2, 3, 4}, {4}` (agents `0` and `4` have offset `0`). -/
+noncomputable def sbi5LinearStep (z : Fin 3 → ℝ) : Fin 3 → ℝ :=
+  ![(z 0 + z 2) / 3, (z 0 + z 1 + z 2) / 5, (z 1 + z 2) / 4]
+
+/-- Five SBI agents: the offsets of agents `1, 2, 3` after `t` steps of `sbi5LinearStep` from
+`(1/3 − ρ, 1/5, 0)`. -/
+noncomputable def sbi5Offset (ρ : ℝ) (t : ℕ) : Fin 3 → ℝ :=
+  sbi5LinearStep^[t] ![1 / 3 - ρ, 1 / 5, 0]
+
+/-- Five SBI agents: the offsets of agents `1, 2, 3` placed between the zero offsets of agents `0`
+and `4`. -/
+noncomputable def sbi5Lift (z : Fin 3 → ℝ) : Fin 5 → ℝ := ![0, z 0, z 1, z 2, 0]
+
+/-- Five SBI agents: the initial opinions `(0, 31/3 − ρ, 91/5, 20, 42)`; the construction takes `ρ`
+to be the real root of `60ρ³ − 47ρ² + 9ρ − 1`, which lies in `(57/100, 29/50)`. -/
+noncomputable def sbi5_x0 (ρ : ℝ) : Fin 5 → ℝ := sbi5_lim + sbi5Lift (sbi5Offset ρ 0)
+
+/-- The five-agent SBC family: the bounds `(6 − 3δ, 6 + 3δ, 6 + 3δ, 6 + 3δ, 6 − 3δ)`. -/
+noncomputable def sbc5Family_r (δ : ℝ) : Fin 5 → ℝ :=
+  ![6 - 3 * δ, 6 + 3 * δ, 6 + 3 * δ, 6 + 3 * δ, 6 - 3 * δ]
+
+/-- The five-agent SBC family: the initial opinions `sbc5_lim + δ sbc5_v`; `δ = 1` is `sbc5_x0`. -/
+noncomputable def sbc5Family_x0 (δ : ℝ) : Fin 5 → ℝ :=
+  fun i => sbc5_lim i + δ * sbc5_v i
+
 end HK

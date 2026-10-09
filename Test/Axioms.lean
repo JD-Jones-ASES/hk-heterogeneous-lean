@@ -55,7 +55,11 @@ run_cmd do
       `HK.sbi7b_perStepFactor, `HK.sbi7b_perStepFactor_not_tendsto,
       `HK.proximityDigraph_eq_of_equiTopologyNbhd, `HK.eventually_constant_of_tendsto,
       `HK.fvct_eq_and_equilibrium_of_tendsto, `HK.equiTopologyDistance_pos,
-      `HK.equiTopologyDistance_eq_zero] do
+      `HK.equiTopologyDistance_eq_zero, `HK.sbi5_root_exists, `HK.sbi5_trajectory,
+      `HK.sbi5_neighbors, `HK.sbi5_tendsto, `HK.sbi5_digraph_constant,
+      `HK.sbi5_oscillates_every_five, `HK.sbi5_not_fixedFrom, `HK.sbi5_not_pseudoStableAfter,
+      `HK.not_conjecture23_sbi_five, `HK.not_theorem64iv_sbi_five, `HK.sbc5Family_closed_form,
+      `HK.sbc5Family_neighbors, `HK.sbc5_near_homogeneous] do
     unless env.contains n do
       logError m!"Compared theorem is missing from the environment: {n}"
   logInfo m!"Audited {checked} project constants; unexpected axiom dependencies: {rejected}."

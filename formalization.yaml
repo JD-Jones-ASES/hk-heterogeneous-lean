@@ -22,8 +22,13 @@ project:
     agents alternate sides of their limits. Hence Conjectures 2.2 and 2.3 fail in each model, and
     Theorem 6.4(iv) fails in each model, both in its literal reading and in the reading that also admits
     a fixed state. Two smaller constant-digraph systems found in this development, five SBC agents with
-    rate (1 - sqrt 2)/3 and six SBI agents with rate (13 - sqrt 249)/40, show that Conjecture 2.3 and
-    Theorem 6.4(iv) fail already with five SBC agents and six SBI agents. Along all four source systems
+    rate (1 - sqrt 2)/3 and six SBI agents with rate (13 - sqrt 249)/40, have one real negative mode. A
+    five-agent SBI system of this development has a complex pair of modes: the offsets of its three
+    moving agents follow a rational averaging map from an algebraic initial offset (the real root of a
+    cubic), its digraph is constant, it converges, and every moving agent is strictly on both sides of
+    its limit in every five consecutive times. So Conjecture 2.3 and Theorem 6.4(iv) fail with five
+    agents in either model. A five-agent SBC family shows that these failures persist with positive,
+    unequal bounds whose ratio of largest to smallest is below any 1 + epsilon. Along all four source systems
     the final value at constant topology (Definition 3.1) of every x(t) is the limit, and in the two
     constant-digraph source systems the per-step convergence factor (Definition 6.1) of every agent with
     nonzero offset is identically the negative rate, so it converges to no non-negative number. On the
@@ -33,10 +38,11 @@ project:
     limit) are proved for arbitrary bounds; the limits of the two constant-digraph systems satisfy that
     hypothesis, and those of the two alternating systems violate it. For the source's two spectator
     systems (nine SBC agents with a spectator and two beacons; eight SBI agents with a spectator) the
-    closed forms, the constant tables and the spectator's side are proved, and along the two smaller
-    systems too the final value at constant topology is the limit and the per-step factor is the rate.
+    closed forms, the constant tables and the spectator's side are proved, and along the five-agent SBC
+    and six-agent SBI single-mode systems too the final value at constant topology is the limit and the
+    per-step factor is the rate.
     Not claimed: Theorem 6.4(iii) in full, Conjecture 2.1 (convergence of every trajectory), or that any
-    system is the smallest of its kind.
+    minimality result is formalized in Lean.
   authors: ["JD Jones"]
   responsible_maintainers: ["JD Jones"]
   license: "MIT"
@@ -50,7 +56,7 @@ sources:
     authors: ["Peter Hegarty", "Damiano Ognissanti", "Edvin Wedin"]
     id: "https://arxiv.org/abs/2610.03229"
     type: "paper"
-    location: "arXiv:2610.03229v1 (2026-10-02; math.DS, math.CO; MSC 39A60, 93A14, 91D10, 91D30; 10 pages): Section 1 (the SBC and SBI models; Conjectures 2.2 and 2.3 and Theorem 6.4(iv) of Mirtabatabaei-Bullo as restated, with footnote 1 on the literal reading of 6.4(iv)); Section 2 (SBC, seven agents); Section 3 (SBI, seven agents); Section 4 (SBC, six agents, and the nine-agent spectator system with two beacons, Claims 1-3); Section 5 (SBI, seven agents, and the eight-agent spectator system, Claims 1-3); Section 6 (equi-topology distance zero at the limits of Sections 2 and 3); Section 7 (the AI statement)"
+    location: "arXiv:2610.03229v1 (2026-10-02; math.DS, math.CO; MSC 39A60, 93A14, 91D10, 91D30; 10 pages): Section 1 (the SBC and SBI models; Conjectures 2.2 and 2.3 and Theorem 6.4(iv) of Mirtabatabaei-Bullo as restated, with footnote 1 on the literal reading of 6.4(iv)); Section 2 (SBC, seven agents); Section 3 (SBI, seven agents); Section 4 (SBC, six agents, and the nine-agent spectator system with two beacons, Claims 1-3); Section 5 (SBI, seven agents, and the eight-agent spectator system, Claims 1-3); Section 6 (equi-topology distance zero at the limits of Sections 2 and 3); Remark 2.1 (the wiggle-room remark); Section 7 (the AI statement; computations on the minimal number of agents are mentioned there, not included)"
     relationship: "formalizes"
     author_endorsement: "not-contacted"
     note: >-
@@ -97,8 +103,9 @@ sources:
       (every trajectory converges) is not addressed. The published SIAM text was not read (its landing
       page refused automated access); the numbering used is that of the arXiv version, which agrees with
       the numbering Hegarty, Ognissanti and Wedin cite from the journal. The development also
-      exhibits two smaller constant-digraph systems of its own (five SBC agents, six SBI agents)
-      along which Conjecture 2.3 and Theorem 6.4(iv) fail in the same way.
+      exhibits smaller constant-digraph systems of its own (five SBC agents, six SBI agents with a
+      single negative mode, and five SBI agents with complex modes), along which Conjecture 2.3 and
+      Theorem 6.4(iv) fail, and a five-agent SBC family with arbitrarily near-equal positive radii.
   - title: "Opinion dynamics and bounded confidence: models, analysis and simulation"
     authors: ["Rainer Hegselmann", "Ulrich Krause"]
     id: "https://www.jasss.org/5/3/2.html"
@@ -143,6 +150,20 @@ sources:
       reach static states in finite time; Hegarty, Ognissanti and Wedin note that the proof carries over
       to SBI, so that what remained open in Conjecture 2.3 concerned the agents that never freeze.
       Background only; nothing from it is formalized.
+  - title: "Inertial Hegselmann-Krause Systems"
+    authors: ["Bernard Chazelle", "Chu Wang"]
+    id: "doi:10.1109/TAC.2016.2644266"
+    type: "paper"
+    location: "IEEE Transactions on Automatic Control 62 (2017), no. 8, 3905-3913 (online 2016-12-22); Section I (Hegselmann-Krause systems with closed-minded agents; Theorem 1.2)"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      Hegselmann-Krause systems with closed-minded agents (every radius 1 or 0): asymptotic convergence,
+      and in one dimension an eventually constant communication network, with the remark that such a
+      system need not freeze. Along their trajectories the constant-digraph SBC systems with two frozen
+      endpoints here (the source's Section 4 system, the five-agent SBC system, the SBC family and the
+      note's path family) are systems of this kind: the endpoints never hear anyone and the moving agents
+      share one bound. Background only; nothing from it is formalized.
   - title: "The Lean 4 Theorem Prover and Programming Language"
     authors: ["Leonardo de Moura", "Sebastian Ullrich"]
     id: "doi:10.1007/978-3-030-79876-5_37"
@@ -162,7 +183,7 @@ sources:
 
 status:
   scope: >-
-    Sixty-three compared theorems over the definitions of Challenge.lean, none of them a hole. For the
+    Seventy-six compared theorems over the definitions of Challenge.lean, none of them a hole. For the
     four systems of Hegarty, Ognissanti and Wedin (SBC with seven and with six agents, SBI with seven
     agents twice): the closed form of the trajectory for every t, the neighbourhood table at every t,
     convergence to the stated limit, a proximity digraph that is never eventually constant (the two
@@ -171,10 +192,20 @@ status:
     Conjecture 2.2 and Conjecture 2.3, each for the SBC model and for the SBI model, and of their
     Theorem 6.4(iv) in each model, in the reading admitting fixed states and in the literal reading (the
     latter is implied by the former, and also fails trivially for one frozen agent, a remark not used in
-    the proof). For two smaller constant-digraph systems of this development (five SBC agents, rate (1 -
-    sqrt 2)/3; six SBI agents, rate (13 - sqrt 249)/40): the same facts, so Conjecture 2.3 and Theorem
-    6.4(iv) fail with five SBC agents and with six SBI agents, and Conjecture 2.2 with seven agents in
-    each model. For the source's two spectator systems (Section 4: nine SBC agents with a spectator and
+    the proof). For two smaller constant-digraph systems of this development with one real negative mode
+    (five SBC agents, rate (1 - sqrt 2)/3; six SBI agents, rate (13 - sqrt 249)/40): the same facts, so
+    Conjecture 2.3 and Theorem 6.4(iv) fail at those counts. For a five-agent SBI system of this
+    development with a complex pair of modes: a real root of its cubic in (57/100, 29/50), the exact
+    trajectory (the offsets of agents 1, 2, 3 iterated under a rational averaging map), the constant
+    neighbourhood table, convergence, both strict signs at every moving coordinate in every five-time
+    window (for the root), and the failure of eventual freezing and of pseudo-stability towards any
+    vector; so Conjecture 2.3 and Theorem 6.4(iv) fail with five agents in either model, and Conjecture
+    2.2 with seven agents in each model. For the five-agent SBC family with bounds (6 - 3 delta, 6 + 3
+    delta, 6 + 3 delta, 6 + 3 delta, 6 - 3 delta), 0 < delta <= 1: the closed form, the constant table,
+    and for every epsilon > 0 a member with positive, unequal bounds satisfying r_i < (1 + epsilon) r_j
+    for all i, j, a constant digraph, convergence, and neither a fixed state nor pseudo-stability after
+    any time. For the source's two spectator systems
+    (Section 4: nine SBC agents with a spectator and
     two beacons; Section 5: eight SBI agents with a spectator) the closed forms with two geometric
     terms, the constant neighbourhood tables and the spectator strictly on one side of its limit for
     every t >= 1 are proved. The final value at constant topology of every x(t) is the limit along the
@@ -188,9 +219,13 @@ status:
     3, 5 (SBI). Not claimed: Theorem 6.4(iii) in full (the strongly connected components, leader
     components and spectral radii of Definition 6.3 are not formalized; only the per-step factors above
     are); Conjecture 2.1 (every trajectory converges), on which nothing here bears; minimality of any
-    system (computations outside Lean that bear on the least number of agents are confined to
-    trajectories of the form x_inf + lambda^t v with a fixed neighbourhood pattern for each sign of
-    lambda^t, and are not part of the formalization). The intentional placeholders of Challenge.lean are
+    system as a Lean theorem. Outside Lean (note/): the exact enumeration concerns trajectories of the
+    form x_inf + lambda^t v with a fixed neighbourhood pattern for each sign of lambda^t; a paper proof
+    shows that at most four agents with an eventually constant digraph give an eventual fixed state or
+    pseudo-stability, so five is the least count for such a counterexample in either model (nothing is
+    claimed for digraphs that keep changing); the all-order SBC path family and a six-agent SBI family
+    with bounds arbitrarily close to equal are also on paper. The intentional placeholders of
+    Challenge.lean are
     excluded from proof counts; Solution.lean does not import Challenge.lean.
   sorry_count: 0
   sorry_in_definitions: 0
@@ -511,6 +546,71 @@ status:
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "comparator.json"
+    - declaration: "HK.sbi5_root_exists"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi5_trajectory"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi5_neighbors"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi5_tendsto"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi5_digraph_constant"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi5_oscillates_every_five"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi5_not_fixedFrom"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbi5_not_pseudoStableAfter"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_conjecture23_sbi_five"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.not_theorem64iv_sbi_five"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc5Family_closed_form"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc5Family_neighbors"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HK.sbc5_near_homogeneous"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
 
 automation:
   methods:
@@ -518,18 +618,31 @@ automation:
       models: ["Claude Opus 5.5 (Anthropic)", "Claude Fable 5.1 (Anthropic)"]
       framework: "Claude Code with parallel subagents"
       tool_setup: >-
-        The project was directed by its author. Claude Fable 5.1 pinned the statements, split and merged
-        the proof files and edited the documents; Claude Opus 5.5 subagents wrote the proofs, the
-        checkers and the drafts. Claude (Anthropic) in Claude Code was used throughout: the statements
-        and their fidelity checks against both papers, the Lean proofs, the exact-arithmetic replays and
-        searches outside Lean (which found the five- and six-agent systems), the literature and
-        prior-art searches, and the repository text. Lean v4.35.0-rc2 and Mathlib v4.35.0-rc2 (commit
-        065356127b1dc0016f66b7283ce0ce2c4055aa55) are pinned by the committed manifest and lake update
-        is never run; there are no GitHub Actions workflows. There is no native_decide. The proofs are
-        linear arithmetic over the offset atom lambda^t with fin_cases neighbourhood tables,
-        linear_combination with the quadratic identities of sqrt 5, sqrt 2 and sqrt 249, inductions on t
-        for the closed forms, and the limit lemmas of Mathlib (among them limUnder of a convergent
-        sequence); decide is used only for inequalities between Fin indices.
+        The project was directed by its author. Claude (Anthropic) in Claude Code was used throughout:
+        the statements and their fidelity checks against both papers, the Lean proofs, the
+        exact-arithmetic replays and searches outside Lean (which found the five-agent SBC and six-agent
+        SBI single-mode systems), the literature and prior-art searches, and the repository text; Claude
+        Fable 5.1 pinned the statements, merged the proof files and wrote the documents, Claude Opus 5.5
+        subagents wrote the proofs, the checkers and the drafts. Lean v4.35.0-rc2 and Mathlib
+        v4.35.0-rc2 (commit 065356127b1dc0016f66b7283ce0ce2c4055aa55) are pinned by the committed
+        manifest and lake update is never run; there are no GitHub Actions workflows. There is no
+        native_decide. The proofs are linear arithmetic over the offset atom lambda^t with fin_cases
+        neighbourhood tables, linear_combination with the quadratic identities of sqrt 5, sqrt 2 and
+        sqrt 249, inductions on t for the closed forms, and the limit lemmas of Mathlib (among them
+        limUnder of a convergent sequence); decide is used only for inequalities between Fin indices.
+        The five-agent SBI proof uses the intermediate value theorem for the cubic root, a real
+        second-order recurrence propagated by linearity, the bound (2/3)^t / 3 on the offsets, and a
+        sign argument on a four-step identity; no complex number appears.
+      spend_usd: "not tracked"
+    - method: "agent"
+      models: ["GPT-6 Pro (OpenAI)"]
+      framework: "ChatGPT"
+      tool_setup: >-
+        A pre-submission consult on 2026-10-09 reviewed the repository and contributed the five-agent SBI
+        system with complex modes, the near-homogeneous five-agent SBC family, their Lean proofs and
+        certificate, the paper proof of the lower bound at four agents under an eventually constant
+        digraph, and the SymPy path of the n = 6 replay script; Claude re-derived, verified and
+        integrated these and wrote the final documents.
       spend_usd: "not tracked"
 
 fidelity:
@@ -555,20 +668,25 @@ fidelity:
     single frozen agent with a constant digraph violates it, as footnote 1 of Hegarty, Ognissanti and
     Wedin observes), and in the reading that admits a fixed state, whose refutation needs the
     constant-digraph systems. For Theorem 6.4(iii) its statement is not formalized; what is formalized
-    is the per-step factor along the four constant-digraph systems (identically the negative rate; for
+    is the per-step factor along the four single-mode constant-digraph systems (identically the negative rate; for
     the two source systems also that it converges to no non-negative number) and the two spectator
     configurations of Hegarty, Ognissanti and Wedin (closed forms, tables, the spectator's side). The
     data (initial opinions, bounds, limits, offset directions and rates) are as in the source, with the
     factor 1/2 of the Section 3 closed form x(t) = x_inf + (lambda^t / 2) v kept; the Section 5 closed
-    form has no such factor.
+    form has no such factor. The two single-mode systems, the five-agent SBI system and the SBC family
+    are this development's, not the source's. The five-agent SBI trajectory is formalized as the
+    iterated rational averaging map on the offsets; its complex-mode interpretation is not formalized.
+    The lower bound at four agents under an eventually constant digraph and the note's further families
+    are paper proofs outside the Lean interface.
 
 review:
   status: "self-assessed"
   notes: >-
     No independent human expert review and no source-author endorsement is claimed; AI agents developed
     the proofs and audited them in separate passes, the statements were checked against Mirtabatabaei
-    and Bullo's arXiv text (v2) and Hegarty, Ognissanti and Wedin's paper, and every data vector and
-    neighbourhood table was replayed outside Lean in exact arithmetic. Mechanical correctness and
+    and Bullo's arXiv text (v2) and Hegarty, Ognissanti and Wedin's paper, and every fixed system's data
+    vector and neighbourhood table was replayed outside Lean in exact arithmetic (the SBC family at
+    several values of delta). Mechanical correctness and
     agreement of formal statements do not establish priority or significance.
 
 alignment:
@@ -889,6 +1007,71 @@ alignment:
       module: "Solution"
       status: "proved"
       note: "The limits of the two alternating systems have equi-topology distance 0 at indices 2, 3, 4 (SBC) and 1, 3, 5 (SBI)."
+    - source: "this development"
+      lean: "HK.sbi5_root_exists"
+      module: "Solution"
+      status: "proved"
+      note: "The cubic 60 rho^3 - 47 rho^2 + 9 rho - 1 has a real root in (57/100, 29/50)."
+    - source: "this development"
+      lean: "HK.sbi5_trajectory"
+      module: "Solution"
+      status: "proved"
+      note: "Five SBI agents, bounds (31, 9, 5, 15, 28), every rho in the interval: x(t) = (0, 10, 18, 20, 42) + lift(Q^t z), Q the averaging map on the offsets of agents 1, 2, 3 and z = (1/3 - rho, 1/5, 0)."
+    - source: "this development"
+      lean: "HK.sbi5_neighbors"
+      module: "Solution"
+      status: "proved"
+      note: "Five SBI agents: the table {0}, {0, 1, 3}, {0, 1, 2, 3, 4}, {0, 2, 3, 4}, {4} at every t."
+    - source: "this development"
+      lean: "HK.sbi5_tendsto"
+      module: "Solution"
+      status: "proved"
+      note: "Five SBI agents: convergence to (0, 10, 18, 20, 42)."
+    - source: "this development"
+      lean: "HK.sbi5_digraph_constant"
+      module: "Solution"
+      status: "proved"
+      note: "Five SBI agents: the proximity digraph is the same at every t."
+    - source: "this development"
+      lean: "HK.sbi5_oscillates_every_five"
+      module: "Solution"
+      status: "proved"
+      note: "For the root rho of the cubic: each of agents 1, 2, 3 is strictly below its limit at some time of every window [t, t + 4] and strictly above it at another."
+    - source: "this development"
+      lean: "HK.sbi5_not_fixedFrom"
+      module: "Solution"
+      status: "proved"
+      note: "For the root rho of the cubic: the trajectory is in a fixed state from no time on."
+    - source: "this development"
+      lean: "HK.sbi5_not_pseudoStableAfter"
+      module: "Solution"
+      status: "proved"
+      note: "For the root rho of the cubic: the trajectory is pseudo-stable after no time towards any vector."
+    - source: "Mirtabatabaei–Bullo 2012, Conjecture 2.3; this development"
+      lean: "HK.not_conjecture23_sbi_five"
+      module: "Solution"
+      status: "proved"
+      note: "Conjecture 2.3 fails for the SBI model with five agents."
+    - source: "Mirtabatabaei–Bullo 2012, Theorem 6.4(iv); this development"
+      lean: "HK.not_theorem64iv_sbi_five"
+      module: "Solution"
+      status: "proved"
+      note: "Theorem 6.4(iv) fails for the SBI model with five agents, in the reading that admits fixed states."
+    - source: "this development"
+      lean: "HK.sbc5Family_closed_form"
+      module: "Solution"
+      status: "proved"
+      note: "For 0 < delta <= 1 and bounds (6 - 3 delta, 6 + 3 delta, 6 + 3 delta, 6 + 3 delta, 6 - 3 delta): x(t) = (0, 6, 12, 18, 24) + delta ((1 - sqrt 2)/3)^t (0, 1, -sqrt 2, 1, 0) for every t."
+    - source: "this development"
+      lean: "HK.sbc5Family_neighbors"
+      module: "Solution"
+      status: "proved"
+      note: "The five-agent SBC family: the table {0}, {0, 1, 2}, {1, 2, 3}, {2, 3, 4}, {4} at every t."
+    - source: "this development"
+      lean: "HK.sbc5_near_homogeneous"
+      module: "Solution"
+      status: "proved"
+      note: "For every epsilon > 0: five SBC agents with positive, unequal bounds, every ratio r_i / r_j below 1 + epsilon, a constant proximity digraph, convergence to (0, 6, 12, 18, 24), and neither a fixed state nor pseudo-stability after any time."
 
 acknowledgements: >-
   Mirtabatabaei and Bullo for the models, the conjectures and the lemmas; Hegarty, Ognissanti and Wedin

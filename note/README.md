@@ -2,7 +2,7 @@
 
 License: CC BY-SA 4.0 (this note and its certificates). The Lean files carry their own license.
 
-What is established on paper or by exact certificate but not stated in Lean. Models
+Additional mathematical results and exact certificates, with Lean coverage identified below. Models
 (arXiv:1103.2829v2): SBC (i hears j iff |x_i - x_j| <= r_i) and SBI (iff <= r_j); x(t+1)_i is the
 mean of x(t)_j over N_i. Systems of sections 2-5: arXiv:2610.03229 (its section 7 says Claude Opus
 5.5 found them). Agents are indexed from 0 as in Lean (the source's agent i is index i - 1);
@@ -35,6 +35,8 @@ keeps a strict sign on the parity box; the row means are exact; u -> rate * u sw
 
 The class: trajectories eventually x_inf + lambda^t v, lambda real in (-1, 0), v != 0, pattern P+
 when lambda^t > 0 and P- when lambda^t < 0 (alternating if P+ != P-, constant otherwise).
+All minimality statements in this section concern this single-negative-mode class. In particular,
+the least SBI constant order of six does not exclude the five-agent complex-mode example in D.
 
 **Lemma 1.** Every system in the class, in either model, has n >= 5.
 *Proof.* Let P be either pattern, A = A_P. P holds at infinitely many distinct u = lambda^t, so
@@ -92,5 +94,63 @@ Two recorded search results (their scripts are not shipped here):
   (<= 12, fully resolved). UNKNOWN: irrational-mu leaves (SBC 276 at n = 5 and 1,122 at n = 6; SBI
   276 and 1,161), multi-dimensional leaves, mu < 0, n >= 7. No impossibility argument is known.
 
-The computations used Python with exact Fraction arithmetic (sympy for one factorisation step of
-the n = 6 enumeration) and were carried out by Claude Opus 5.5.
+The computations in A-C used Python with exact Fraction arithmetic (sympy for one factorisation step
+of the n = 6 enumeration).
+
+## D. Five SBI agents with complex modes; the least count under an eventually constant digraph (0006)
+
+**PROVEN-BY-CERTIFICATE for all t, and in Lean** (`HK/SBI5Complex.lean`). Let rho be the real root of
+`60 rho^3 - 47 rho^2 + 9 rho - 1 = 0` in `(57/100, 29/50)` (the cubic's only real root). Take
+`L = (0,10,18,20,42)`, `r = (31,9,5,15,28)`, `x(0) = (0,31/3-rho,91/5,20,42)`. The SBI masks are
+`[1,11,31,29,16]` at every t: every membership inequality at L has slack at least 1, the offsets of
+agents 1, 2, 3 follow `Q = [[1/3,0,1/3],[1/5,1/5,1/5],[0,1/4,1/4]]` from `z = (1/3-rho,1/5,0) =
+(Q-rho I)e_1`, and `||Q^t z||_infinity < (2/3)^t/3`, so the table persists and x(t) converges to L.
+Each offset obeys `y(t+2) = alpha y(t+1) - beta y(t)` with `alpha = 47/60-rho`, `beta = 1/(60 rho)`,
+`0 < beta < alpha^2 < 2 beta`; hence `y(t+4) = alpha(alpha^2-2 beta) y(t+1) + beta(beta-alpha^2) y(t)`
+with two negative coefficients and no zero adjacent pair, so every five consecutive times contain both
+strict signs, for each of agents 1, 2, 3, while agents 0 and 4 are frozen: convergence with a constant
+digraph, neither eventually fixed nor eventually pseudo-stable, outside the single-negative-mode class
+of B. The proof and the exact replay (t < 200, forged controls) are in
+[0006-sbi5-complex](certificates/0006-sbi5-complex/NOTES.md).
+
+**Lower bound, PROVEN-ON-PAPER** (section 6 of that certificate's notes). In either model, every
+trajectory on at most four agents with an eventually constant digraph is eventually fixed or
+pseudo-stable: the eventual averaging matrix has positive diagonal, so its powers converge; positive
+radii make each closed class a frozen clique and keep every other agent away from its limit; unless
+the whole system freezes there are at least two closed classes and at most two transient agents, whose
+block is triangular with positive diagonal or of the form `[[a,a],[d,d]]`, so each offset is eventually
+zero or strictly monotone on one side. With S1 of B (`HK.not_theorem64iv_sbc_five`) and the system
+above (`HK.not_theorem64iv_sbi_five`): **five is the least number of agents, in each model, for a
+counterexample to Conjecture 2.3, or to Theorem 6.4(iv) in the reading admitting fixed states, whose
+digraph is eventually constant**. This is of a different scope from Lemma 1 of B (any modes, but only
+eventually constant digraphs; Lemma 1 covers alternating patterns in its class). Nothing is claimed for
+digraphs that keep changing, and the bound is not a Lean theorem; certificate 0008 checks its structural
+consequences exhaustively on every neighbourhood pattern with at most four agents (COMPUTED).
+
+## E. Arbitrarily weak heterogeneity; connected path families (0007)
+
+Full derivations: [near-homogeneity-and-paths.md](near-homogeneity-and-paths.md).
+
+**The SBC5 family, in Lean** (`HK/SBC5Family.lean`). For `0 < d <= 1`: `r(d) = (6-3d,6+3d,6+3d,6+3d,6-3d)`
+and `x(0) = x_inf + d v` with the data of S1 (d = 1 is S1). The table of S1 and the rate `(1-sqrt2)/3`
+persist; the trajectory converges, never freezes, and is never eventually pseudo-stable. The radius
+ratio is `(2+d)/(2-d)`, so `d = min(1/2, eta/4)` puts it below `1 + eta` for every `eta > 0`: no
+positive bound on the relative spread of the radii restores eventual pseudo-stability, already for five
+SBC agents (`HK.sbc5_near_homogeneous`). The table holds exactly for `d < 6/(3+sqrt2)`; `d <= 1` is the
+crude bound. Replayed exactly for several d by certificate 0007.
+
+**The path family and an SBI6 family, PROVEN-ON-PAPER, replayed by 0007** (the SBI6 family exactly; the path family in 260-digit arithmetic, COMPUTED). For every `n >= 5`,
+`m = n-1`, endpoints of radius `1-delta` and interior agents of radius `1+delta` (`0 < delta < 1/2`),
+the sine modes of the nearest-neighbour path give `x_i(t) = i + (delta/4) lambda_k^t sin(i k pi/m)`,
+`lambda_k = (1+2 cos(k pi/m))/3`, `2m/3 < k <= m-1`: a constant, weakly connected digraph (endpoints
+alone, interior `{i-1,i,i+1}`), convergence, and alternation at every agent with a nonzero mode (all
+interior agents for k = m-1); the rates are dense in `(-1/3, 0)`, and n = 5, k = 3 has the rate and mode of S1. A six-agent
+SBI family built on the limit and mode of S2 (`r = (2+delta,2-delta,2-delta,2-delta,2-delta,2+delta)`,
+amplitude `delta/16`, `0 < delta < 1/2`; S2 itself is not a member) has four alternating interior
+agents, a coincident pair, and radius ratio `(2+delta)/(2-delta)`.
+
+Along their trajectories, the constant-digraph SBC systems with two frozen endpoints (the section 4
+system of the source, S1, the SBC5 family, the path family) are homogeneous HK systems with two
+closed-minded agents in the sense of Chazelle and Wang (IEEE Trans. Automat. Control 62 (2017)
+3905-3913), who prove convergence and an eventually constant network for that class and note that it
+need not freeze; the failure of pseudo-stability and the counts above are not there.

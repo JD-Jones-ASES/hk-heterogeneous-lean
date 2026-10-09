@@ -15,7 +15,7 @@ means j in N_i) are [1,7,14,28,16] (x^2 - (2/3)x - 1/9), [1,7,15,28,16] and its 
 [1,7,30,28,16] (x^2 - (7/12)x - 1/12), [1,7,31,28,16] (x^2 - (8/15)x - 1/15); each replays
 exactly for t < 200 with one digraph.
 
-**Statement, n = 6 (recorded, not re-run).** 1,245,184 patterns, 19,906 survive F1-F3; closure
+**Statement, n = 6 (recorded; re-run 2026-10-09, byte-identical).** 1,245,184 patterns, 19,906 survive F1-F3; closure
 SBC 397, SBI 487. Constant digraph: SBC 96 (3 with lam = -1/6, among them the section 4 pattern
 [1,7,15,60,56,32]), SBI 47 (13 quadratic, 32 cubic, 2 quartic rates; none rational).
 Alternating: 4,606 pairs, 2,034 with a common limit, 1,236 pass closure, 272 with a common
@@ -32,14 +32,38 @@ functions (positive controls) and every one-membership flip of their row 3 must 
 **Re-run.** `python verify.py` (about 8 s; standard library only). The original n = 5 run
 factored characteristic polynomials with sympy; here a rational-root factoriser replaces it, exact
 up to degree 3 (every n = 5 polynomial has degree 3), and the outputs are identical. The n = 6
-stage 2 meets degree-4 factors and needs a full factoriser (sympy) and several minutes:
-`python stage1.py 6 s1_n6.jsonl`, then `stage2.py` on that file, then `pairs.py`.
+stage 2 meets cofactors of degree 4 without rational roots and sends only those to SymPy
+(`factor_over_Q` in `stage2.py`): the coefficients cross as exact rationals, and the returned monic
+factors are multiplied back in `Fraction` arithmetic and must reproduce the squarefree input. The
+irreducibility of the returned factors is SymPy's (on the n = 6 workload every returned quadratic
+and quartic was also checked irreducible independently: no rational root, and a factorisation
+pattern modulo a prime that excludes a split into two quadratics). Without SymPy a degree-4
+cofactor stops the run with an explicit message.
+
+To reproduce the n = 6 search, work in a copy of this folder with SymPy importable in the
+interpreter that runs `stage2.py` (`python -m pip install sympy==1.14.0`; `python -I` ignores the
+user site, so run these without `-I`):
+
+```sh
+python stage1.py 6 s1_n6.jsonl                        # about 4 min; 19,906 lines
+python stage2.py s1_n6.jsonl s2_n6_a.json 0 5000      # the four slices of the recorded run,
+python stage2.py s1_n6.jsonl s2_n6_b.json 5000 10000  # independent; 160, 100, 50 and 620 s
+python stage2.py s1_n6.jsonl s2_n6_c.json 10000 15000
+python stage2.py s1_n6.jsonl s2_n6_d.json 15000
+python pairs.py p_n6.json s2_n6_a.json s2_n6_b.json s2_n6_c.json s2_n6_d.json   # about 1 min
+python compare_n6.py . n6-recorded                    # the JSON files, not the logs
+```
+
+The logs print at most 50 FOUND lines and carry timings, so the comparison is on the JSON files:
+the summed `counts`, and `records` and `constant_found` as multisets. Re-run on 2026-10-09 on this
+PC with these commands: stage 1 identical line for line, every slice and the pairs file
+byte-identical to `n6-recorded/` (sha256 ceca0387…, 47def54b…, 5f6ff3c8…, 42c70b9c…, ab7ff2d3…).
 
 **Labels.** n = 5: BOUNDED-NEGATIVE-SEARCH within the class (SBI constant, both alternating) and
-COMPUTED (the four SBC finds), re-runnable. n = 6: COMPUTED-AT-THE-BENCH (computed once on the
-original workstation; the recorded files are shipped, the computation is not re-run here). A float
-cross-check with an independent formulation agreed at n = 5 and n = 6; it is not shipped and no
-verdict rests on it.
+COMPUTED (the four SBC finds), re-runnable. n = 6: COMPUTED, re-run (the recorded files were
+produced once at the bench and reproduced byte for byte on 2026-10-09 with the shipped scripts and
+SymPy 1.14.0). A float cross-check with an independent formulation agreed at n = 5 and n = 6; it
+is not shipped and no verdict rests on it.
 
 Last lines of the run:
 

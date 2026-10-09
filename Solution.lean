@@ -285,4 +285,76 @@ theorem equiTopologyDistance_eq_zero :
     (∀ i ∈ ({1, 3, 5} : Finset (Fin 7)), equiTopologyDistance sbi7_r sbi7_lim i = 0) :=
   equiTopologyDistance_eq_zero_internal
 
+theorem sbi5_root_exists : ∃ ρ : ℝ, 57 / 100 < ρ ∧ ρ < 29 / 50 ∧
+    60 * ρ ^ 3 - 47 * ρ ^ 2 + 9 * ρ - 1 = 0 :=
+  sbi5_root_exists_internal
+
+theorem sbi5_trajectory (ρ : ℝ) (hlo : 57 / 100 < ρ) (hhi : ρ < 29 / 50)
+    (t : ℕ) : traj .sbi sbi5_r (sbi5_x0 ρ) t = sbi5_lim + sbi5Lift (sbi5Offset ρ t) :=
+  sbi5_trajectory_internal ρ hlo hhi t
+
+theorem sbi5_neighbors (ρ : ℝ) (hlo : 57 / 100 < ρ) (hhi : ρ < 29 / 50)
+    (t : ℕ) : neighbors .sbi sbi5_r (traj .sbi sbi5_r (sbi5_x0 ρ) t) =
+      ![{0}, {0, 1, 3}, {0, 1, 2, 3, 4}, {0, 2, 3, 4}, {4}] :=
+  sbi5_neighbors_internal ρ hlo hhi t
+
+theorem sbi5_tendsto (ρ : ℝ) (hlo : 57 / 100 < ρ) (hhi : ρ < 29 / 50) :
+    Tendsto (traj .sbi sbi5_r (sbi5_x0 ρ)) atTop (𝓝 sbi5_lim) :=
+  sbi5_tendsto_internal ρ hlo hhi
+
+theorem sbi5_digraph_constant (ρ : ℝ) (hlo : 57 / 100 < ρ) (hhi : ρ < 29 / 50)
+    (t : ℕ) : proximityDigraph .sbi sbi5_r (traj .sbi sbi5_r (sbi5_x0 ρ) t) =
+      proximityDigraph .sbi sbi5_r (sbi5_x0 ρ) :=
+  sbi5_digraph_constant_internal ρ hlo hhi t
+
+theorem sbi5_oscillates_every_five (ρ : ℝ)
+    (hlo : 57 / 100 < ρ) (hhi : ρ < 29 / 50)
+    (hp : 60 * ρ ^ 3 - 47 * ρ ^ 2 + 9 * ρ - 1 = 0) (t : ℕ) (i : Fin 5)
+    (hi : i ∈ ({1, 2, 3} : Finset (Fin 5))) :
+    (∃ k, t ≤ k ∧ k ≤ t + 4 ∧ traj .sbi sbi5_r (sbi5_x0 ρ) k i < sbi5_lim i) ∧
+    (∃ k, t ≤ k ∧ k ≤ t + 4 ∧ sbi5_lim i < traj .sbi sbi5_r (sbi5_x0 ρ) k i) :=
+  sbi5_oscillates_every_five_internal ρ hlo hhi hp t i hi
+
+theorem sbi5_not_fixedFrom (ρ : ℝ) (hlo : 57 / 100 < ρ) (hhi : ρ < 29 / 50)
+    (hp : 60 * ρ ^ 3 - 47 * ρ ^ 2 + 9 * ρ - 1 = 0) (τ : ℕ) :
+    ¬ FixedFrom (traj .sbi sbi5_r (sbi5_x0 ρ)) τ :=
+  sbi5_not_fixedFrom_internal ρ hlo hhi hp τ
+
+theorem sbi5_not_pseudoStableAfter (ρ : ℝ)
+    (hlo : 57 / 100 < ρ) (hhi : ρ < 29 / 50)
+    (hp : 60 * ρ ^ 3 - 47 * ρ ^ 2 + 9 * ρ - 1 = 0) (xinf : Fin 5 → ℝ) (τ : ℕ) :
+    ¬ PseudoStableAfter (traj .sbi sbi5_r (sbi5_x0 ρ)) xinf τ :=
+  sbi5_not_pseudoStableAfter_internal ρ hlo hhi hp xinf τ
+
+theorem not_conjecture23_sbi_five : ¬ Conjecture23ForAgents .sbi 5 :=
+  not_conjecture23_sbi_five_internal
+
+theorem not_theorem64iv_sbi_five : ¬ Theorem64ivForAgents .sbi 5 :=
+  not_theorem64iv_sbi_five_internal
+
+theorem sbc5Family_closed_form (δ : ℝ) (hδ0 : 0 < δ) (hδ1 : δ ≤ 1)
+    (t : ℕ) :
+    traj .sbc (sbc5Family_r δ) (sbc5Family_x0 δ) t =
+      fun i => sbc5_lim i + (sbc5Rate ^ t * δ) * sbc5_v i :=
+  sbc5Family_closed_form_internal δ hδ0 hδ1 t
+
+theorem sbc5Family_neighbors (δ : ℝ) (hδ0 : 0 < δ) (hδ1 : δ ≤ 1)
+    (t : ℕ) :
+    neighbors .sbc (sbc5Family_r δ)
+      (traj .sbc (sbc5Family_r δ) (sbc5Family_x0 δ) t) =
+      ![{0}, {0, 1, 2}, {1, 2, 3}, {2, 3, 4}, {4}] :=
+  sbc5Family_neighbors_internal δ hδ0 hδ1 t
+
+theorem sbc5_near_homogeneous (ε : ℝ) (hε : 0 < ε) :
+    ∃ r x₀ : Fin 5 → ℝ,
+      (∀ i, 0 < r i) ∧
+      (∀ i j, r i < (1 + ε) * r j) ∧
+      r 0 < r 1 ∧
+      (∀ t, proximityDigraph .sbc r (traj .sbc r x₀ t) =
+        proximityDigraph .sbc r x₀) ∧
+      Tendsto (traj .sbc r x₀) atTop (𝓝 sbc5_lim) ∧
+      (∀ τ, ¬ FixedFrom (traj .sbc r x₀) τ) ∧
+      (∀ xinf τ, ¬ PseudoStableAfter (traj .sbc r x₀) xinf τ) :=
+  sbc5_near_homogeneous_internal ε hε
+
 end HK

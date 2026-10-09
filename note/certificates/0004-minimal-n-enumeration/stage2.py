@@ -15,7 +15,7 @@ import os, sys, json, time
 from fractions import Fraction as Fr
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from exactlib import (Field, K, nullspace, fm_feasible, Ineq, count_roots_open, killed, squarefree,
-                      peval, pdivmod, ptrim)
+                      peval, pdivmod, ptrim, pmul)
 from math import gcd
 
 
@@ -31,16 +31,54 @@ def _divisors(m):
     return sorted(set(out))
 
 
+def _full_monic_factors(p):
+    """Factor a squarefree monic rational polynomial with the optional SymPy dependency.
+
+    This path is used only when rational-root extraction leaves degree at least four.
+    All coefficients crossing the boundary are exact rationals; reconstruction is
+    checked below using the certificate's own Fraction polynomial arithmetic.
+    """
+    try:
+        import sympy as sp
+    except ImportError as exc:
+        raise RuntimeError(
+            'degree >= 4 requires the optional n=6 replay dependency: '
+            'install it with "python -m pip install sympy", then rerun stage2.py; '
+            'the n=5 certificate uses only the standard library') from exc
+    x = sp.Symbol('hk_factor_variable')
+    poly = sp.Poly.from_list(
+        [sp.Rational(c.numerator, c.denominator) for c in reversed(p)], x)
+    _, factors = sp.factor_list(poly)
+    out = []
+    for factor, multiplicity in factors:
+        if multiplicity != 1 or factor.degree() < 1:
+            raise RuntimeError('full factoriser returned invalid squarefree factors')
+        monic = factor.monic()
+        co = []
+        for c in reversed(monic.all_coeffs()):
+            numerator, denominator = c.as_numer_denom()
+            co.append(Fr(int(numerator), int(denominator)))
+        out.append(ptrim(co))
+    reconstructed = [Fr(1)]
+    for co in out:
+        reconstructed = pmul(reconstructed, co)
+    if ptrim(reconstructed) != ptrim(p):
+        raise RuntimeError('full factoriser failed exact polynomial reconstruction')
+    return out
+
+
 def factor_over_Q(cp):
     """monic irreducible factors (low degree first) of the rational polynomial cp, without
     multiplicity: rational roots by the rational-root test, and the cofactor, which is irreducible
-    when its degree is at most 3 and it has no rational root. A cofactor of degree >= 4 without
-    rational roots raises: this factoriser is exact only up to degree 3 (every characteristic
-    polynomial met at n = 5 has degree 3; the original run used sympy's factor_list)."""
+    when its degree is at most 3 and it has no rational root. A remaining cofactor of degree >= 4
+    uses the optional SymPy factoriser, with exact rational conversion and independent product
+    reconstruction. Every n = 5 characteristic polynomial has degree 3, so the standard-library
+    certificate never imports or requires SymPy."""
     p = ptrim([Fr(c) for c in cp])
     p = [c / p[-1] for c in p]
     p = squarefree(p)
     p = [c / p[-1] for c in p]
+    target = list(p)
     out = []
     while len(p) > 1 and p[0] == 0:
         out.append([Fr(0), Fr(1)])
@@ -68,12 +106,18 @@ def factor_over_Q(cp):
         out.append(p)
     elif len(p) >= 3:
         if len(p) - 1 >= 4:
-            raise RuntimeError('a factor of degree >= 4 without rational roots: use a full factoriser')
-        out.append(p)
+            out.extend(_full_monic_factors(p))
+        else:
+            out.append(p)
     uniq = []
     for f in out:
         if f not in uniq:
             uniq.append(f)
+    reconstructed = [Fr(1)]
+    for f in uniq:
+        reconstructed = pmul(reconstructed, f)
+    if ptrim(reconstructed) != target:
+        raise RuntimeError('factorisation failed exact squarefree polynomial reconstruction')
     return uniq
 
 MODELS = ('SBC', 'SBI')

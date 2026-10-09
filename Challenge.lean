@@ -39,11 +39,19 @@ systems (the agents are indexed `0, …, n − 1` here, agent `i` of the paper b
   model in the reading admitting fixed states and hence in its literal reading;
 * two smaller constant-digraph systems found in this development: five SBC agents with rate
   `(1 − √2)/3` and six SBI agents with rate `(13 − √249)/40`, each converging with a constant digraph
-  and oscillating agents, so Conjecture 2.3 and Theorem 6.4(iv) fail already with five SBC agents and
-  six SBI agents (and Conjecture 2.2 with seven agents in each model, the source's counts); along
-  them too the final value at constant topology is the limit and the per-step factor is identically
-  the (negative) rate;
-* their two spectator systems (§4: nine SBC agents, a spectator and two beacons; §5: eight SBI agents
+  and oscillating agents, so Conjecture 2.3 and Theorem 6.4(iv) fail with five SBC agents and six SBI
+  agents (and Conjecture 2.2 with seven agents in each model, the source's counts); along them too
+  the final value at constant topology is the limit and the per-step factor is identically the
+  (negative) rate;
+* a five-agent SBI system of this development with complex modes: the offsets of its three moving
+  agents follow a rational averaging map, an algebraic initial offset (the real root of a cubic)
+  cancels the real mode, the digraph is constant, the trajectory converges, and each moving agent is
+  strictly on both sides of its limit in every five consecutive times; so Conjecture 2.3 and Theorem
+  6.4(iv) fail with five SBI agents too;
+* a five-agent SBC family of this development with bounds `(6 − 3δ, 6 + 3δ, 6 + 3δ, 6 + 3δ, 6 − 3δ)`,
+  `0 < δ ≤ 1`: a constant digraph, convergence, and no eventual fixed state or pseudo-stability, so
+  the ratio of the largest bound to the smallest can be taken below any `1 + ε`;
+* Hegarty–Ognissanti–Wedin's two spectator systems (§4: nine SBC agents, a spectator and two beacons; §5: eight SBI agents
   and a spectator): the closed forms with two geometric terms, the constant neighbourhood tables, and
   the spectator strictly on one side of its limit for every `t ≥ 1` while its leader component's
   agents alternate sides — the configurations their §4–§5 use against Theorem 6.4(iii)(b), whose
@@ -291,6 +299,40 @@ noncomputable def sbi8_x0 : Fin 8 → ℝ :=
   ![0, 60, 71, 100 - Real.goldenRatio, 110, 120 + Real.goldenRatio, 149, 220]
 /-- Their §5 with the spectator: the influence bounds. -/
 noncomputable def sbi8_r : Fin 8 → ℝ := ![85, 1, 35, 35, 75, 35, 35, 85]
+
+/-! ### Five SBI agents with complex modes; the near-homogeneous SBC family (this development) -/
+
+/-- Five SBI agents: the influence bounds. -/
+noncomputable def sbi5_r : Fin 5 → ℝ := ![31, 9, 5, 15, 28]
+
+/-- Five SBI agents: the limit. -/
+noncomputable def sbi5_lim : Fin 5 → ℝ := ![0, 10, 18, 20, 42]
+
+/-- Five SBI agents: the averaging map on the offsets of agents `1, 2, 3` under the table
+`{0}, {0, 1, 3}, {0, 1, 2, 3, 4}, {0, 2, 3, 4}, {4}` (agents `0` and `4` have offset `0`). -/
+noncomputable def sbi5LinearStep (z : Fin 3 → ℝ) : Fin 3 → ℝ :=
+  ![(z 0 + z 2) / 3, (z 0 + z 1 + z 2) / 5, (z 1 + z 2) / 4]
+
+/-- Five SBI agents: the offsets of agents `1, 2, 3` after `t` steps of `sbi5LinearStep` from
+`(1/3 − ρ, 1/5, 0)`. -/
+noncomputable def sbi5Offset (ρ : ℝ) (t : ℕ) : Fin 3 → ℝ :=
+  sbi5LinearStep^[t] ![1 / 3 - ρ, 1 / 5, 0]
+
+/-- Five SBI agents: the offsets of agents `1, 2, 3` placed between the zero offsets of agents `0`
+and `4`. -/
+noncomputable def sbi5Lift (z : Fin 3 → ℝ) : Fin 5 → ℝ := ![0, z 0, z 1, z 2, 0]
+
+/-- Five SBI agents: the initial opinions `(0, 31/3 − ρ, 91/5, 20, 42)`; the construction takes `ρ`
+to be the real root of `60ρ³ − 47ρ² + 9ρ − 1`, which lies in `(57/100, 29/50)`. -/
+noncomputable def sbi5_x0 (ρ : ℝ) : Fin 5 → ℝ := sbi5_lim + sbi5Lift (sbi5Offset ρ 0)
+
+/-- The five-agent SBC family: the bounds `(6 − 3δ, 6 + 3δ, 6 + 3δ, 6 + 3δ, 6 − 3δ)`. -/
+noncomputable def sbc5Family_r (δ : ℝ) : Fin 5 → ℝ :=
+  ![6 - 3 * δ, 6 + 3 * δ, 6 + 3 * δ, 6 + 3 * δ, 6 - 3 * δ]
+
+/-- The five-agent SBC family: the initial opinions `sbc5_lim + δ sbc5_v`; `δ = 1` is `sbc5_x0`. -/
+noncomputable def sbc5Family_x0 (δ : ℝ) : Fin 5 → ℝ :=
+  fun i => sbc5_lim i + δ * sbc5_v i
 
 /-! ### The closed forms and the neighbourhood tables -/
 
@@ -606,5 +648,87 @@ equi-topology distance `0`; in the 7-agent SBI system the middle agent and the a
 theorem equiTopologyDistance_eq_zero :
     (∀ i ∈ ({2, 3, 4} : Finset (Fin 7)), equiTopologyDistance sbc7_r sbc7_lim i = 0) ∧
     (∀ i ∈ ({1, 3, 5} : Finset (Fin 7)), equiTopologyDistance sbi7_r sbi7_lim i = 0) := sorry
+
+/-! ### Five SBI agents with complex modes; the near-homogeneous SBC family -/
+
+/-- The cubic `60ρ³ − 47ρ² + 9ρ − 1` has a real root strictly between `57/100` and `29/50`. -/
+theorem sbi5_root_exists : ∃ ρ : ℝ, 57 / 100 < ρ ∧ ρ < 29 / 50 ∧
+    60 * ρ ^ 3 - 47 * ρ ^ 2 + 9 * ρ - 1 = 0 := sorry
+
+/-- Five SBI agents, for every `ρ` in the interval: `x(t) = (0, 10, 18, 20, 42)` plus the offsets of
+agents `1, 2, 3` after `t` steps of the averaging map from `(1/3 − ρ, 1/5, 0)`. -/
+theorem sbi5_trajectory (ρ : ℝ) (hlo : 57 / 100 < ρ) (hhi : ρ < 29 / 50)
+    (t : ℕ) : traj .sbi sbi5_r (sbi5_x0 ρ) t = sbi5_lim + sbi5Lift (sbi5Offset ρ t) := sorry
+
+/-- Five SBI agents, for every `ρ` in the interval: the neighbourhood table
+`{0}, {0, 1, 3}, {0, 1, 2, 3, 4}, {0, 2, 3, 4}, {4}` at every `t`. -/
+theorem sbi5_neighbors (ρ : ℝ) (hlo : 57 / 100 < ρ) (hhi : ρ < 29 / 50)
+    (t : ℕ) : neighbors .sbi sbi5_r (traj .sbi sbi5_r (sbi5_x0 ρ) t) =
+      ![{0}, {0, 1, 3}, {0, 1, 2, 3, 4}, {0, 2, 3, 4}, {4}] := sorry
+
+/-- Five SBI agents, for every `ρ` in the interval: convergence to `(0, 10, 18, 20, 42)`. -/
+theorem sbi5_tendsto (ρ : ℝ) (hlo : 57 / 100 < ρ) (hhi : ρ < 29 / 50) :
+    Tendsto (traj .sbi sbi5_r (sbi5_x0 ρ)) atTop (𝓝 sbi5_lim) := sorry
+
+/-- Five SBI agents, for every `ρ` in the interval: the proximity digraph is the same at every `t`. -/
+theorem sbi5_digraph_constant (ρ : ℝ) (hlo : 57 / 100 < ρ) (hhi : ρ < 29 / 50)
+    (t : ℕ) : proximityDigraph .sbi sbi5_r (traj .sbi sbi5_r (sbi5_x0 ρ) t) =
+      proximityDigraph .sbi sbi5_r (sbi5_x0 ρ) := sorry
+
+/-- Five SBI agents, for the root `ρ` of the cubic: each of agents `1, 2, 3` is strictly below its
+limit at some time of every window `[t, t + 4]` and strictly above it at another. -/
+theorem sbi5_oscillates_every_five (ρ : ℝ)
+    (hlo : 57 / 100 < ρ) (hhi : ρ < 29 / 50)
+    (hp : 60 * ρ ^ 3 - 47 * ρ ^ 2 + 9 * ρ - 1 = 0) (t : ℕ) (i : Fin 5)
+    (hi : i ∈ ({1, 2, 3} : Finset (Fin 5))) :
+    (∃ k, t ≤ k ∧ k ≤ t + 4 ∧ traj .sbi sbi5_r (sbi5_x0 ρ) k i < sbi5_lim i) ∧
+    (∃ k, t ≤ k ∧ k ≤ t + 4 ∧ sbi5_lim i < traj .sbi sbi5_r (sbi5_x0 ρ) k i) := sorry
+
+/-- Five SBI agents, for the root `ρ` of the cubic: the trajectory is in a fixed state from no time on. -/
+theorem sbi5_not_fixedFrom (ρ : ℝ) (hlo : 57 / 100 < ρ) (hhi : ρ < 29 / 50)
+    (hp : 60 * ρ ^ 3 - 47 * ρ ^ 2 + 9 * ρ - 1 = 0) (τ : ℕ) :
+    ¬ FixedFrom (traj .sbi sbi5_r (sbi5_x0 ρ)) τ := sorry
+
+/-- Five SBI agents, for the root `ρ` of the cubic: the trajectory is pseudo-stable after no time
+towards any vector. -/
+theorem sbi5_not_pseudoStableAfter (ρ : ℝ)
+    (hlo : 57 / 100 < ρ) (hhi : ρ < 29 / 50)
+    (hp : 60 * ρ ^ 3 - 47 * ρ ^ 2 + 9 * ρ - 1 = 0) (xinf : Fin 5 → ℝ) (τ : ℕ) :
+    ¬ PseudoStableAfter (traj .sbi sbi5_r (sbi5_x0 ρ)) xinf τ := sorry
+
+/-- Conjecture 2.3 fails for the SBI model with five agents. -/
+theorem not_conjecture23_sbi_five : ¬ Conjecture23ForAgents .sbi 5 := sorry
+
+/-- Theorem 6.4(iv), in the reading admitting fixed states, fails for the SBI model with five agents. -/
+theorem not_theorem64iv_sbi_five : ¬ Theorem64ivForAgents .sbi 5 := sorry
+
+/-- The five-agent SBC family, `0 < δ ≤ 1`: `x(t) = (0, 6, 12, 18, 24) + δ λᵗ (0, 1, −√2, 1, 0)` with
+`λ = (1 − √2)/3`. -/
+theorem sbc5Family_closed_form (δ : ℝ) (hδ0 : 0 < δ) (hδ1 : δ ≤ 1)
+    (t : ℕ) :
+    traj .sbc (sbc5Family_r δ) (sbc5Family_x0 δ) t =
+      fun i => sbc5_lim i + (sbc5Rate ^ t * δ) * sbc5_v i := sorry
+
+/-- The five-agent SBC family, `0 < δ ≤ 1`: the neighbourhood table `{0}, {0, 1, 2}, {1, 2, 3}, {2, 3, 4}, {4}`
+at every `t`. -/
+theorem sbc5Family_neighbors (δ : ℝ) (hδ0 : 0 < δ) (hδ1 : δ ≤ 1)
+    (t : ℕ) :
+    neighbors .sbc (sbc5Family_r δ)
+      (traj .sbc (sbc5Family_r δ) (sbc5Family_x0 δ) t) =
+      ![{0}, {0, 1, 2}, {1, 2, 3}, {2, 3, 4}, {4}] := sorry
+
+/-- For every `ε > 0`: five SBC agents with positive, unequal bounds, every ratio `rᵢ / rⱼ` below
+`1 + ε`, a constant proximity digraph, convergence to `(0, 6, 12, 18, 24)`, and neither a fixed state
+nor pseudo-stability after any time. -/
+theorem sbc5_near_homogeneous (ε : ℝ) (hε : 0 < ε) :
+    ∃ r x₀ : Fin 5 → ℝ,
+      (∀ i, 0 < r i) ∧
+      (∀ i j, r i < (1 + ε) * r j) ∧
+      r 0 < r 1 ∧
+      (∀ t, proximityDigraph .sbc r (traj .sbc r x₀ t) =
+        proximityDigraph .sbc r x₀) ∧
+      Tendsto (traj .sbc r x₀) atTop (𝓝 sbc5_lim) ∧
+      (∀ τ, ¬ FixedFrom (traj .sbc r x₀) τ) ∧
+      (∀ xinf τ, ¬ PseudoStableAfter (traj .sbc r x₀) xinf τ) := sorry
 
 end HK

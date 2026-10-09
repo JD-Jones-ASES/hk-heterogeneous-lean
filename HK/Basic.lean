@@ -123,6 +123,44 @@ theorem alternating (q c : ℝ) (hq : q < 0) (hc : c ≠ 0) (t : ℕ) :
     positivity
   nlinarith
 
+/-- Each coordinate of a pseudo-stable trajectory sits at its limit, or stays strictly below it, or
+stays strictly above it, from `τ` on. -/
+theorem pseudoStableAfter_coordinate_side {n : ℕ} (x : ℕ → Fin n → ℝ)
+    (L : Fin n → ℝ) (τ : ℕ) (hps : PseudoStableAfter x L τ) (i : Fin n) :
+    (∀ t, τ ≤ t → x t i = L i) ∨
+    (∀ t, τ ≤ t → x t i < L i) ∨ (∀ t, τ ≤ t → L i < x t i) := by
+  obtain ⟨-, F, C, -, -, -, hFC, h⟩ := hps
+  have himem : i ∈ F ∨ i ∈ C := by
+    rw [← Finset.mem_union, hFC]
+    exact Finset.mem_univ i
+  rcases himem with hi | hi
+  · exact Or.inl (fun t ht => (h t ht).1 i hi)
+  · rcases (h τ le_rfl).2 i hi with hbelow | habove
+    · right; left
+      have hs : ∀ s, x (τ + s) i < L i := by
+        intro s
+        induction s with
+        | zero => simpa using lt_trans hbelow.1 hbelow.2
+        | succ s ih =>
+          rcases (h (τ + s) (by omega)).2 i hi with hb | ha
+          · simpa [Nat.add_assoc] using hb.2
+          · exfalso; linarith [ha.1, ha.2]
+      intro t ht
+      have he : τ + (t - τ) = t := by omega
+      simpa only [he] using hs (t - τ)
+    · right; right
+      have hs : ∀ s, L i < x (τ + s) i := by
+        intro s
+        induction s with
+        | zero => simpa using lt_trans habove.2 habove.1
+        | succ s ih =>
+          rcases (h (τ + s) (by omega)).2 i hi with hb | ha
+          · exfalso; linarith [hb.1, hb.2]
+          · simpa [Nat.add_assoc] using ha.2
+      intro t ht
+      have he : τ + (t - τ) = t := by omega
+      simpa only [he] using hs (t - τ)
+
 theorem sbiRate_neg : sbiRate < 0 := by
   rw [sbiRate_eq]; linarith [Real.one_lt_goldenRatio]
 

@@ -12,3 +12,5 @@ public import HK.Generic
 public import HK.Refute
 public import HK.SpectatorSBC
 public import HK.SpectatorSBI
+public import HK.SBI5Complex
+public import HK.SBC5Family

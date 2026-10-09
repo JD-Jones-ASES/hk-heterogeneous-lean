@@ -173,6 +173,88 @@ block of one or two agents has no eigenvalue in `(−1, 0)`. Exact searches over
 agents, 47 SBI patterns at six agents, and no alternating system at five or six agents in either model. None of
 this is a Lean theorem, and nothing is claimed outside that class.
 
+## 8. Five SBI agents with complex modes (`HK/SBI5Complex.lean`)
+
+The enumeration of §7 covers one real negative mode; a second-order recurrence gives a five-agent SBI system
+outside that class. `L = (0, 10, 18, 20, 42)`, `r = (31, 9, 5, 15, 28)`, `x(0) = L + (0, 1/3 − ρ, 1/5, 0, 0)` with
+`57/100 < ρ < 29/50` and `60ρ³ − 47ρ² + 9ρ − 1 = 0` (`sbi5_root_exists_internal`: the cubic is negative at `57/100`
+and positive at `29/50`, `intermediate_value_Icc`; the cubic has one real root, discriminant `−51683`; no closed form
+of it is used).
+
+- **The table on a cube.** For `x = L + (0, z₀, z₁, z₂, 0)` with every `|zᵢ| ≤ 1/3`, `sbi5_table` gives
+  `{0}, {0, 1, 3}, {0, 1, 2, 3, 4}, {0, 2, 3, 4}, {4}`: every membership at `L` has slack at least `1`, and a
+  distance moves by at most `2/3`. The row means fix `L` and act on the offsets by
+  `Q = [[1/3, 0, 1/3], [1/5, 1/5, 1/5], [0, 1/4, 1/4]]` (`sbi5LinearStep`, `sbi5_step`); `sbi5Offset ρ t` is
+  `Qᵗ z` with `z = (1/3 − ρ, 1/5, 0)` (`sbi5Offset_zero`, `sbi5Offset_succ`). The row sums are at most `2/3`, so
+  `|zᵢ(t)| ≤ (2/3)ᵗ/3` (`sbi5_linear_bound`, `sbi5_offset_bound`), the offsets stay in the cube, and induction
+  gives `x(t) = L + lift(Qᵗ z)` (`sbi5_trajectory_internal`), the table at every `t` (`sbi5_neighbors_internal`),
+  the constant digraph (`sbi5_digraph_constant_internal`) and convergence to `L` (`sbi5_tendsto_internal`, a
+  squeeze). These need only the interval for `ρ`, not the cubic; the table is tie-free (the least margin is
+  `17/15 − ρ`, agent `2` against bound `r₁`).
+- **The recurrence.** At the root, `Q` has characteristic polynomial `(X − ρ)(X² − αX + β)` with
+  `α = 47/60 − ρ`, `β = ρ² − 47ρ/60 + 3/20` (`sbi5Alpha`, `sbi5Beta`; `60ρβ = 1`), and `z = (Q − ρI)e₀`, so
+  `(Q² − αQ + βI) z = 0`: `sbi5_offset_recurrence` checks this at `t = 0` from the cubic and propagates it by
+  linearity (`sbi5_linear`), giving `zᵢ(t+2) = α zᵢ(t+1) − β zᵢ(t)` for each coordinate. The interval gives
+  `0 < α < 1` and `0 < β < α² < 2β` (`sbi5_coefficients`); the other two modes are therefore a non-real conjugate
+  pair, but the proof uses only the real recurrence.
+- **Both signs in every five steps.** Expanding three times,
+  `zᵢ(t+4) = α(α² − 2β) zᵢ(t+1) + β(β − α²) zᵢ(t)` (`sbi5_offset_four_step`), both coefficients negative. Two
+  consecutive values never both vanish: the initial pairs are nonzero (`(0, 1/20)` for the third coordinate) and
+  `β > 0` propagates a zero pair backwards (`sbi5_offset_pair_nonzero`). Five consecutive nonnegative values would
+  force `zᵢ(t+4) < 0`, five nonpositive ones `zᵢ(t+4) > 0` (`sbi5_offset_five_window`); in the opinions, each of
+  agents `1, 2, 3` is strictly below its limit at some `k ∈ [t, t+4]` and strictly above it at another
+  (`sbi5_oscillates_fin3`, then `sbi5_oscillates_every_five_internal` over the index set `{1, 2, 3}`).
+- **The refutations.** A trajectory on both sides of a limit in every window is fixed from no time on
+  (`sbi5_not_fixedFrom_internal`). In `PseudoStableAfter x xinf τ` every coordinate sits at, stays strictly below,
+  or stays strictly above its limit for all `t ≥ τ` (`pseudoStableAfter_coordinate_side` in `HK/Basic.lean`, from
+  the definition); `xinf = L` by uniqueness of limits, and the window at `τ` excludes all three
+  (`sbi5_not_pseudoStableAfter_internal`). With `sbi5_r_pos` and the root: `not_conjecture23_sbi_five_internal`,
+  `not_theorem64iv_sbi_five_internal`.
+
+The first signs of agent 1's offset are `---++++---++++---++++---+`; no periodicity is asserted or used. With a
+rational `ρ` in the interval the table and convergence persist but the recurrence fails and the offsets become
+eventually one-sided (checked outside Lean, certificate 0006), so the cubic is needed exactly where it is used.
+
+## 9. The near-homogeneous SBC family (`HK/SBC5Family.lean`)
+
+For `0 < δ ≤ 1`: `r(δ) = (6 − 3δ, 6 + 3δ, 6 + 3δ, 6 + 3δ, 6 − 3δ)` (`sbc5Family_r`) and `x(0) = L + δ v` with the
+data of §7 (`sbc5Family_x0`); `δ = 1` is the five-agent SBC system of §7.
+
+- **One table for `|u| ≤ δ`.** `sbc5Family_table`: for `x = L + u v`, `−δ ≤ u ≤ δ`, the table is
+  `{0}, {0, 1, 2}, {1, 2, 3}, {2, 3, 4}, {4}`: consecutive distances differ from `6` by at most `(1 + √2)δ < 3δ`,
+  an endpoint's nearest distance is at least `6 − δ > 6 − 3δ`, and non-consecutive distances are at least
+  `12 − 2√2 δ > 6 + 3δ` (`δ ≤ 1`); in Lean the product `u√2` is bounded by `±(3/2)δ` first. (The table holds
+  exactly for `δ < 6/(3 + √2) ≈ 1.359`, where agent `2` starts to hear agent `0`; `δ ≤ 1` is what the crude
+  bound gives.) The step is `L + u v ↦ L + λ u v` (`sbc5Family_step`, the row means of §7), `λᵗδ ∈ [−δ, δ]`
+  (`sbc5Family_pow_bounds`), and induction gives `x(t) = L + λᵗ δ v` (`sbc5Family_closed_form_internal`), the table
+  (`sbc5Family_neighbors_internal`), convergence and the constant digraph (`sbc5Family_tendsto`,
+  `sbc5Family_digraph_constant`), and by §3 with `a(t) = λᵗδ ≠ 0` neither a fixed state nor pseudo-stability
+  (`sbc5Family_not_fixedFrom`, `sbc5Family_not_pseudoStableAfter`).
+- **Every tolerance.** `sbc5_near_homogeneous_internal`: given `ε > 0`, take `δ = min(1/2, ε/4)`; the bounds are
+  positive (`sbc5Family_r_pos`), `r₀ < r₁` (`sbc5Family_r_strict`), and `6 + 3δ < (1 + ε)(6 − 3δ)` gives
+  `rᵢ < (1 + ε) rⱼ` for all `i, j`, with the constant digraph, convergence and the two negations in the same witness.
+
+The initial offset shrinks with the gap between the bounds; nothing is claimed for equal bounds, where the limit
+configuration sits on the thresholds. Along these trajectories the endpoints never hear anyone, so the family, like
+the five-agent SBC system of §7 and HOW's §4 system, is a homogeneous HK system with two closed-minded agents in the
+sense of Chazelle and Wang (see the relation to the sources below); the near-equal ratio comes from raising the
+endpoints' bounds to just under their gap.
+
+## 10. On paper, in the note
+
+`note/README.md` §D–E and `note/near-homogeneity-and-paths.md` prove, without Lean: (i) in either model, every
+trajectory on at most four agents whose digraph is eventually constant is eventually fixed or pseudo-stable (the
+closed classes of the eventual averaging matrix are frozen cliques; unless the whole system freezes there are at
+least two, leaving at most two transient agents, whose block is triangular with positive diagonal or of the form
+`[[a, a], [d, d]]`, so each offset is eventually zero or strictly monotone on one side), so with §7 and §8 five is
+the least number of agents for a counterexample to Conjecture 2.3, or to Theorem 6.4(iv) in the reading admitting
+fixed states, whose digraph is eventually constant, in either model; the bound is of a different scope from §7's
+Lemma 1 (any modes, but only eventually constant digraphs; Lemma 1 covers alternating patterns in its class), and
+nothing is claimed for digraphs that keep changing; (ii) weakly connected SBC systems of this kind at every `n ≥ 5`,
+from the sine modes `(1 + 2cos(kπ/(n − 1)))/3` of the nearest-neighbour path, with rates dense in `(−1/3, 0)` and
+two bound values arbitrarily close (the `n = 5` member has the rate and mode of the system of §7); (iii) a six-agent SBI family built on
+the limit and mode of the note's coincident-pair system `S2`, with bounds arbitrarily close to equal.
+
 ## Relation to the sources
 
 What HOW prove about their four systems is proved here along their route (the closed form by induction on `t`, the
@@ -183,7 +265,20 @@ same induction on a box in the two atoms; the constant tables; the spectator str
 `t ≥ 1`, from `|λ|ᵗ < μᵗ` with `μ = 1/5` or `1/4`): `sbc9_closed_form`, `sbc9_neighbors`, `sbc9_spectator_lt`,
 `sbi8_closed_form`, `sbi8_neighbors`, `sbi8_spectator_gt` (HK/SpectatorSBC.lean, HK/SpectatorSBI.lean). The
 statement of 6.4(iii)(b) itself (leader components, spectral radii) and their §6 discussion of genericity are not
-formalized. The two smaller systems also carry `fvct` and the per-step factor (`sbc5_fvct`, `sbc5_perStepFactor`,
-`sbi6_fvct`, `sbi6_perStepFactor`), by the route of §5. MB's Lemmas 4.2 and 4.8 are proved
+formalized. The two single-mode systems of §7 also carry `fvct` and the per-step factor (`sbc5_fvct`,
+`sbc5_perStepFactor`, `sbi6_fvct`, `sbi6_perStepFactor`), by the route of §5. MB's Lemmas 4.2 and 4.8 are proved
 as MB state them but without their standing assumption `r > 0`, with Lemma 4.8's single time `T` split into two
-existentials (equivalent). The two smaller systems and the note's results are this development's.
+existentials (equivalent). The systems of §7–§9 and the note's results are this development's.
+
+HOW's smallest systems have six agents (§4, SBC) and seven (§3 and §5, SBI); their Remark 2.1 notes "some
+wiggle-room in the choice of the precise numbers" and leaves it there, and their §7 mentions, without including,
+computations on the minimal number of agents. Neither HOW nor MB discusses bounds close to equal; MB's simulations
+(their §5) use 10 to 100 agents. Along their trajectories, the constant-digraph SBC systems with two frozen endpoints
+here (HOW's §4 system, the five-agent SBC system of §7, the family of §9 and the note's path family) are HK systems
+with closed-minded agents in the sense of Chazelle and Wang (*Inertial Hegselmann–Krause systems*, IEEE Trans.
+Automat. Control 62 (2017) 3905–3913): the endpoints never hear anyone and the moving agents share one bound. For
+that class Chazelle and Wang prove convergence and, in one dimension, an eventually constant network, and note that
+such systems need not freeze; the failure of pseudo-stability is HOW's, and the five-agent counts, the family of §9,
+the path family and the four-agent lower bound are in none of these sources. The system of §8, the family of §9 and
+the note's §D–E came from a consult on 2026-10-09 (DISCLOSURE.md) and were re-derived here. Every trajectory here
+converges; nothing bears on Conjecture 2.1, and the seven-agent count of the alternating systems is not lowered.
