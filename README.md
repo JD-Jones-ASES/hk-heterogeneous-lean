@@ -1,4 +1,4 @@
-# Heterogeneous Hegselmann–Krause dynamics: explicit systems whose proximity digraph is never eventually constant, and constant-digraph systems whose convergence is never pseudo-stable
+# Heterogeneous Hegselmann–Krause dynamics: counterexamples to two conjectures and a theorem of Mirtabatabaei and Bullo
 
 Mirtabatabaei and Bullo (*Opinion dynamics in heterogeneous networks: convergence conjectures and theorems*,
 SIAM J. Control Optim. 50 (2012) 2763–2785; the text read is arXiv:1103.2829v2) study `n` agents with real

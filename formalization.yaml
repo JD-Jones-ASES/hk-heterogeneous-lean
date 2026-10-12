@@ -2,7 +2,7 @@
 version: "v0.4"
 
 project:
-  name: "Heterogeneous Hegselmann–Krause dynamics: SBC and SBI systems whose proximity digraph is never eventually constant, and constant-digraph systems whose convergence is never pseudo-stable, refuting Conjectures 2.2 and 2.3 and Theorem 6.4(iv) of Mirtabatabaei–Bullo; their Lemmas 4.2 and 4.8"
+  name: "Heterogeneous Hegselmann–Krause dynamics: counterexamples to two conjectures and a theorem of Mirtabatabaei and Bullo"
   description: >-
     A Lean 4 development of the counterexamples of Hegarty, Ognissanti and Wedin (arXiv:2610.03229) to
     two conjectures and a theorem of Mirtabatabaei and Bullo on heterogeneous Hegselmann–Krause
