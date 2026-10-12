@@ -72,6 +72,5 @@ definitions, Palomar's core-notation audit); [VERIFICATION.md](VERIFICATION.md) 
 [PROOF.md](PROOF.md) gives the mathematics with the Lean name of every step, and [DISCLOSURE.md](DISCLOSURE.md)
 the assistance statement.
 
-License: [MIT](LICENSE) for the Lean files and scripts; the note in [note/](note/README.md) is CC BY-SA 4.0;
-`scripts/core_notation_audit.lean` is Palomar's, under its MIT licence
+License: [MIT](LICENSE); `scripts/core_notation_audit.lean` is Palomar's, under its MIT licence
 ([LICENSES/PalomarSubmission-MIT.txt](LICENSES/PalomarSubmission-MIT.txt)).

@@ -1,6 +1,6 @@
 # Heterogeneous Hegselmann-Krause systems: the note
 
-License: CC BY-SA 4.0 (this note and its certificates). The Lean files carry their own license.
+License: [MIT](../LICENSE), like the rest of the repository.
 
 Additional mathematical results and exact certificates, with Lean coverage identified below. Models
 (arXiv:1103.2829v2): SBC (i hears j iff |x_i - x_j| <= r_i) and SBI (iff <= r_j); x(t+1)_i is the
